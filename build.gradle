@@ -1,0 +1,238 @@
+import org.jooq.util.GenerationTool
+import org.jooq.util.jaxb.ForcedType
+
+
+buildscript {
+
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath "org.postgresql:postgresql:$postgresDriverVersion"
+		classpath "io.ratpack:ratpack-gradle:$ratpackVersion"
+
+		// Fat JAR
+		classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+
+		// Jooq
+		classpath "org.jooq:jooq-meta:$jooqVersion"
+		classpath "org.jooq:jooq-codegen:$jooqVersion"
+
+		// Kotlin
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+
+		// Asset pipeline
+		classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.10.1"
+		classpath 'com.bertramlabs.plugins:coffee-asset-pipeline:2.0.6'
+
+		// Flyway
+		classpath "org.flywaydb:flyway-gradle-plugin:$flywayVersion"
+	}
+}
+
+plugins {
+	id "com.fizzed.rocker" version "0.24.0"
+}
+
+version "1.0"
+group "si.francebevk"
+
+apply plugin: "io.ratpack.ratpack-groovy"
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'kotlin'
+apply plugin: 'com.bertramlabs.asset-pipeline'
+apply plugin: "org.flywaydb.flyway"
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+	jcenter()
+	mavenCentral()
+}
+
+sourceSets {
+	main {
+		rocker {
+			srcDir('src/views')
+		}
+		resources {
+			srcDirs "src/main/resources", "src/migrations"
+		}
+	}
+}
+
+// flyway migrations
+flyway {
+	schemas = ['public']
+	outOfOrder = false
+	validateOnMigrate = true
+	cleanDisabled = false
+	baselineOnMigrate = true
+	locations = ["filesystem://${projectDir}/src/migrations/flyway"]
+	user = devDbUsername
+	password = devDbPassword
+	url = "jdbc:postgresql://${devDbHost}/${devDbName}"
+}
+
+rocker {
+
+		// Base directory for generated java sources, actual target is sub directory
+		// with the name of the source set. The value is passed through project.file().
+		outputBaseDirectory = "$buildDir/generated/rocker"
+		// Base directory for the directory where the hot reload feature
+		// will (re)compile classes to at runtime (and where `rocker-compiler.conf`
+		// is generated, which is used by RockerRuntime.getInstance().setReloading(true)).
+		// The actual target is a sub directory with the name of the source set.
+		// The value is passed through project.file().
+		//classBaseDirectory = "$buildDir/classes"
+		classBaseDirectory = "$buildDir/classes/java"
+		failOnError true
+		skipTouch true
+		// must not be empty when skipTouch is equal to false
+		touchFile ""
+		javaVersion '1.8'
+		extendsClass null
+		extendsModelClass null
+		optimize null  // creates non-reloadable templates
+		discardLogicWhitespace null
+		targetCharset null
+		suffixRegex null
+		postProcessing null
+
+}
+
+assets {
+	minifyJs = false
+	minifyCss = true
+	enableSourceMaps = true
+	configOptions = [:]
+
+	minifyOptions = [
+			languageMode: 'ES5',
+			targetLanguage: 'ES5', //Can go from ES6 to ES5 for those bleeding edgers
+			optimizationLevel: 'SIMPLE',
+			angularPass: false // Can use @ngInject annotation for Angular Apps
+	]
+
+	includes = ["fonts/*"]
+	excludes = ['**/*.less'] //Example Exclude GLOB pattern
+
+	//for plugin packaging
+	packagePlugin=false //set to true if this is a library
+
+	//developmentRuntime can be turned off
+	developmentRuntime=true
+
+	//if you want to customize the jar task this task runs on you can specify a jarTaskName
+	jarTaskName=null
+
+	// Can add custom asset locations (directories or individual jar files)
+	from '/vendor/lib'
+}
+
+dependencies {
+	//postgres driver & GORM extensions
+	compile "org.postgresql:postgresql:$postgresDriverVersion"
+	compile group: 'com.zaxxer', name: 'HikariCP', version: '2.6.1'
+	compile group: 'org.jooq', name: 'jooq', version: jooqVersion
+
+	// Commons lang
+	compile 'org.apache.commons:commons-lang3:3.7'
+	compile 'org.apache.commons:commons-text:1.2'
+
+	// Kotlin
+	compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion"
+	compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.2'
+	compile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlinVersion
+	compile("org.jetbrains.kotlinx:kotlinx-coroutines-core:0.20")
+
+	// Ratpack sessions
+	compile group: 'io.ratpack', name: 'ratpack-session', version: '1.5.0-rc-2' // note: the version is subject to change
+	// Ratpack auth
+	compile group: 'io.ratpack', name: 'ratpack-pac4j', version: ratpackVersion
+	compile group: 'org.pac4j', name: 'pac4j', version: '1.8.8'
+	compile group: 'org.pac4j', name: 'pac4j-http', version: '1.8.8'
+
+	// logging
+	runtime("ch.qos.logback:logback-core:$logbackVersion")
+	runtime("ch.qos.logback:logback-classic:$logbackVersion")
+
+	// templates
+	compile group: 'com.fizzed', name: 'rocker-runtime', version: rockerTemplatesVersion
+	compile group: 'com.fizzed', name: 'rocker-compiler', version: rockerTemplatesVersion
+
+	// assets
+	compile 'com.bertramlabs.plugins:ratpack-asset-pipeline:2.6.7'
+	compile group: 'com.bertramlabs.plugins', name: 'coffee-asset-pipeline', version: '2.14.7'
+
+
+	// Flyway database migrations
+	compile "org.flywaydb:flyway-core:${flywayVersion}"
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = gradleWrapperVersion
+}
+
+
+tasks.create(name:'jooqModel', description: 'Generates the jOOQ model from database', group: 'DB'/*, dependsOn: 'flywayMigrate'*/).doLast {
+	description = "Generates the jOOQ model from the dev database"
+	def excludes = [
+			'.*schema_version' //flyway database versioning
+	].join('|')
+
+	def config =
+			new org.jooq.util.jaxb.Configuration()
+					.withJdbc(
+					new org.jooq.util.jaxb.Jdbc()
+							.withDriver('org.postgresql.Driver')
+							.withUrl("jdbc:postgresql://${devDbHost}/${devDbName}")
+							.withUser(devDbUsername)
+							.withPassword(devDbPassword)
+							.withSchema('public')
+			)
+					.withGenerator(new org.jooq.util.jaxb.Generator().withGenerate(new org.jooq.util.jaxb.Generate().withDeprecated(false))
+			//.withStrategy(new org.jooq.util.DefaultGeneratorStrategy())
+					.withTarget(new org.jooq.util.jaxb.Target().withPackageName('si.francebevk.db').withDirectory("${projectDir}/src/main/java"))
+					.withDatabase(
+					new org.jooq.util.jaxb.Database()
+							.withName('org.jooq.util.postgres.PostgresDatabase')
+							.withExcludes(excludes)
+							.withInputSchema('public')
+							.withIncludeExcludeColumns(true)
+							.withIncludeIndexes(false)
+							.withForcedTypes(
+							/*ForcedType
+								.newInstance()
+								.withBinding("si.francebevk.db.ShortArrayBinding")
+								.withUserType("Short[]")
+								.withExpression($/.*player\.unlocked_mentors/$),*/
+							/*ForcedType
+									.newInstance()
+									.withConverter("si.francebevk.db.InstantConverter")
+									.withUserType("java.time.Instant")
+									.withTypes("timestamp\\ with\\ time\\ zone"),
+							ForcedType
+									.newInstance()
+									.withBinding("si.francebevk.db.JsonbStringBinding")
+									.withUserType("java.lang.String")
+									.withTypes("jsonb"),
+									*/
+					)
+			)
+			)
+	GenerationTool.generate(config)
+}
+
+
+compileKotlin {
+	kotlinOptions {
+		jvmTarget = "1.8"
+	}
+}
+compileTestKotlin {
+	kotlinOptions {
+		jvmTarget = "1.8"
+	}
+}

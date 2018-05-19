@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true">
+	<!-- gracefully shutdown logging system - important for logging to remote hosts for example -->
+	<shutdownHook />
+
+	<!--default logging configuration: info and above goes to the console, trace goes into file -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} BOX  [%6.6thread] %highlight(%-5level) %-28.28logger{5} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="MAIN_FILE" class="ch.qos.logback.core.FileAppender">
+		<file>main.log</file>
+		<append>true</append>
+		<immediateFlush>true</immediateFlush>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%10.10thread] %-5level %-28.28logger{5} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="MAIN_FILE" />
+	</root>
+
+	<!-- Enable the jOOQ logger for debugging -->
+	<logger name="org.jooq.tools" level="INFO" />
+	<logger name="org.jooq.impl" level="INFO" />
+
+
+	<logger name="si.francebevk" level="TRACE" additivity="false">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="MAIN_FILE" />
+	</logger>
+
+	<logger name="requestlog" additivity="false">
+		<appender-ref ref="STDOUT" />
+	</logger>
+</configuration>
