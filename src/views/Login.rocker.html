@@ -35,6 +35,8 @@
 	<section class="pt-3">
 		<div class="container">
 			<form class="form" action="/login" method="POST">
+				<input type="hidden" name="client_name" value="FormClient">
+				<input type="hidden" name="username" value="username_stub">
 				<h4 class="text-center">
 					<label for="code">Prosimo vas, da vnesete varnostno kodo, ki ste jo prejeli po elektronski pošti:</label>
 				</h4>
@@ -42,11 +44,8 @@
                     <div class='alert alert-danger'>@message</div>
                 }
 				<p class="text-center">
-					<input type="text" class="form-control" placeholder="Vaša varnostna koda, npr. kilad-dorod-haluf-tidoz" id="code"></input>
+					<input type="text" class="form-control" placeholder="Vaša varnostna koda, npr. kilad-dorod-haluf-tidoz" id="code" name="password"></input>
 				</p>
-				<div class="alert alert-warning" role="alert">
-					Spletna stran trenutno deluje v poizkusnem načinu, zato bo sprejeta kakršnakoli varnostna koda.
-				</div>
 				<p class="text-center">
 					<button class="btn btn-primary">Vstop</button>
 				</p>

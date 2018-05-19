@@ -4,6 +4,7 @@ import org.jooq.DSLContext
 import org.pac4j.http.credentials.UsernamePasswordCredentials
 import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator
 import org.pac4j.core.exception.AccountNotFoundException
+import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.profile.UserProfile
 import org.pac4j.http.profile.HttpProfile
 import org.slf4j.LoggerFactory
@@ -12,7 +13,11 @@ import si.francebevk.db.Tables.PUPIL
 
 class DbAuthenticator(private val jooq: DSLContext) : UsernamePasswordAuthenticator {
 
+
     companion object {
+        const val PUPIL_NAME = "PUPIL_NAME"
+        const val PUPIL_CLASS = "PUPIL_CLASS"
+
         private val LOG = LoggerFactory.getLogger(DbAuthenticator::class.java)
     }
 
@@ -28,6 +33,8 @@ class DbAuthenticator(private val jooq: DSLContext) : UsernamePasswordAuthentica
             else                                                      -> {
                 credentials.userProfile = HttpProfile().also {
                     it.setId(user.id.toString())
+                    it.addAttribute(PUPIL_NAME, user.name)
+                    it.addAttribute(PUPIL_CLASS, user.pupilGroup)
                 }
             }
         }

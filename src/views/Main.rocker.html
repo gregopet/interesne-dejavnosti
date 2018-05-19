@@ -1,0 +1,170 @@
+@args(String pupilName, String pupilClass)
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>OŠ Franceta Bevka: prijava popoldanskih dejavnosti</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+
+    <style type="text/css">
+		body { margin-bottom: 1.5em }
+		.leave-form input { max-width: 5em; }
+
+	</style>
+
+</head>
+
+<body>
+<div class="container" id="app">
+
+    <h1>Prijava popoldanskih aktivnosti v šolskem letu 2018 / 2019</h1>
+
+    <p class="lead">
+        Učenec/učenka: <strong>@pupilName, @pupilClass</strong>
+    </p>
+
+    <p class="lead">
+        Vnesite podatke o času odhoda iz šole in o interesnih dejavnostih vašega otroka ter izbiro potrdite s pritiskom na zeleni gumb
+        na dnu te strani.
+    </p>
+
+    <noscript>
+        <div class="alert alert-danger" role="alert">
+            Pozor: stran ne bo delovala pravilno, dokler v brskalniku ne boste omogočili skriptnega jezika Javascript!
+        </div>
+    </noscript>
+
+    <div class="alert alert-warning" role="alert">
+        Vnešene podatke lahko naknadno še spremenite, prosimo pa vas, da s popravki zaključite  do dne <strong>25. 6. 2018</strong>!
+        Po tem datumu bodo morebitne spremembe mogoče samo še z izrecnim soglasjem šole!
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Odhodi iz šole</h4>
+            <!--<h6 class="card-subtitle mb-2 text-muted">P</h6>-->
+            <p class="card-text">
+                Prosimo vas, da za vsak dan v tednu vnesete čas odhoda domov.
+                Če otrok na določen dan ne bo vključen v popoldansko varstvo, pustite za tisti dan polje prazno!
+            </p>
+
+            <form class="leave-form">
+                <div class="form-group row">
+                    <label for="pon" class="col-sm-2 col-form-label col-form-label-sm">Ponedeljek</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control form-control-sm" id="pon">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="tor" class="col-sm-2 col-form-label col-form-label-sm">Torek</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control form-control-sm" id="tor">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="sre" class="col-sm-2 col-form-label col-form-label-sm">Sreda</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control form-control-sm" id="sre">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="cet" class="col-sm-2 col-form-label col-form-label-sm">Četrtek</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control form-control-sm" id="cet">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="pet" class="col-sm-2 col-form-label col-form-label-sm">Petek</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control form-control-sm" id="pet">
+                    </div>
+                </div>
+            </form>
+
+            <p>
+                <small><em>Ure lahko vnašate tako v 12-urni kot v 24-urni obliki - vseeno je torej, ali vpišete 3:20 ali 15:20.</em></small>
+            </p>
+
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-body">
+            <h4 class="card-title">Interesne dejavnosti</h4>
+
+            <div class="row">
+                <div class="col-md-7">
+                    <label for="izbirnik-opisov"><small>Poiščite željeno dejavnost v spodnjem seznamu ter jo izberite s pritiskom na modri gumb:</small></label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="form">
+                        <div class="form-group">
+
+                            <select class="form-control" id="izbirnik-opisov" v-model="currentGroup">
+                                <option v-for="group in groups" v-bind:value="group"> {{ group.name }}</option>
+                            </select>
+                        </div>
+                        <div v-if="currentGroup">
+                            <h4>{{ currentGroup.title }}
+                                <span class="float-right">
+									<span v-if="isSelected(currentGroup)">
+										<button class="btn btn-danger" @@click.prevent="deselect(currentGroup)">Odstrani</button>
+									</span><span v-else>
+										<button class="btn btn-primary" @@click.prevent="select(currentGroup)">Izberi</button>
+									</span>
+								</span>
+                            </h4>
+
+                            <p><small>Nosilec/nosilka dejavnosti: {{ currentGroup.leader }}</small></p>
+
+                            <div>
+                                <paragraphs :text="currentGroup.description"></paragraphs>
+                            </div>
+
+                            <h5>Termini:</h5>
+                            <ul>
+                                <li v-for="(times, day) in currentGroup.times">
+                                    {{ times.day }}, {{ times.from }} - {{ times.to }}
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 offset-md-1">
+                    <p v-if="pupilGroups.length == 0">Trenutno nimate izbrane nobene dejavnosti.</p>
+                    <div v-else>
+                        <p>Izbrali ste naslednje dejavnosti:</p>
+                        <ul class="list-unstyled" v-for="act in pupilGroups">
+                            <li>
+                                {{act.title}}
+                                <a href="#" @@click.prevent="deselect(act)"><small>(odstrani)</small></a>
+                                <ul>
+                                    <li v-for="(times, day) in act.times">
+                                        {{ times.day }}, {{ times.from }} - {{ times.to }}
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p class="mt-2">
+        <a href="hvala.html" class="btn btn-success btn-block">Potrjujem vnos</a>
+    </p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/lodash@@4.17.4/lodash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="fetchPolyfill.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

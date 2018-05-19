@@ -18,6 +18,7 @@ import si.francebevk.db.HikariDataSourceFactory
 import si.francebevk.db.HikariShutdownService
 import si.francebevk.interesnedejavnosti.DbAuthenticator
 import si.francebevk.interesnedejavnosti.LoginPage
+import si.francebevk.interesnedejavnosti.MainPage
 import si.francebevk.ratpack.error.UncaughtErrorHandler
 import si.razum.ratpack.RockerRenderer
 
@@ -71,7 +72,6 @@ ratpack {
     }
 
     handlers {
-        println "LOL"
         def authenticator = new DbAuthenticator(registry.get(DSLContext))
         def parameterClient = new FormClient("/login-form", authenticator)
         def httpBasicClient = new DirectBasicAuthClient(authenticator)
@@ -100,8 +100,9 @@ ratpack {
                 ctx.response.status(status).send()
             }
         }
-        // ... authentication required from this point on - we accept both form or direct auth...
-        onlyIf({ !it.header("Authorization").isPresent() }, RatpackPac4j.requireAuth(FormClient))
+
+        // ... authentication required from this point on
+        all(RatpackPac4j.requireAuth(FormClient))
 
         all { ctx ->
             // Pre-prepare a permissions object for downstream
@@ -113,8 +114,6 @@ ratpack {
             }
         }
 
-        all { ctx ->
-            ctx.send("Hooray, you're in!")
-        }
+        insert(MainPage.INSTANCE)
     }
 }
