@@ -129,7 +129,7 @@
                             <h5>Termini:</h5>
                             <ul>
                                 <li v-for="(times, day) in currentGroup.times">
-                                    {{ times.day }}, {{ times.from }} - {{ times.to }}
+                                    {{ times.day }}, {{ times.from | minuteTime }} - {{ times.to | minuteTime }}
                                 </li>
                             </ul>
 
@@ -147,7 +147,7 @@
                                 <a href="#" @@click.prevent="deselect(act)"><small>(odstrani)</small></a>
                                 <ul>
                                     <li v-for="(times, day) in act.times">
-                                        {{ times.day }}, {{ times.from }} - {{ times.to }}
+                                        {{ times.day }}, {{ times.from | minuteTime }} - {{ times.to | minuteTime }}
                                     </li>
                                 </ul>
                             </li>

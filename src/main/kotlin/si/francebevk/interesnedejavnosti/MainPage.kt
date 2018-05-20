@@ -35,18 +35,18 @@ object MainPage : Action<Chain> {
     private fun activities(ctx: Context) {
         val judo = Activity(
             1, "Judo", "Judo je hudo", "Jožef Kokolj", listOf(
-                TimeSlot("Ponedeljek", "15:00", "17:00"),
-                TimeSlot("Sreda", "17:00", "18:00")
+                TimeSlot("Ponedeljek", 900, 1020),
+                TimeSlot("Sreda", 1020, 840)
             ))
         val strik = Activity(
             2, "Štrikanje", "Zaštrikano", "Manica Hudobivnik", listOf(
-                TimeSlot("Ponedeljek", "16:00", "17:00"),
-                TimeSlot("Četrtek", "14:00", "15:00")
+                TimeSlot("Ponedeljek", 960, 1020),
+                TimeSlot("Četrtek", 840, 900)
             ))
         val tek = Activity(
                 2, "Tek", "Hitro", "Zelo Hitra", listOf(
-                TimeSlot("Torek", "16:00", "17:00"),
-                TimeSlot("Četrtek", "14:00", "15:00")
+                TimeSlot("Torek", 960, 1019),
+                TimeSlot("Četrtek", 840, 900)
         ))
 
         ctx.renderJson(listOf(judo, strik, tek))
