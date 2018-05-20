@@ -46,47 +46,57 @@
             <h4 class="card-title">Odhodi iz šole</h4>
             <!--<h6 class="card-subtitle mb-2 text-muted">P</h6>-->
             <p class="card-text">
-                Prosimo vas, da za vsak dan v tednu vnesete čas odhoda domov.
-                Če otrok na določen dan ne bo vključen v popoldansko varstvo, pustite za tisti dan polje prazno!
+                Prosimo vas, da za vsak dan v tednu izberete čas odhoda domov ali označite, da otrok ne bo udeležen
+                v podaljšano bivanje.
             </p>
 
             <form class="leave-form">
                 <div class="form-group row">
                     <label for="pon" class="col-sm-2 col-form-label col-form-label-sm">Ponedeljek</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control form-control-sm" id="pon">
+                        <select class="form-control form-control-sm" id="pon" v-model="leaveTimes.mon">
+                            <option v-bind:value="null">Otrok ni vključen v podaljšano bivanje</option>
+                            <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="tor" class="col-sm-2 col-form-label col-form-label-sm">Torek</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control form-control-sm" id="tor">
+                        <select class="form-control form-control-sm" id="tor" v-model="leaveTimes.tue">
+                            <option v-bind:value="null">Otrok ni vključen v podaljšano bivanje</option>
+                            <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="sre" class="col-sm-2 col-form-label col-form-label-sm">Sreda</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control form-control-sm" id="sre">
+                        <select class="form-control form-control-sm" id="sre" v-model="leaveTimes.wed">
+                            <option v-bind:value="null">Otrok ni vključen v podaljšano bivanje</option>
+                            <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="cet" class="col-sm-2 col-form-label col-form-label-sm">Četrtek</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control form-control-sm" id="cet">
+                        <select class="form-control form-control-sm" id="cet" v-model="leaveTimes.thu">
+                            <option v-bind:value="null">Otrok ni vključen v podaljšano bivanje</option>
+                            <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="pet" class="col-sm-2 col-form-label col-form-label-sm">Petek</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control form-control-sm" id="pet">
+                        <select class="form-control form-control-sm" id="pet" v-model="leaveTimes.fri">
+                            <option v-bind:value="null">Otrok ni vključen v podaljšano bivanje</option>
+                            <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
+                        </select>
                     </div>
                 </div>
             </form>
-
-            <p>
-                <small><em>Ure lahko vnašate tako v 12-urni kot v 24-urni obliki - vseeno je torej, ali vpišete 3:20 ali 15:20.</em></small>
-            </p>
-
         </div>
     </div>
 

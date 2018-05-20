@@ -20,13 +20,20 @@ fetch("/activities", { credentials: 'include' } )
 .then(
     function(response) {
         response.json().then(function(groups) {
-        console.log(groups)
             var app = new Vue({
                 el: '#app',
                 data: {
+                    leaveTimeRange: [840, 900, 960, 1020],
                     groups: groups,
                     currentGroup: groups[0],
-                    pupilGroups: _.filter(groups, function(group) { return group.chosen })
+                    pupilGroups: _.filter(groups, function(group) { return group.chosen }),
+                    leaveTimes: {
+                        mon: null,
+                        tue: null,
+                        wed: null,
+                        thu: null,
+                        fri: null
+                    }
                 },
                 methods: {
                     isSelected: function(group) {
@@ -47,7 +54,14 @@ fetch("/activities", { credentials: 'include' } )
                     save: function() {
                         // selected activity IDs
                         var selectedActivityIds = _.map(this.pupilGroups, function(group) { return group.id })
-                        var payload = { selectedActivities: selectedActivityIds }
+                        var payload = {
+                            selectedActivities: selectedActivityIds,
+                            mon: this.leaveTimes.mon,
+                            tue: this.leaveTimes.tue,
+                            wed: this.leaveTimes.wed,
+                            thu: this.leaveTimes.thu,
+                            fri: this.leaveTimes.fri
+                         }
 
                         fetch("/store", {
                             body: JSON.stringify(payload),
