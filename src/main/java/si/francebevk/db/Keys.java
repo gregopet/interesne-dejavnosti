@@ -13,8 +13,10 @@ import org.jooq.impl.AbstractKeys;
 
 import si.francebevk.db.tables.Activity;
 import si.francebevk.db.tables.Pupil;
+import si.francebevk.db.tables.PupilActivity;
 import si.francebevk.db.tables.PupilGroup;
 import si.francebevk.db.tables.records.ActivityRecord;
+import si.francebevk.db.tables.records.PupilActivityRecord;
 import si.francebevk.db.tables.records.PupilGroupRecord;
 import si.francebevk.db.tables.records.PupilRecord;
 
@@ -46,6 +48,7 @@ public class Keys {
 
     public static final UniqueKey<ActivityRecord> ACTIVITY_PKEY = UniqueKeys0.ACTIVITY_PKEY;
     public static final UniqueKey<PupilRecord> PUPIL_PKEY = UniqueKeys0.PUPIL_PKEY;
+    public static final UniqueKey<PupilActivityRecord> PUPIL_ACTIVITY_PKEY = UniqueKeys0.PUPIL_ACTIVITY_PKEY;
     public static final UniqueKey<PupilGroupRecord> PUPIL_GROUP_PKEY = UniqueKeys0.PUPIL_GROUP_PKEY;
 
     // -------------------------------------------------------------------------
@@ -53,6 +56,8 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final ForeignKey<PupilRecord, PupilGroupRecord> PUPIL__PUPIL_PUPIL_GROUP_FKEY = ForeignKeys0.PUPIL__PUPIL_PUPIL_GROUP_FKEY;
+    public static final ForeignKey<PupilActivityRecord, PupilRecord> PUPIL_ACTIVITY__PUPIL_ACTIVITY_PUPIL_ID_FKEY = ForeignKeys0.PUPIL_ACTIVITY__PUPIL_ACTIVITY_PUPIL_ID_FKEY;
+    public static final ForeignKey<PupilActivityRecord, ActivityRecord> PUPIL_ACTIVITY__PUPIL_ACTIVITY_ACTIVITY_ID_FKEY = ForeignKeys0.PUPIL_ACTIVITY__PUPIL_ACTIVITY_ACTIVITY_ID_FKEY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -66,10 +71,13 @@ public class Keys {
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<ActivityRecord> ACTIVITY_PKEY = createUniqueKey(Activity.ACTIVITY, "activity_pkey", Activity.ACTIVITY.ID);
         public static final UniqueKey<PupilRecord> PUPIL_PKEY = createUniqueKey(Pupil.PUPIL, "pupil_pkey", Pupil.PUPIL.ID);
+        public static final UniqueKey<PupilActivityRecord> PUPIL_ACTIVITY_PKEY = createUniqueKey(PupilActivity.PUPIL_ACTIVITY, "pupil_activity_pkey", PupilActivity.PUPIL_ACTIVITY.ACTIVITY_ID, PupilActivity.PUPIL_ACTIVITY.PUPIL_ID);
         public static final UniqueKey<PupilGroupRecord> PUPIL_GROUP_PKEY = createUniqueKey(PupilGroup.PUPIL_GROUP, "pupil_group_pkey", PupilGroup.PUPIL_GROUP.NAME);
     }
 
     private static class ForeignKeys0 extends AbstractKeys {
         public static final ForeignKey<PupilRecord, PupilGroupRecord> PUPIL__PUPIL_PUPIL_GROUP_FKEY = createForeignKey(si.francebevk.db.Keys.PUPIL_GROUP_PKEY, Pupil.PUPIL, "pupil__pupil_pupil_group_fkey", Pupil.PUPIL.PUPIL_GROUP);
+        public static final ForeignKey<PupilActivityRecord, PupilRecord> PUPIL_ACTIVITY__PUPIL_ACTIVITY_PUPIL_ID_FKEY = createForeignKey(si.francebevk.db.Keys.PUPIL_PKEY, PupilActivity.PUPIL_ACTIVITY, "pupil_activity__pupil_activity_pupil_id_fkey", PupilActivity.PUPIL_ACTIVITY.PUPIL_ID);
+        public static final ForeignKey<PupilActivityRecord, ActivityRecord> PUPIL_ACTIVITY__PUPIL_ACTIVITY_ACTIVITY_ID_FKEY = createForeignKey(si.francebevk.db.Keys.ACTIVITY_PKEY, PupilActivity.PUPIL_ACTIVITY, "pupil_activity__pupil_activity_activity_id_fkey", PupilActivity.PUPIL_ACTIVITY.ACTIVITY_ID);
     }
 }

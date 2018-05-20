@@ -26,7 +26,7 @@ fetch("/activities", { credentials: 'include' } )
                 data: {
                     groups: groups,
                     currentGroup: groups[0],
-                    pupilGroups: []
+                    pupilGroups: _.filter(groups, function(group) { return group.chosen })
                 },
                 methods: {
                     isSelected: function(group) {

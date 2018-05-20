@@ -18,6 +18,7 @@ import org.jooq.impl.SchemaImpl;
 
 import si.francebevk.db.tables.Activity;
 import si.francebevk.db.tables.Pupil;
+import si.francebevk.db.tables.PupilActivity;
 import si.francebevk.db.tables.PupilGroup;
 import si.francebevk.db.udt.TimeSlot;
 
@@ -35,7 +36,7 @@ import si.francebevk.db.udt.TimeSlot;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1041300462;
+    private static final long serialVersionUID = 1219687991;
 
     /**
      * The reference instance of <code>public</code>
@@ -51,6 +52,11 @@ public class Public extends SchemaImpl {
      * Contains a single pupil
      */
     public final Pupil PUPIL = si.francebevk.db.tables.Pupil.PUPIL;
+
+    /**
+     * A mapping table between pupils and their chosen activities
+     */
+    public final PupilActivity PUPIL_ACTIVITY = si.francebevk.db.tables.PupilActivity.PUPIL_ACTIVITY;
 
     /**
      * A class of pupils
@@ -97,6 +103,7 @@ public class Public extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             Activity.ACTIVITY,
             Pupil.PUPIL,
+            PupilActivity.PUPIL_ACTIVITY,
             PupilGroup.PUPIL_GROUP);
     }
 

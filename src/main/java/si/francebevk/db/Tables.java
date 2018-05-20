@@ -8,6 +8,7 @@ import javax.annotation.Generated;
 
 import si.francebevk.db.tables.Activity;
 import si.francebevk.db.tables.Pupil;
+import si.francebevk.db.tables.PupilActivity;
 import si.francebevk.db.tables.PupilGroup;
 
 
@@ -33,6 +34,11 @@ public class Tables {
      * Contains a single pupil
      */
     public static final Pupil PUPIL = si.francebevk.db.tables.Pupil.PUPIL;
+
+    /**
+     * A mapping table between pupils and their chosen activities
+     */
+    public static final PupilActivity PUPIL_ACTIVITY = si.francebevk.db.tables.PupilActivity.PUPIL_ACTIVITY;
 
     /**
      * A class of pupils
