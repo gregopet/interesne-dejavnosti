@@ -1,3 +1,4 @@
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fizzed.rocker.runtime.RockerRuntime
 import org.pac4j.http.client.direct.DirectBasicAuthClient
 import org.slf4j.Logger
@@ -30,7 +31,7 @@ ratpack {
 
     bindings {
         try {
-            //def objectMapper = new ObjectMapper().registerModule(new KotlinModule())
+            add ObjectMapper, new ObjectMapper().registerModule(new KotlinModule())
 
             final config = DefaultServerConfig.of {
                 it.configureObjectMapper { it.registerModule(new KotlinModule()) }

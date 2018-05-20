@@ -43,6 +43,25 @@ fetch("/activities", { credentials: 'include' } )
                             return timeSlotGroupsOverlap(selectedGroup.times, activity.times)
                         })
                         return conflicting ? conflicting.name : null
+                    },
+                    save: function() {
+                        // selected activity IDs
+                        var selectedActivityIds = _.map(this.pupilGroups, function(group) { return group.id })
+                        var payload = { selectedActivities: selectedActivityIds }
+
+                        fetch("/store", {
+                            body: JSON.stringify(payload),
+                            cache: 'no-cache',
+                            credentials: 'include',
+                            method: 'POST',
+                            headers: {
+                                'content-type': 'application/json'
+                            }
+                        }).then(function(response) {
+                            if (response.status == 200) {
+                                window.location.href = "/finish"
+                            }
+                        })
                     }
                 }
             });

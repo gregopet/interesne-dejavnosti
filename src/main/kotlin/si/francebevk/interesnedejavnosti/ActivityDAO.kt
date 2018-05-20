@@ -17,4 +17,12 @@ object ActivityDAO {
         jooq.select(ACTIVITY_ID).from(PUPIL_ACTIVITY).where(PUPIL_ID.eq(pupilId)).fetch().map { it.value1() }.toSet()
     }
 
+    fun storeSelectedActivityIds(pupilId: Long, activityIds: List<Long>, trans: DSLContext) = with(PUPIL_ACTIVITY) {
+        trans.deleteFrom(PUPIL_ACTIVITY).where(PUPIL_ID.eq(pupilId)).execute()
+        trans.insertInto(PUPIL_ACTIVITY, PUPIL_ID, ACTIVITY_ID).also { query ->
+            activityIds.forEach { actId -> query.values(pupilId, actId ) }
+        }
+        .execute()
+    }
+
 }
