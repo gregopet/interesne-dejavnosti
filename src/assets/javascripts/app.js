@@ -1,3 +1,5 @@
+//= require time
+
 Vue.component('paragraphs', {
 	render: function(createElement) {
 		return createElement('div', _.map(this.text.split('\n'), function(txt) {
@@ -41,6 +43,12 @@ fetch("/activities", { credentials: 'include' } )
                     },
                     deselect: function(group) {
                         this.pupilGroups = _.without(this.pupilGroups, group);
+                    },
+                    hasConflictWithActivity: function(activity) {
+                        var conflicting = _.find(this.pupilGroups, function(selectedGroup) {
+                            return timeSlotsOverlap(selectedGroup.times, activity.times)
+                        })
+                        return conflicting ? conflicting.name : null
                     }
                 }
             });
