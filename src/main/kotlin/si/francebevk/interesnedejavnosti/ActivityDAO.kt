@@ -5,8 +5,11 @@ import si.francebevk.db.Tables.ACTIVITY
 
 object ActivityDAO {
 
-    fun getActivitiesForClass(className: String, jooq: DSLContext) = with(ACTIVITY) {
-        jooq.selectFrom(ACTIVITY).fetch()
+    fun getActivitiesForClass(year: Short, jooq: DSLContext) = with(ACTIVITY) {
+        jooq
+        .selectFrom(ACTIVITY)
+        .where(AVAILABLE_TO_YEARS.contains(arrayOf(year)))
+        .fetch()
     }
 
 }

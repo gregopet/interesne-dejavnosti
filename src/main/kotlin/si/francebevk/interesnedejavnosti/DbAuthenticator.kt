@@ -23,11 +23,7 @@ class DbAuthenticator(private val jooq: DSLContext) : UsernamePasswordAuthentica
 
     override fun validate(credentials: UsernamePasswordCredentials) = with (PUPIL) {
         LOG.trace("Validating code {}", credentials.password)
-        val user =
-            jooq
-            .selectFrom(PUPIL)
-            .where(ACCESS_CODE.eq(credentials.password))
-            .fetchOne()
+        val user = PupilDAO.getPupilByCode(credentials.password, jooq)
         when {
             user == null                                              -> throw AccountNotFoundException("Unknown user")
             else                                                      -> {

@@ -34,8 +34,9 @@ object MainPage : Action<Chain> {
     }
 
     private fun activities(ctx: Context) {
-
-        val activities = ActivityDAO.getActivitiesForClass("3A", ctx.jooq)
+        val klass = ctx.user.getAttribute(DbAuthenticator.PUPIL_CLASS) as String
+        val klassRecord = ClassDAO.getClassByName(klass, ctx.jooq)
+        val activities = ActivityDAO.getActivitiesForClass(klassRecord.year, ctx.jooq)
         val payload = activities.map {
             Activity(it.id, it.name, it.description, it.leader, it.slots.map { slot ->
                 TimeSlot(translateDay(slot.day), slot.startMinutes.toInt(), slot.endMinutes.toInt())
