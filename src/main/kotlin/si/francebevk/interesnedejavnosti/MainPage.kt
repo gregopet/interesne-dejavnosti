@@ -4,9 +4,10 @@ import ratpack.func.Action
 import ratpack.handling.Chain
 import ratpack.handling.Context
 import ratpack.pac4j.RatpackPac4j
-import ratpack.pac4j.internal.Pac4jAuthenticator
+import si.francebevk.db.enums.DayOfWeek
 import si.francebevk.dto.Activity
 import si.francebevk.dto.TimeSlot
+import si.francebevk.ratpack.jooq
 import si.francebevk.ratpack.renderJson
 import si.francebevk.ratpack.route
 
@@ -33,26 +34,24 @@ object MainPage : Action<Chain> {
     }
 
     private fun activities(ctx: Context) {
-        val judo = Activity(
-            1, "Judo", "Judo je hudo", "Jožef Kokolj", listOf(
-                TimeSlot("Ponedeljek", 900, 1020),
-                TimeSlot("Sreda", 840, 1020)
-            ))
-        val strik = Activity(
-            2, "Štrikanje", "Zaštrikano", "Manica Hudobivnik", listOf(
-                TimeSlot("Ponedeljek", 960, 1020),
-                TimeSlot("Četrtek", 840, 900)
-            ))
-        val tek = Activity(
-                3, "Tek", "Hitro", "Zelo Hitra", listOf(
-                TimeSlot("Torek", 960, 1019),
-                TimeSlot("Četrtek", 840, 900)
-        ))
-        val drsanje = Activity(
-            4, "Drsanje", "Z nami ne boste nadrsali", "Ledenko Drsič", listOf(
-            TimeSlot("Ponedeljek", 840, 900)
-        ))
 
-        ctx.renderJson(listOf(judo, strik, tek, drsanje))
+        val activities = ActivityDAO.getActivitiesForClass("3A", ctx.jooq)
+        val payload = activities.map {
+            Activity(it.id, it.name, it.description, it.leader, it.slots.map { slot ->
+                TimeSlot(translateDay(slot.day), slot.startMinutes.toInt(), slot.endMinutes.toInt())
+            })
+        }
+
+        ctx.renderJson(payload)
+    }
+
+    private fun translateDay(dow: DayOfWeek) = when(dow) {
+        DayOfWeek.monday -> "Ponedeljek"
+        DayOfWeek.tuesday -> "Torek"
+        DayOfWeek.wednesday -> "Sreda"
+        DayOfWeek.thursday -> "Četrtek"
+        DayOfWeek.friday -> "Petek"
+        DayOfWeek.saturday -> "Sobota"
+        DayOfWeek.sunday -> "Nedelja"
     }
 }

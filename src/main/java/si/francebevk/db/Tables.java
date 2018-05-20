@@ -6,6 +6,7 @@ package si.francebevk.db;
 
 import javax.annotation.Generated;
 
+import si.francebevk.db.tables.Activity;
 import si.francebevk.db.tables.Pupil;
 import si.francebevk.db.tables.PupilGroup;
 
@@ -22,6 +23,11 @@ import si.francebevk.db.tables.PupilGroup;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * Contains activities children can participate in
+     */
+    public static final Activity ACTIVITY = si.francebevk.db.tables.Activity.ACTIVITY;
 
     /**
      * Contains a single pupil

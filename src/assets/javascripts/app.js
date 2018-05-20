@@ -2,7 +2,7 @@
 
 Vue.component('paragraphs', {
 	render: function(createElement) {
-		return createElement('div', _.map(this.text.split('\n'), function(txt) {
+		return createElement('div', _.map(this.text.split('\\n'), function(txt) {
 			return createElement('p', txt);
 		}));
 	},

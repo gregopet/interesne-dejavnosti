@@ -11,8 +11,10 @@ import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.AbstractKeys;
 
+import si.francebevk.db.tables.Activity;
 import si.francebevk.db.tables.Pupil;
 import si.francebevk.db.tables.PupilGroup;
+import si.francebevk.db.tables.records.ActivityRecord;
 import si.francebevk.db.tables.records.PupilGroupRecord;
 import si.francebevk.db.tables.records.PupilRecord;
 
@@ -35,12 +37,14 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
+    public static final Identity<ActivityRecord, Long> IDENTITY_ACTIVITY = Identities0.IDENTITY_ACTIVITY;
     public static final Identity<PupilRecord, Long> IDENTITY_PUPIL = Identities0.IDENTITY_PUPIL;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<ActivityRecord> ACTIVITY_PKEY = UniqueKeys0.ACTIVITY_PKEY;
     public static final UniqueKey<PupilRecord> PUPIL_PKEY = UniqueKeys0.PUPIL_PKEY;
     public static final UniqueKey<PupilGroupRecord> PUPIL_GROUP_PKEY = UniqueKeys0.PUPIL_GROUP_PKEY;
 
@@ -55,10 +59,12 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 extends AbstractKeys {
+        public static Identity<ActivityRecord, Long> IDENTITY_ACTIVITY = createIdentity(Activity.ACTIVITY, Activity.ACTIVITY.ID);
         public static Identity<PupilRecord, Long> IDENTITY_PUPIL = createIdentity(Pupil.PUPIL, Pupil.PUPIL.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
+        public static final UniqueKey<ActivityRecord> ACTIVITY_PKEY = createUniqueKey(Activity.ACTIVITY, "activity_pkey", Activity.ACTIVITY.ID);
         public static final UniqueKey<PupilRecord> PUPIL_PKEY = createUniqueKey(Pupil.PUPIL, "pupil_pkey", Pupil.PUPIL.ID);
         public static final UniqueKey<PupilGroupRecord> PUPIL_GROUP_PKEY = createUniqueKey(PupilGroup.PUPIL_GROUP, "pupil_group_pkey", PupilGroup.PUPIL_GROUP.NAME);
     }

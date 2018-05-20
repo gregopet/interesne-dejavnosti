@@ -13,10 +13,13 @@ import javax.annotation.Generated;
 import org.jooq.Catalog;
 import org.jooq.Sequence;
 import org.jooq.Table;
+import org.jooq.UDT;
 import org.jooq.impl.SchemaImpl;
 
+import si.francebevk.db.tables.Activity;
 import si.francebevk.db.tables.Pupil;
 import si.francebevk.db.tables.PupilGroup;
+import si.francebevk.db.udt.TimeSlot;
 
 
 /**
@@ -32,12 +35,17 @@ import si.francebevk.db.tables.PupilGroup;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -507178270;
+    private static final long serialVersionUID = 1041300462;
 
     /**
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * Contains activities children can participate in
+     */
+    public final Activity ACTIVITY = si.francebevk.db.tables.Activity.ACTIVITY;
 
     /**
      * Contains a single pupil
@@ -74,6 +82,7 @@ public class Public extends SchemaImpl {
 
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
+            Sequences.ACTIVITY_ID_SEQ,
             Sequences.PUPIL_ID_SEQ);
     }
 
@@ -86,7 +95,20 @@ public class Public extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            Activity.ACTIVITY,
             Pupil.PUPIL,
             PupilGroup.PUPIL_GROUP);
+    }
+
+    @Override
+    public final List<UDT<?>> getUDTs() {
+        List result = new ArrayList();
+        result.addAll(getUDTs0());
+        return result;
+    }
+
+    private final List<UDT<?>> getUDTs0() {
+        return Arrays.<UDT<?>>asList(
+            TimeSlot.TIME_SLOT);
     }
 }
