@@ -14,13 +14,7 @@ Vue.component('paragraphs', {
 	}
 });
 
-Vue.filter('minuteTime', function(value) {
-    if (!value) return '';
-    var hours = Math.floor(value / 60);
-    var minutes = value % 60;
-    var padding = (minutes < 10) ? "0" : ""
-    return "" + hours + ":" + padding + minutes
-})
+Vue.filter('minuteTime', formatMinutes)
 
 fetch("/activities", { credentials: 'include' } )
 .then(
