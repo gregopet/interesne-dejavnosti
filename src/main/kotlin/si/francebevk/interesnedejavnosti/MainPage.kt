@@ -36,7 +36,7 @@ object MainPage : Action<Chain> {
         val judo = Activity(
             1, "Judo", "Judo je hudo", "Jožef Kokolj", listOf(
                 TimeSlot("Ponedeljek", 900, 1020),
-                TimeSlot("Sreda", 1020, 840)
+                TimeSlot("Sreda", 840, 1020)
             ))
         val strik = Activity(
             2, "Štrikanje", "Zaštrikano", "Manica Hudobivnik", listOf(
@@ -44,11 +44,15 @@ object MainPage : Action<Chain> {
                 TimeSlot("Četrtek", 840, 900)
             ))
         val tek = Activity(
-                2, "Tek", "Hitro", "Zelo Hitra", listOf(
+                3, "Tek", "Hitro", "Zelo Hitra", listOf(
                 TimeSlot("Torek", 960, 1019),
                 TimeSlot("Četrtek", 840, 900)
         ))
+        val drsanje = Activity(
+            4, "Drsanje", "Z nami ne boste nadrsali", "Ledenko Drsič", listOf(
+            TimeSlot("Ponedeljek", 840, 900)
+        ))
 
-        ctx.renderJson(listOf(judo, strik, tek))
+        ctx.renderJson(listOf(judo, strik, tek, drsanje))
     }
 }

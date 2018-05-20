@@ -115,7 +115,12 @@
 									<span v-if="isSelected(currentGroup)">
 										<button class="btn btn-danger" @@click.prevent="deselect(currentGroup)">Odstrani</button>
 									</span><span v-else>
-										<button class="btn btn-primary" @@click.prevent="select(currentGroup)">Izberi</button>
+                                        <div v-if="hasConflictWithActivity(currentGroup)" class="text-danger">
+                                            Ne morete izbrati aktivnosti, ker se časovni termini pokrivajo z dejavnostjo {{hasConflictWithActivity(currentGroup)}}!
+                                        </div>
+                                        <div v-else>
+										    <button class="btn btn-primary" @@click.prevent="select(currentGroup)">Izberi</button>
+                                        </div>
 									</span>
 								</span>
                             </h4>

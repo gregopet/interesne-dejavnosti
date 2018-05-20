@@ -40,7 +40,7 @@ fetch("/activities", { credentials: 'include' } )
                     },
                     hasConflictWithActivity: function(activity) {
                         var conflicting = _.find(this.pupilGroups, function(selectedGroup) {
-                            return timeSlotsOverlap(selectedGroup.times, activity.times)
+                            return timeSlotGroupsOverlap(selectedGroup.times, activity.times)
                         })
                         return conflicting ? conflicting.name : null
                     }
