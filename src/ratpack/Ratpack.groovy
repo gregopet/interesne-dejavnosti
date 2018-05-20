@@ -77,6 +77,7 @@ ratpack {
         def httpBasicClient = new DirectBasicAuthClient(authenticator)
 
         get("favicon.ico") { ctx -> ctx.response.status(404).send() }
+        get("jasmine-tests") { ctx -> ctx.render(Tests.template())}
 
         prefix("assets") { chain ->
             chain.all(AssetPipelineHandler)
