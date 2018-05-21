@@ -65,8 +65,8 @@ class HikariDataSourceFactory : ConfigurableModule<Config>() {
         try {
             Flyway().also { fly ->
                 fly.dataSource = ds
-                fly.baselineVersion = MigrationVersion.fromVersion("1.23")
                 fly.isCleanDisabled = true
+                fly.baselineVersion = MigrationVersion.fromVersion("0")
                 fly.baseline()
                 fly.setLocations("classpath:/flyway")
             }.migrate()
