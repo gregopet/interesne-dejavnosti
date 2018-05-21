@@ -4,3 +4,10 @@ database:
     database: ind
     username: postgres
     password: 
+
+smtp:
+    username: username@example.org
+    password: reallysecret!
+    from: me@example.org
+    host: smtp.example.org
+    port: 25
