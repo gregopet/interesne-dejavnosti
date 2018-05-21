@@ -27,6 +27,9 @@ buildscript {
 
 		// Flyway
 		classpath "org.flywaydb:flyway-gradle-plugin:$flywayVersion"
+
+		// SSH plugin
+		classpath 'org.hidetake:gradle-ssh-plugin:2.9.0'
 	}
 }
 
@@ -42,6 +45,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'kotlin'
 apply plugin: 'com.bertramlabs.asset-pipeline'
 apply plugin: "org.flywaydb.flyway"
+apply plugin: 'org.hidetake.ssh'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -129,6 +133,30 @@ assets {
 
 	// Can add custom asset locations (directories or individual jar files)
 	from '/vendor/lib'
+}
+
+// deploy
+remotes {
+	prod {
+		host = "ind.francebevk.si"
+		user = "webapp"
+		identity = file("${System.getProperty("user.home")}/.ssh/id_rsa")
+		//see http://anahorny.blogspot.si/2013/05/solution-for-comjcraftjschjschexception.html if you get
+		//a reject HostKey exception
+	 }
+	 
+}
+task deployProd(dependsOn: ['shadowJar']) {
+	group "Deploy"
+	description "Builds & copies JAR files to prod server"
+
+	doLast {
+		ssh.run {
+			session(remotes.prod) {
+				put(from: buildDir, into: "/home/webapp", filter: { it.name.endsWith('jar') })
+			}
+		}
+	}
 }
 
 dependencies {
