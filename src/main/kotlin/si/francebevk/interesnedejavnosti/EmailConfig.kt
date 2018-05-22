@@ -7,11 +7,13 @@ package si.francebevk.interesnedejavnosti
  * @property from Who is this email from?
  * @property port Port of the SMTP server
  * @property host Host of the SMTP server
+ * @property ssl Use SSL to connect?
  */
 class EmailConfig(
     var username: String,
     var password: String,
     var from: String,
     var port: Int,
-    var host: String
+    var host: String,
+    var ssl: Boolean = true
 )
