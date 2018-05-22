@@ -5,6 +5,7 @@ import ratpack.handling.Chain
 import ratpack.handling.Context
 import ratpack.pac4j.RatpackPac4j
 import si.francebevk.db.enums.DayOfWeek
+import si.francebevk.db.tables.records.ActivityRecord
 import si.francebevk.db.withTransaction
 import si.francebevk.dto.Activity
 import si.francebevk.dto.PupilSettings
@@ -40,11 +41,7 @@ object MainPage : Action<Chain> {
         val klassRecord = await { ClassDAO.getClassByName(klass, ctx.jooq) }
         val activities = await { ActivityDAO.getActivitiesForClass(klassRecord.year, ctx.jooq) }
         val selected = await { ActivityDAO.getSelectedActivityIds(ctx.user.id.toLong(), ctx.jooq) }
-        val payload = activities.map {
-            Activity(it.id, it.name, it.description, it.leader, it.slots.map { slot ->
-                TimeSlot(translateDay(slot.day), slot.startMinutes.toInt(), slot.endMinutes.toInt())
-            }, selected.contains(it.id))
-        }
+        val payload = activities.map { it.toDTO(selected.contains(it.id)) }
         ctx.renderJson(payload)
     }
 
@@ -55,6 +52,21 @@ object MainPage : Action<Chain> {
             ctx.jooq.withTransaction {  t ->
                 ActivityDAO.storeSelectedActivityIds(ctx.user.id.toLong(), payload.selectedActivities, t)
             }
+        }
+
+        // send confirmation email
+        val pupilActivities = await {
+            ActivityDAO.getSelectedActivitiesForPupil(ctx.user.id.toLong(), ctx.jooq)
+        }.map { it.toDTO(true) }
+        await {
+            EmailDispatch.sendConfirmationMail(
+                "gregap@gmail.com",
+                ctx.user.getAttribute(DbAuthenticator.PUPIL_NAME) as String,
+                ctx.user.getAttribute(DbAuthenticator.PUPIL_CLASS) as String,
+                payload,
+                pupilActivities,
+                ctx.get(EmailConfig::class.java)
+            )
         }
         ctx.response.send("OK")
     }
@@ -68,4 +80,10 @@ object MainPage : Action<Chain> {
         DayOfWeek.saturday -> "Sobota"
         DayOfWeek.sunday -> "Nedelja"
     }
+
+    private fun ActivityRecord.toDTO(isSelected: Boolean) =
+        Activity(id, name, description, leader, slots.map { slot ->
+            TimeSlot(translateDay(slot.day), slot.startMinutes.toInt(), slot.endMinutes.toInt())
+        }, isSelected)
+
 }

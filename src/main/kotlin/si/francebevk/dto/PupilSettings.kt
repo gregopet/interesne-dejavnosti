@@ -1,5 +1,7 @@
 package si.francebevk.dto
 
+import si.francebevk.interesnedejavnosti.minuteTimeFormat
+
 /**
  * Contains the pupil settings sent by the client that need to be saved into the database.
  * @property selectedActivities The IDs of activities this pupil had selected
@@ -16,4 +18,15 @@ class PupilSettings(
     var wed: Int?,
     var thu: Int?,
     var fri: Int?
-)
+) {
+    val monNice get() = format(mon)
+    val tueNice get() = format(tue)
+    val wedNice get() = format(wed)
+    val thuNice get() = format(thu)
+    val friNice get() = format(fri)
+
+
+    private fun format(time: Int?): String =
+        if (time == null) "odide takoj po pouku"
+        else time.minuteTimeFormat
+}

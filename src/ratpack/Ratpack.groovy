@@ -19,6 +19,7 @@ import si.francebevk.db.HikariDataSourceFactory
 import si.francebevk.db.HikariShutdownService
 import si.francebevk.interesnedejavnosti.DbAuthenticator
 import si.francebevk.interesnedejavnosti.EmailConfig
+import si.francebevk.interesnedejavnosti.EmailDispatch
 import si.francebevk.interesnedejavnosti.LoginPage
 import si.francebevk.interesnedejavnosti.MainPage
 import si.francebevk.ratpack.error.UncaughtErrorHandler

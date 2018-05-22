@@ -1,0 +1,25 @@
+@import si.francebevk.dto.*
+@import java.util.List
+@args(String pupilName, String pupilClass, PupilSettings leaveTimes, List<Activity> activities)
+Pozdravljeni,
+
+Vaša prijava interesnih dejavnosti ter časov odhodov domov za učenca/učenko @pupilName je bila sprejeta.
+
+Za vašo evidenco vam pošiljamo kopijo vnešenega.
+
+Izbrani časi odhodov domov:
+
+Ponedeljek: @leaveTimes.getMonNice()
+Torek: @leaveTimes.getTueNice()
+Sreda: @leaveTimes.getWedNice()
+Četrtek: @leaveTimes.getThuNice()
+Petek: @leaveTimes.getFriNice()
+
+Izbrane interesne dejavnosti:
+
+@for (activity: activities) { @activity.getName()
+    @for(time: activity.getTimes()) {  @time
+    }
+}
+
+Zahvaljujemo se vam za sodelovanje in vam želimo uspešen zaključek šolskega leta!
