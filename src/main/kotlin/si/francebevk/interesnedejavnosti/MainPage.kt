@@ -37,8 +37,7 @@ object MainPage : Action<Chain> {
 
     /** Lists all selected activities */
     private fun activities(ctx: Context) = ctx.async {
-        val klass = ctx.user.getAttribute(DbAuthenticator.PUPIL_CLASS) as String
-        val klassRecord = await { ClassDAO.getClassByName(klass, ctx.jooq) }
+        val klassRecord = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
         val activities = await { ActivityDAO.getActivitiesForClass(klassRecord.year, ctx.jooq) }
         val selected = await { ActivityDAO.getSelectedActivityIds(ctx.user.id.toLong(), ctx.jooq) }
         val payload = activities.map { it.toDTO(selected.contains(it.id)) }
