@@ -5,6 +5,13 @@ import si.francebevk.db.Tables.PUPIL
 
 object PupilDAO {
 
+    fun getPupilById(pupilId: Long, jooq: DSLContext) = with(PUPIL) {
+        jooq
+        .selectFrom(PUPIL)
+        .where(ID.eq(pupilId))
+        .fetchOne()
+    }
+
     fun getPupilByCode(code: String, jooq: DSLContext) = with(PUPIL) {
         jooq
         .selectFrom(PUPIL)
