@@ -38,7 +38,7 @@ import si.francebevk.db.tables.records.PupilRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Pupil extends TableImpl<PupilRecord> {
 
-    private static final long serialVersionUID = 2033136034;
+    private static final long serialVersionUID = 2098871703;
 
     /**
      * The reference instance of <code>public.pupil</code>
@@ -72,6 +72,11 @@ public class Pupil extends TableImpl<PupilRecord> {
      * The column <code>public.pupil.access_code</code>. The pupil's access code required to access their profile
      */
     public final TableField<PupilRecord, String> ACCESS_CODE = createField("access_code", org.jooq.impl.SQLDataType.CLOB, this, "The pupil's access code required to access their profile");
+
+    /**
+     * The column <code>public.pupil.extended_stay</code>. Indicates choice for pupil's inclusion in extended stay
+     */
+    public final TableField<PupilRecord, Boolean> EXTENDED_STAY = createField("extended_stay", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "Indicates choice for pupil's inclusion in extended stay");
 
     /**
      * Create a <code>public.pupil</code> table reference
