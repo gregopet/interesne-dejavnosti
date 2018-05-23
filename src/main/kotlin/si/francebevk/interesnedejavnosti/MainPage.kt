@@ -25,11 +25,12 @@ object MainPage : Action<Chain> {
         get("finish") { endHtml(it) }
     }
 
+    private fun leaveTimesRelevant(year: Short) = year < 6
 
     private fun html(ctx: Context) = ctx.async {
         val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }
         val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
-        ctx.render(Main.template(pupil.name, pupil.pupilGroup, klass.year < 6))
+        ctx.render(Main.template(pupil.name, pupil.pupilGroup, leaveTimesRelevant(klass.year)))
     }
 
     private fun endHtml(ctx: Context) {
@@ -63,6 +64,7 @@ object MainPage : Action<Chain> {
     private fun store(ctx: Context) = ctx.async {
         val payload = ctx.parse(PupilSettings::class.java).await()
         val pupilId = ctx.user.id.toLong()
+        val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
         await {
             ctx.jooq.withTransaction {  t ->
                 ActivityDAO.storeSelectedActivityIds(pupilId, payload.selectedActivities, t)
@@ -81,10 +83,11 @@ object MainPage : Action<Chain> {
         await {
             EmailDispatch.sendConfirmationMail(
                 "gregap@gmail.com",
-                ctx.user.getAttribute(DbAuthenticator.PUPIL_NAME) as String,
-                ctx.user.getAttribute(DbAuthenticator.PUPIL_CLASS) as String,
+                ctx.pupilName,
+                ctx.pupilClass,
                 payload,
                 pupilActivities,
+                leaveTimesRelevant(klass.year),
                 ctx.get(EmailConfig::class.java)
             )
         }

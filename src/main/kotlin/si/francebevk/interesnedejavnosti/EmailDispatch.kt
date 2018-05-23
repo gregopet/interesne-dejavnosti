@@ -30,14 +30,14 @@ object EmailDispatch {
     /**
      * Sends the confirmation mail once people have finished editing the page.
      */
-    fun sendConfirmationMail(to: String, pupilName: String, pupilClass: String, leaveTimes: PupilSettings, activities: List<Activity>, config: EmailConfig) {
+    fun sendConfirmationMail(to: String, pupilName: String, pupilClass: String, leaveTimes: PupilSettings, activities: List<Activity>, leaveTimesRelevant: Boolean, config: EmailConfig) {
         if (!skipEmails) {
             LOG.info("Sending confirmation email to $to")
             val message = config.startNewMessage()
             message.subject = "OŠ Franceta Bevka: uspešna prijava interesnih dejavnosti za učenca/učenko $pupilName"
             message.addTo(to)
             message.setTextMsg(
-                    ConfirmationMailPlain.template(pupilName, pupilClass, leaveTimes, activities).render().toString()
+                    ConfirmationMailPlain.template(pupilName, pupilClass, leaveTimes, leaveTimesRelevant, activities).render().toString()
             )
             message.send()
         }
