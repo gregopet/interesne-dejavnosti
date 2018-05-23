@@ -16,23 +16,24 @@ Vue.component('paragraphs', {
 
 Vue.filter('minuteTime', formatMinutes)
 
-fetch("/activities", { credentials: 'include' } )
+fetch("/state", { credentials: 'include' } )
 .then(
     function(response) {
-        response.json().then(function(groups) {
+        response.json().then(function(state) {
             var app = new Vue({
                 el: '#app',
                 data: {
                     leaveTimeRange: [840, 900, 960, 1020],
-                    groups: groups,
-                    currentGroup: groups[0],
-                    pupilGroups: _.filter(groups, function(group) { return group.chosen }),
+                    groups: state.activities,
+                    currentGroup: state.activities[0],
+                    pupilGroups: _.filter(state.activities, function(group) { return group.chosen }),
+                    extendedStay: state.extendedStay,
                     leaveTimes: {
-                        mon: null,
-                        tue: null,
-                        wed: null,
-                        thu: null,
-                        fri: null
+                        mon: state.mon,
+                        tue: state.tue,
+                        wed: state.wed,
+                        thu: state.thu,
+                        fri: state.fri
                     }
                 },
                 methods: {
@@ -55,6 +56,7 @@ fetch("/activities", { credentials: 'include' } )
                         // selected activity IDs
                         var selectedActivityIds = _.map(this.pupilGroups, function(group) { return group.id })
                         var payload = {
+                            extendedStay: this.extendedStay,
                             selectedActivities: selectedActivityIds,
                             mon: this.leaveTimes.mon,
                             tue: this.leaveTimes.tue,

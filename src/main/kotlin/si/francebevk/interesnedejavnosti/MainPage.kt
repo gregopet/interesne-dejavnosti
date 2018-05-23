@@ -9,6 +9,7 @@ import si.francebevk.db.tables.records.ActivityRecord
 import si.francebevk.db.withTransaction
 import si.francebevk.dto.Activity
 import si.francebevk.dto.PupilSettings
+import si.francebevk.dto.PupilState
 import si.francebevk.dto.TimeSlot
 import si.francebevk.ratpack.*
 
@@ -19,7 +20,7 @@ object MainPage : Action<Chain> {
 
     override fun execute(t: Chain) = t.route {
         get { html(it) }
-        get("activities") { activities(it) }
+        get("state") { pupilState(it) }
         post("store") { store(it) }
         get("finish") { endHtml(it) }
     }
@@ -38,26 +39,44 @@ object MainPage : Action<Chain> {
     }
 
     /** Lists all selected activities */
-    private fun activities(ctx: Context) = ctx.async {
+    private fun pupilState(ctx: Context) = ctx.async {
+        val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }
         val klassRecord = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
         val activities = await { ActivityDAO.getActivitiesForClass(klassRecord.year, ctx.jooq) }
         val selected = await { ActivityDAO.getSelectedActivityIds(ctx.user.id.toLong(), ctx.jooq) }
-        val payload = activities.map { it.toDTO(selected.contains(it.id)) }
+        val activitiesPayload = activities.map { it.toDTO(selected.contains(it.id)) }
+
+        val payload = PupilState(
+            activitiesPayload,
+            pupil.extendedStay,
+            pupil.leaveMon,
+            pupil.leaveTue,
+            pupil.leaveWed,
+            pupil.leaveThu,
+            pupil.leaveFri
+        )
+
         ctx.renderJson(payload)
     }
 
     /** Store the student's selection */
     private fun store(ctx: Context) = ctx.async {
         val payload = ctx.parse(PupilSettings::class.java).await()
+        val pupilId = ctx.user.id.toLong()
         await {
             ctx.jooq.withTransaction {  t ->
-                ActivityDAO.storeSelectedActivityIds(ctx.user.id.toLong(), payload.selectedActivities, t)
+                ActivityDAO.storeSelectedActivityIds(pupilId, payload.selectedActivities, t)
+                if (payload.extendedStay) {
+                    PupilDAO.storeLeaveTimes(payload.mon, payload.tue, payload.wed, payload.thu, payload.fri, pupilId, ctx.jooq)
+                } else {
+                    PupilDAO.storeNonParticipation(pupilId, ctx.jooq)
+                }
             }
         }
 
         // send confirmation email
         val pupilActivities = await {
-            ActivityDAO.getSelectedActivitiesForPupil(ctx.user.id.toLong(), ctx.jooq)
+            ActivityDAO.getSelectedActivitiesForPupil(pupilId, ctx.jooq)
         }.map { it.toDTO(true) }
         await {
             EmailDispatch.sendConfirmationMail(
