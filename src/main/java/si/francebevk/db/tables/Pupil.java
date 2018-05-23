@@ -38,7 +38,7 @@ import si.francebevk.db.tables.records.PupilRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Pupil extends TableImpl<PupilRecord> {
 
-    private static final long serialVersionUID = 2098871703;
+    private static final long serialVersionUID = -385516994;
 
     /**
      * The reference instance of <code>public.pupil</code>
@@ -77,6 +77,31 @@ public class Pupil extends TableImpl<PupilRecord> {
      * The column <code>public.pupil.extended_stay</code>. Indicates choice for pupil's inclusion in extended stay
      */
     public final TableField<PupilRecord, Boolean> EXTENDED_STAY = createField("extended_stay", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "Indicates choice for pupil's inclusion in extended stay");
+
+    /**
+     * The column <code>public.pupil.leave_mon</code>. Indicates the minutes of day at which pupil will leave school on monday (null means student is not participating on that day)
+     */
+    public final TableField<PupilRecord, Short> LEAVE_MON = createField("leave_mon", org.jooq.impl.SQLDataType.SMALLINT, this, "Indicates the minutes of day at which pupil will leave school on monday (null means student is not participating on that day)");
+
+    /**
+     * The column <code>public.pupil.leave_tue</code>. Indicates the minutes of day at which pupil will leave school on tuesday (null means student is not participating on that day)
+     */
+    public final TableField<PupilRecord, Short> LEAVE_TUE = createField("leave_tue", org.jooq.impl.SQLDataType.SMALLINT, this, "Indicates the minutes of day at which pupil will leave school on tuesday (null means student is not participating on that day)");
+
+    /**
+     * The column <code>public.pupil.leave_wed</code>. Indicates the minutes of day at which pupil will leave school on wednesday (null means student is not participating on that day)
+     */
+    public final TableField<PupilRecord, Short> LEAVE_WED = createField("leave_wed", org.jooq.impl.SQLDataType.SMALLINT, this, "Indicates the minutes of day at which pupil will leave school on wednesday (null means student is not participating on that day)");
+
+    /**
+     * The column <code>public.pupil.leave_thu</code>. Indicates the minutes of day at which pupil will leave school on thursday (null means student is not participating on that day)
+     */
+    public final TableField<PupilRecord, Short> LEAVE_THU = createField("leave_thu", org.jooq.impl.SQLDataType.SMALLINT, this, "Indicates the minutes of day at which pupil will leave school on thursday (null means student is not participating on that day)");
+
+    /**
+     * The column <code>public.pupil.leave_fri</code>. Indicates the minutes of day at which pupil will leave school on friday (null means student is not participating on that day)
+     */
+    public final TableField<PupilRecord, Short> LEAVE_FRI = createField("leave_fri", org.jooq.impl.SQLDataType.SMALLINT, this, "Indicates the minutes of day at which pupil will leave school on friday (null means student is not participating on that day)");
 
     /**
      * Create a <code>public.pupil</code> table reference
