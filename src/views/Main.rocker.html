@@ -50,16 +50,24 @@
 
 
     @if(pupilHasExtendedStay) {
+
     <div class="card">
         <div class="card-body">
             <h4 class="card-title">Odhodi iz šole</h4>
-            <!--<h6 class="card-subtitle mb-2 text-muted">P</h6>-->
-            <p class="card-text">
-                Prosimo vas, da za vsak dan v tednu izberete čas odhoda domov ali označite, da otrok ne bo udeležen
+            <div class="form-group">
+                <label for="extended_stay_select">Prosimo izberite, ali bo vaš otrok vključen v podaljšano bivanje:</label>
+                <select class="form-control" v-model="extendedStay" id="extended_stay_select">
+                    <option v-bind:value="false">Ne, moj otrok ne bo udeležen v podaljšanem bivanju</option>
+                    <option v-bind:value="true">Da, moj otrok bo udeležen v podaljšanem bivanju</option>
+                </select>
+            </div>
+
+            <p class="card-text" style="margin-top:3em;" v-if="extendedStay">
+                Prosimo vas, da za vsak dan v tednu izberete čas odhoda domov ali označite, da otrok na ta dan ne bo udeležen
                 v podaljšano bivanje.
             </p>
 
-            <form class="leave-form">
+            <form class="leave-form" v-if="extendedStay">
                 <div class="form-group row">
                     <label for="pon" class="col-sm-2 col-form-label col-form-label-sm">Ponedeljek</label>
                     <div class="col-sm-10">
