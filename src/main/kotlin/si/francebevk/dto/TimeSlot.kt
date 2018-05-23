@@ -10,8 +10,8 @@ import si.francebevk.interesnedejavnosti.minuteTimeFormat
  */
 class TimeSlot (
     var day: String,
-    var from: Int,
-    var to: Int
+    var from: Short,
+    var to: Short
 ) {
     override fun toString(): String =
         "$day: ${from.minuteTimeFormat} - ${to.minuteTimeFormat}"

@@ -13,11 +13,11 @@ import si.francebevk.interesnedejavnosti.minuteTimeFormat
  */
 class PupilSettings(
     var selectedActivities: List<Long>,
-    var mon: Int?,
-    var tue: Int?,
-    var wed: Int?,
-    var thu: Int?,
-    var fri: Int?
+    var mon: Short?,
+    var tue: Short?,
+    var wed: Short?,
+    var thu: Short?,
+    var fri: Short?
 ) {
     val monNice get() = format(mon)
     val tueNice get() = format(tue)
@@ -26,7 +26,7 @@ class PupilSettings(
     val friNice get() = format(fri)
 
 
-    private fun format(time: Int?): String =
+    private fun format(time: Short?): String =
         if (time == null) "odide takoj po pouku"
         else time.minuteTimeFormat
 }
