@@ -1,4 +1,4 @@
-@args(String pupilName, String pupilClass)
+@args(String pupilName, String pupilClass, Boolean pupilHasExtendedStay)
 <!doctype html>
 
 <html lang="en">
@@ -25,10 +25,17 @@
         Učenec/učenka: <strong>@pupilName, @pupilClass</strong>
     </p>
 
+    @if (pupilHasExtendedStay) {
     <p class="lead">
         Vnesite podatke o času odhoda iz šole in o interesnih dejavnostih vašega otroka ter izbiro potrdite s pritiskom na zeleni gumb
         na dnu te strani.
     </p>
+    } else {
+    <p class="lead">
+        Vnesite podatke o interesnih dejavnostih vašega otroka ter izbiro potrdite s pritiskom na zeleni gumb
+        na dnu te strani.
+    </p>
+    }
 
     <noscript>
         <div class="alert alert-danger" role="alert">
@@ -41,6 +48,8 @@
         Po tem datumu bodo morebitne spremembe mogoče samo še z izrecnim soglasjem šole!
     </div>
 
+
+    @if(pupilHasExtendedStay) {
     <div class="card">
         <div class="card-body">
             <h4 class="card-title">Odhodi iz šole</h4>
@@ -99,6 +108,7 @@
             </form>
         </div>
     </div>
+    }
 
     <div class="card mt-3">
         <div class="card-body">

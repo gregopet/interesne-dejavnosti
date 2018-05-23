@@ -25,8 +25,10 @@ object MainPage : Action<Chain> {
     }
 
 
-    private fun html(ctx: Context) {
-        ctx.render(Main.template(ctx.user.getAttribute(DbAuthenticator.PUPIL_NAME)  as String, ctx.user.getAttribute(DbAuthenticator.PUPIL_CLASS) as String))
+    private fun html(ctx: Context) = ctx.async {
+        val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }
+        val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
+        ctx.render(Main.template(pupil.name, pupil.pupilGroup, klass.year < 6))
     }
 
     private fun endHtml(ctx: Context) {
