@@ -1,6 +1,6 @@
 package si.francebevk.interesnedejavnosti
 
-import login.Login
+import Login
 import org.slf4j.LoggerFactory
 import ratpack.handling.Context
 import ratpack.handling.Handler
