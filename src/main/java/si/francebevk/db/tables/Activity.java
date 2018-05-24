@@ -38,7 +38,7 @@ import si.francebevk.db.udt.records.TimeSlotRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Activity extends TableImpl<ActivityRecord> {
 
-    private static final long serialVersionUID = 1947167681;
+    private static final long serialVersionUID = 272278144;
 
     /**
      * The reference instance of <code>public.activity</code>
@@ -82,6 +82,16 @@ public class Activity extends TableImpl<ActivityRecord> {
      * The column <code>public.activity.slots</code>. The times during which this activity takes place
      */
     public final TableField<ActivityRecord, TimeSlotRecord[]> SLOTS = createField("slots", si.francebevk.db.udt.TimeSlot.TIME_SLOT.getDataType().getArrayDataType(), this, "The times during which this activity takes place");
+
+    /**
+     * The column <code>public.activity.cost</code>. A textual description of the cost for this activity
+     */
+    public final TableField<ActivityRecord, String> COST = createField("cost", org.jooq.impl.SQLDataType.CLOB, this, "A textual description of the cost for this activity");
+
+    /**
+     * The column <code>public.activity.max_pupils</code>. Maximum number of pupils for this activity
+     */
+    public final TableField<ActivityRecord, Short> MAX_PUPILS = createField("max_pupils", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "Maximum number of pupils for this activity");
 
     /**
      * Create a <code>public.activity</code> table reference
