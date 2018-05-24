@@ -20,12 +20,14 @@ fetch("/state", { credentials: 'include' } )
 .then(
     function(response) {
         response.json().then(function(state) {
+            var sortedActivities = _.sortBy(state.activities, function(a) { return a.name.toLowerCase() })
+
             var app = new Vue({
                 el: '#app',
                 data: {
                     leaveTimeRange: [840, 900, 960, 1020],
-                    groups: state.activities,
-                    currentGroup: state.activities[0],
+                    groups: sortedActivities,
+                    currentGroup: sortedActivities[0],
                     pupilGroups: _.filter(state.activities, function(group) { return group.chosen }),
                     extendedStay: state.extendedStay,
                     leaveTimes: {
