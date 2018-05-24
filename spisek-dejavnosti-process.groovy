@@ -38,17 +38,19 @@ def getTimes = { s ->
 	]
 }
 
-println "INSERT INTO activity(name, description, leader, available_to_years, slots) VALUES"
+println "INSERT INTO activity(name, description, leader, available_to_years, slots, cost, max_pupils) VALUES"
 fields.collate(8).eachWithIndex { row, i->
-	def name = row[0].trim()
-	def actor = row[1]?.trim() ?: ""
-	def classes = row[2]?.split(",")?.collect { it.trim() }.findAll() ?: []
-	def price = row[4]?.trim() ?: ""
-	def maxPupils = row[5]?.trim() ? Integer.parseInt(row[5].trim()) : 0
-	def description = row[6]?.trim()
-	def days = row[3]?.split("\n")?.collect { getTimes(it?.trim()) }.findAll().collect { "ROW('${it.day}', ${it.from}, ${it.to})" }
-	
-	if (i) print ','
-	println "('${sanitize(name)}', '${sanitize(description)}', '${sanitize(actor)}', ARRAY$classes::smallint[], ARRAY[${days.join(',')}]::time_slot[])"
+	if (row && row[0] && row[0].toLowerCase() != 'dejavnost') {
+		def name = row[0].trim()
+		def actor = row[1]?.trim() ?: ""
+		def classes = row[2]?.split(",")?.collect { it.trim() }.findAll() ?: []
+		def price = row[4]?.trim() ?: ""
+		def maxPupils = row[5]?.trim() ? Integer.parseInt(row[5].trim()) : 0
+		def description = row[6]?.trim()
+		def days = row[3]?.split("\n")?.collect { getTimes(it?.trim()) }.findAll().collect { "ROW('${it.day}', ${it.from}, ${it.to})" }
+		
+		if (i) print ','
+		println "('${sanitize(name)}', '${sanitize(description)}', '${sanitize(actor)}', ARRAY$classes::smallint[], ARRAY[${days.join(',')}]::time_slot[], ${price ? "'" + sanitize(price) + "'" : 'null'}, $maxPupils)"
+	}
 }
 println ";"

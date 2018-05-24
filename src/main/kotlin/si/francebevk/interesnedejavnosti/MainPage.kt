@@ -107,6 +107,6 @@ object MainPage : Action<Chain> {
     private fun ActivityRecord.toDTO(isSelected: Boolean) =
         Activity(id, name, description, leader, slots.map { slot ->
             TimeSlot(translateDay(slot.day), slot.startMinutes, slot.endMinutes)
-        }, isSelected)
+        }, isSelected, cost)
 
 }

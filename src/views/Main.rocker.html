@@ -132,7 +132,6 @@
                 <div class="col-md-7">
                     <div class="form">
                         <div class="form-group">
-
                             <select class="form-control" id="izbirnik-opisov" v-model="currentGroup">
                                 <option v-for="group in groups" v-bind:value="group"> {{ group.name }}</option>
                             </select>
@@ -154,6 +153,10 @@
                             </h4>
 
                             <p><small>Nosilec/nosilka dejavnosti: {{ currentGroup.leader }}</small></p>
+
+                            <p v-if="currentGroup.cost" class="text-danger">
+                                <small>Cena: {{ currentGroup.cost }}</small>
+                            </p>
 
                             <div>
                                 <paragraphs :text="currentGroup.description"></paragraphs>
