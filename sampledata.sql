@@ -1,11 +1,11 @@
 INSERT INTO pupil_group(name, year) values ('1A', 1), ('2A', 2), ('3A', 3), ('4A', 4), ('5A', 5);
 
-INSERT INTO pupil(name, pupil_group, access_code) values 
-	('Leon Uršič', '1A', '1'), 
-	('Jana Jazbec', '2A', '2'), 
-	('Branka Potočnik', '3A', 3), 
-	('Vid Bogataj', '4A', 4), 
-	('Albina Sušnik', '5A', 5);
+INSERT INTO pupil(name, pupil_group, access_code, extended_stay) values
+	('Leon Uršič', '1A', '1', true),
+	('Jana Jazbec', '2A', '2', true),
+	('Branka Potočnik', '3A', '3', true),
+	('Vid Bogataj', '4A', '4', true),
+	('Albina Sušnik', '5A', '5', true);
 
 INSERT INTO activity(name, leader, available_to_years, slots, description) VALUES
 ('Judo', 'Jožef Kokolj', ARRAY[1, 2, 3], ARRAY[
@@ -27,3 +27,13 @@ INSERT INTO activity(name, leader, available_to_years, slots, description) VALUE
 	ROW('monday', 840, 900)
 ]::time_slot[], 'Ples je vrsta izražanja, umetnosti in zabave. Ples je govorica telesa, ki se izraža skozi ritem glasbe in lahko predstavlja stil človekovega življenja, kajti z vsakim gibom se v človekovi duši ustvarja zadovoljstvo. Ples je del kulturne izobrazbe vsakega posameznika in je kultura posameznega naroda.\nPles je tudi umetnost in hkrati šport, v katerem se prepleta usklajenost dveh ali več teles. Najstarejši slikovni zapisi o plesu, segajo celo do 15 000 let nazaj. Nekoč je bil ples vezan na religijo in njene običaje, z razvojem kultur je postal še oblika zabave sprva majhnih skupin, kasneje pa način preživljanja prostega časa velikih množic.'
 );
+
+
+INSERT INTO pupil_group(name, year) values ('6A', 6), ('7A', 7), ('8A', 8), ('9A', 9);
+
+INSERT INTO pupil(name, pupil_group, access_code, extended_stay) values
+	('Franc Hribar', '6A', '6', false),
+	('Marija Fras', '7A', '7', false),
+	('Ana Vidmar', '8A', '8', false),
+	('Anton Turk', '9A', '9', false);
+
