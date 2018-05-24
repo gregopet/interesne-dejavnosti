@@ -25,7 +25,7 @@ fetch("/state", { credentials: 'include' } )
             var app = new Vue({
                 el: '#app',
                 data: {
-                    leaveTimeRange: [840, 900, 960, 1020],
+                    leaveTimeRange: [775, 825, 875, 930, 980, 1020],
                     groups: sortedActivities,
                     currentGroup: sortedActivities[0],
                     pupilGroups: _.filter(state.activities, function(group) { return group.chosen }),
