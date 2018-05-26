@@ -157,8 +157,8 @@
                                 <br>
                                 <small>
                                     Št. preostalih prostih mest: {{ currentGroup.freePlaces }}
-                                    <span v-if="currentGroup.currentlyMine === true" class="text-success"><i>(na aktivnost je otrok že prijavljen)</i></span>
-                                    <span v-if="currentGroup.currentlyMine === false"><i>(na aktivnost otrok še ni prijavljen)</i></span>
+                                    <span v-if="currentGroup.currentlyMine === true" class="text-success"><i>(na aktivnost je vaš otrok trenutno prijavljen)</i></span>
+                                    <span v-if="currentGroup.currentlyMine === false"><i>(na aktivnost vaš otrok trenutno ni prijavljen)</i></span>
                                 </small>
                                 <br>
                                 <small v-if="currentGroup.cost" class="text-danger">Cena: {{ currentGroup.cost }}</small>
