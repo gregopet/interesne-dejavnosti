@@ -21,6 +21,10 @@ fetch("/state", { credentials: 'include' } )
     function(response) {
         response.json().then(function(state) {
             var sortedActivities = _.sortBy(state.activities, function(a) { return a.name.toLowerCase() })
+            _.each(sortedActivities, function(act) { 
+                act.freePlaces = 3
+                act.currentlyMine = null
+            })
 
             var app = new Vue({
                 el: '#app',
@@ -83,6 +87,29 @@ fetch("/state", { credentials: 'include' } )
                     }
                 }
             });
+
+            // Vacancy checks
+            function checkVacancy() {
+                fetch("/vacancy", {
+                    credentials: 'include',
+                    cache: 'no-cache'
+                }).then(function(response) {
+                    if (response.status == 200) {
+                        response.json().then(function(payload) {
+                            _.each(app.groups, function(act) {
+                                var status = _.find(payload, function(p) { return p.id == act.id })
+                                if (status) {
+                                    act.freePlaces = status.free
+                                    act.currentlyMine = status.currentlyMine
+                                }
+                            });
+                        })
+                    }
+                })
+            }
+            checkVacancy()
+            setInterval(checkVacancy, 5000)
+
         })
     }
 )

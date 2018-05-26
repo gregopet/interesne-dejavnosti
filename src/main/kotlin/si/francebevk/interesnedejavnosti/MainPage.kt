@@ -23,6 +23,7 @@ object MainPage : Action<Chain> {
         get("state") { pupilState(it) }
         post("store") { store(it) }
         get("finish") { endHtml(it) }
+        get("vacancy") { vacancy(it) }
     }
 
     private fun leaveTimesRelevant(year: Short) = year < 6
@@ -43,8 +44,8 @@ object MainPage : Action<Chain> {
     private fun pupilState(ctx: Context) = ctx.async {
         val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }
         val klassRecord = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
-        val activities = await { ActivityDAO.getActivitiesForClass(klassRecord.year, ctx.jooq) }
         val selected = await { ActivityDAO.getSelectedActivityIds(ctx.user.id.toLong(), ctx.jooq) }
+        val activities = await { ActivityDAO.getActivitiesForClass(klassRecord.year, ctx.jooq) }
         val activitiesPayload = activities.map { it.toDTO(selected.contains(it.id)) }
 
         val payload = PupilState(
@@ -92,6 +93,11 @@ object MainPage : Action<Chain> {
             )
         }
         ctx.response.send("OK")
+    }
+
+    private fun vacancy(ctx: Context) = ctx.async {
+        val vacancy = await { ActivityDAO.getVacancyForPupil(ctx.user.id.toLong(), ctx.jooq) }
+        ctx.renderJson(vacancy)
     }
 
     private fun translateDay(dow: DayOfWeek) = when(dow) {

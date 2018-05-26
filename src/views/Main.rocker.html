@@ -152,10 +152,16 @@
 
                             </h4>
 
-                            <p><small>Nosilec/nosilka dejavnosti: {{ currentGroup.leader }}</small></p>
-
-                            <p v-if="currentGroup.cost" class="text-danger">
-                                <small>Cena: {{ currentGroup.cost }}</small>
+                            <p>
+                                <small>Nosilec/nosilka dejavnosti: {{ currentGroup.leader }}</small>
+                                <br>
+                                <small>
+                                    Št. preostalih prostih mest: {{ currentGroup.freePlaces }}
+                                    <span v-if="currentGroup.currentlyMine === true" class="text-success"><i>(na aktivnost je otrok že prijavljen)</i></span>
+                                    <span v-if="currentGroup.currentlyMine === false"><i>(na aktivnost otrok še ni prijavljen)</i></span>
+                                </small>
+                                <br>
+                                <small v-if="currentGroup.cost" class="text-danger">Cena: {{ currentGroup.cost }}</small>
                             </p>
 
                             <div>
