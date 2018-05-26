@@ -46,12 +46,32 @@ object ActivityDAO {
         .fetch()
         .into(ACTIVITY)
 
-    fun storeSelectedActivityIds(pupilId: Long, activityIds: List<Long>, trans: DSLContext) = with(PUPIL_ACTIVITY) {
+    /**
+     * Stores selected activities for the pupil and returns any activities that may have too many pupils registered
+     * already. Rolls back the transaction in case the registration could not be made and throws an exception.
+     *
+     * @throws ActivityFullException when one or more activites were full already!
+     */
+    fun storeSelectedActivityIds(pupilId: Long, activityIds: List<Long>, trans: DSLContext): Unit = with(PUPIL_ACTIVITY) {
+        // lock selected activities
+        trans.select(ACTIVITY.ID).from(ACTIVITY).where(ACTIVITY.ID.`in`(*activityIds.toTypedArray())).orderBy(ACTIVITY.ID).forUpdate()
+
         trans.deleteFrom(PUPIL_ACTIVITY).where(PUPIL_ID.eq(pupilId)).execute()
+
         trans.insertInto(PUPIL_ACTIVITY, PUPIL_ID, ACTIVITY_ID).also { query ->
-            activityIds.forEach { actId -> query.values(pupilId, actId ) }
-        }
-        .execute()
+            activityIds.forEach { actId -> query.values(pupilId, actId) }
+        }.execute()
+
+        val overdrawn = trans
+        .select(*ACTIVITY.fields())
+        .from(ACTIVITY)
+        .where(
+                selectCount().from(PUPIL_ACTIVITY).where(PUPIL_ACTIVITY.ACTIVITY_ID.eq(ACTIVITY.ID)).asField<Short>().gt(ACTIVITY.MAX_PUPILS)
+        )
+        .fetch()
+        .into(ACTIVITY)
+
+        if (overdrawn.isNotEmpty) throw ActivityFullException(overdrawn)
     }
 
 }

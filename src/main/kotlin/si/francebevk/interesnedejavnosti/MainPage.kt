@@ -66,33 +66,39 @@ object MainPage : Action<Chain> {
         val payload = ctx.parse(PupilSettings::class.java).await()
         val pupilId = ctx.user.id.toLong()
         val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
-        await {
-            ctx.jooq.withTransaction {  t ->
-                ActivityDAO.storeSelectedActivityIds(pupilId, payload.selectedActivities, t)
-                if (payload.extendedStay) {
-                    PupilDAO.storeLeaveTimes(payload.mon, payload.tue, payload.wed, payload.thu, payload.fri, pupilId, ctx.jooq)
-                } else {
-                    PupilDAO.storeNonParticipation(pupilId, ctx.jooq)
+
+        try {
+            await {
+                ctx.jooq.withTransaction { t ->
+                    ActivityDAO.storeSelectedActivityIds(pupilId, payload.selectedActivities, t)
+                    if (payload.extendedStay) {
+                        PupilDAO.storeLeaveTimes(payload.mon, payload.tue, payload.wed, payload.thu, payload.fri, pupilId, ctx.jooq)
+                    } else {
+                        PupilDAO.storeNonParticipation(pupilId, ctx.jooq)
+                    }
                 }
             }
-        }
 
-        // send confirmation email
-        val pupilActivities = await {
-            ActivityDAO.getSelectedActivitiesForPupil(pupilId, ctx.jooq)
-        }.map { it.toDTO(true) }
-        await {
-            EmailDispatch.sendConfirmationMail(
-                "gregap@gmail.com",
-                ctx.pupilName,
-                ctx.pupilClass,
-                payload,
-                pupilActivities,
-                leaveTimesRelevant(klass.year),
-                ctx.get(EmailConfig::class.java)
-            )
+            // send confirmation email
+            val pupilActivities = await {
+                ActivityDAO.getSelectedActivitiesForPupil(pupilId, ctx.jooq)
+            }.map { it.toDTO(true) }
+            await {
+                EmailDispatch.sendConfirmationMail(
+                        "gregap@gmail.com",
+                        ctx.pupilName,
+                        ctx.pupilClass,
+                        payload,
+                        pupilActivities,
+                        leaveTimesRelevant(klass.year),
+                        ctx.get(EmailConfig::class.java)
+                )
+            }
+            ctx.response.send("OK")
+        } catch(ex: ActivityFullException) {
+            ctx.response.status(409)
+            ctx.renderJson(ex.activities.map { it.name })
         }
-        ctx.response.send("OK")
     }
 
     private fun vacancy(ctx: Context) = ctx.async {

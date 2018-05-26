@@ -83,6 +83,16 @@ fetch("/state", { credentials: 'include' } )
                             if (response.status == 200) {
                                 window.location.href = "/finish"
                             }
+                            else if (response.status = 409) {
+                                response.json().then(function(offending) {
+                                    var taken = offending.join(", ")
+                                    window.alert(
+                                        "Žal so naslednje aktivnosti že polno zasedene: " + taken + "\n\n" +
+                                        "Prosimo vas, da jih odstranite iz spiska izbranih dejavnosti in ponovno poizkusite potrditi vnos!"
+                                    )
+
+                                })
+                            }
                         })
                     }
                 }
