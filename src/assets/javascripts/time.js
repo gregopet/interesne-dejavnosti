@@ -18,3 +18,11 @@ function formatMinutes(value) {
     var padding = (minutes < 10) ? "0" : ""
     return "" + hours + ":" + padding + minutes	
 }
+
+function formatDay(day) {
+    if (day == 'monday') return 'ponedeljek'
+    if (day == 'tuesday') return 'torek'
+    if (day == 'wednesday') return 'sreda'
+    if (day == 'thursday') return 'četrtek'
+    if (day == 'friday') return 'petek'
+}

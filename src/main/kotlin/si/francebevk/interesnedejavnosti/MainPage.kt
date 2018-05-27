@@ -72,7 +72,7 @@ object MainPage : Action<Chain> {
                 ctx.jooq.withTransaction { t ->
                     ActivityDAO.storeSelectedActivityIds(pupilId, payload.selectedActivities, t)
                     if (payload.extendedStay) {
-                        PupilDAO.storeLeaveTimes(payload.mon, payload.tue, payload.wed, payload.thu, payload.fri, pupilId, ctx.jooq)
+                        PupilDAO.storeLeaveTimes(payload.monday, payload.tuesday, payload.wednesday, payload.thursday, payload.friday, pupilId, ctx.jooq)
                     } else {
                         PupilDAO.storeNonParticipation(pupilId, ctx.jooq)
                     }
@@ -106,19 +106,9 @@ object MainPage : Action<Chain> {
         ctx.renderJson(vacancy)
     }
 
-    private fun translateDay(dow: DayOfWeek) = when(dow) {
-        DayOfWeek.monday -> "Ponedeljek"
-        DayOfWeek.tuesday -> "Torek"
-        DayOfWeek.wednesday -> "Sreda"
-        DayOfWeek.thursday -> "Četrtek"
-        DayOfWeek.friday -> "Petek"
-        DayOfWeek.saturday -> "Sobota"
-        DayOfWeek.sunday -> "Nedelja"
-    }
-
     private fun ActivityRecord.toDTO(isSelected: Boolean) =
         Activity(id, name, description, leader, slots.map { slot ->
-            TimeSlot(translateDay(slot.day), slot.startMinutes, slot.endMinutes)
+            TimeSlot(slot.day.literal, slot.startMinutes, slot.endMinutes)
         }, isSelected, cost)
 
 }

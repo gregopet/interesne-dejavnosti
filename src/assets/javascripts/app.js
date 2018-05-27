@@ -15,6 +15,7 @@ Vue.component('paragraphs', {
 });
 
 Vue.filter('minuteTime', formatMinutes)
+Vue.filter('day', formatDay)
 
 fetch("/state", { credentials: 'include' } )
 .then(
@@ -26,6 +27,7 @@ fetch("/state", { credentials: 'include' } )
                 act.currentlyMine = null
             })
 
+
             var app = new Vue({
                 el: '#app',
                 data: {
@@ -35,12 +37,21 @@ fetch("/state", { credentials: 'include' } )
                     pupilGroups: _.filter(state.activities, function(group) { return group.chosen }),
                     extendedStay: state.extendedStay,
                     leaveTimes: {
-                        mon: state.mon,
-                        tue: state.tue,
-                        wed: state.wed,
-                        thu: state.thu,
-                        fri: state.fri
-                    }
+                        monday: state.monday,
+                        tuesday: state.tuesday,
+                        wednesday: state.wednesday,
+                        thursday: state.thursday,
+                        friday: state.friday
+                    },
+                    conflicts: null //an array of time coflicts with following fields: activity, day, timeHome, leaveTime, timeActivity, fixedTimeHome (see confirmNoLeaveTimesActivityConflicts)
+                },
+                watch: {
+                    // Check for conflicts when users change leave times
+                    'leaveTimes.monday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
+                    'leaveTimes.tuesday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
+                    'leaveTimes.wednesday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
+                    'leaveTimes.thursday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
+                    'leaveTimes.friday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
                 },
                 methods: {
                     isSelected: function(group) {
@@ -48,6 +59,7 @@ fetch("/state", { credentials: 'include' } )
                     },
                     select: function(group) {
                         this.pupilGroups.push(group);
+                        this.confirmNoLeaveTimesActivityConflicts()
                     },
                     deselect: function(group) {
                         this.pupilGroups = _.without(this.pupilGroups, group);
@@ -58,18 +70,60 @@ fetch("/state", { credentials: 'include' } )
                         })
                         return conflicting ? conflicting.name : null
                     },
+                    // returns true if there were no conflicts
+                    confirmNoLeaveTimesActivityConflicts: function() {
+                        if (!this.extendedStay) return true;
+
+                         // go through all selected activities
+                         for (var a = 0; a < this.pupilGroups.length; a++) {
+                            var activity = this.pupilGroups[a]
+
+                            // go through leave times
+                            if (activity.times) {
+                                for (var s = 0; s < activity.times.length; s++) {
+                                    var slot = activity.times[s];
+                                    var leaveTime = this.leaveTimes[slot.day]
+                                    if (leaveTime == null || leaveTime < slot.to) {
+                                        var fixedTimeHome = _.find(this.leaveTimeRange, function(t) { return t >= slot.to })
+                                        this.conflicts = { activity: activity, day: slot.day, timeHome: leaveTime, timeActivity: slot.to, fixedTimeHome: fixedTimeHome }
+                                        console.log("SHOWING DIALOG")
+                                        $('#conflictModal').modal({keyboard: false, backdrop: 'static'})
+                                        return // process conflicts one by one!
+                                    }
+                                }
+                            }
+                         }
+                         console.log("HIDING DIALOG")
+                         $('#conflictModal').modal('hide') // no return? hide dialog, no conflicts
+                    },
+
+                    resolveConflictRemoveActivity: function(activity) {
+                        this.deselect(activity)
+
+                        // check for further conflicts
+
+                        this.confirmNoLeaveTimesActivityConflicts()
+                    },
+                    resolveConflictUpdateLeaveTime: function(day, leaveTime) {
+                        this.leaveTimes[day] = leaveTime
+
+                        // check for further conflicts
+                        this.confirmNoLeaveTimesActivityConflicts()
+                    },
+
                     save: function() {
                         // selected activity IDs
                         var selectedActivityIds = _.map(this.pupilGroups, function(group) { return group.id })
                         var payload = {
                             extendedStay: this.extendedStay,
                             selectedActivities: selectedActivityIds,
-                            mon: this.leaveTimes.mon,
-                            tue: this.leaveTimes.tue,
-                            wed: this.leaveTimes.wed,
-                            thu: this.leaveTimes.thu,
-                            fri: this.leaveTimes.fri
+                            monday: this.leaveTimes.monday,
+                            tuesday: this.leaveTimes.tuesday,
+                            wednesday: this.leaveTimes.wednesday,
+                            thursday: this.leaveTimes.thursday,
+                            friday: this.leaveTimes.friday
                          }
+
 
                         fetch("/store", {
                             body: JSON.stringify(payload),

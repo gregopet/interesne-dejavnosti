@@ -1,7 +1,7 @@
 @args(String pupilName, String pupilClass, Boolean pupilHasExtendedStay)
 <!doctype html>
 
-<html lang="en">
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8">
     <title>OŠ Franceta Bevka: prijava popoldanskih dejavnosti</title>
@@ -71,7 +71,7 @@
                 <div class="form-group row">
                     <label for="pon" class="col-sm-2 col-form-label col-form-label-sm">Ponedeljek</label>
                     <div class="col-sm-10">
-                        <select class="form-control form-control-sm" id="pon" v-model="leaveTimes.mon">
+                        <select class="form-control form-control-sm" id="pon" v-model="leaveTimes.monday">
                             <option v-bind:value="null">Otrok ni vključen v podaljšano bivanje</option>
                             <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
                         </select>
@@ -80,7 +80,7 @@
                 <div class="form-group row">
                     <label for="tor" class="col-sm-2 col-form-label col-form-label-sm">Torek</label>
                     <div class="col-sm-10">
-                        <select class="form-control form-control-sm" id="tor" v-model="leaveTimes.tue">
+                        <select class="form-control form-control-sm" id="tor" v-model="leaveTimes.tuesday">
                             <option v-bind:value="null">Otrok ni vključen v podaljšano bivanje</option>
                             <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
                         </select>
@@ -89,7 +89,7 @@
                 <div class="form-group row">
                     <label for="sre" class="col-sm-2 col-form-label col-form-label-sm">Sreda</label>
                     <div class="col-sm-10">
-                        <select class="form-control form-control-sm" id="sre" v-model="leaveTimes.wed">
+                        <select class="form-control form-control-sm" id="sre" v-model="leaveTimes.wednesday">
                             <option v-bind:value="null">Otrok ni vključen v podaljšano bivanje</option>
                             <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
                         </select>
@@ -98,7 +98,7 @@
                 <div class="form-group row">
                     <label for="cet" class="col-sm-2 col-form-label col-form-label-sm">Četrtek</label>
                     <div class="col-sm-10">
-                        <select class="form-control form-control-sm" id="cet" v-model="leaveTimes.thu">
+                        <select class="form-control form-control-sm" id="cet" v-model="leaveTimes.thursday">
                             <option v-bind:value="null">Otrok ni vključen v podaljšano bivanje</option>
                             <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
                         </select>
@@ -107,7 +107,7 @@
                 <div class="form-group row">
                     <label for="pet" class="col-sm-2 col-form-label col-form-label-sm">Petek</label>
                     <div class="col-sm-10">
-                        <select class="form-control form-control-sm" id="pet" v-model="leaveTimes.fri">
+                        <select class="form-control form-control-sm" id="pet" v-model="leaveTimes.friday">
                             <option v-bind:value="null">Otrok ni vključen v podaljšano bivanje</option>
                             <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
                         </select>
@@ -171,7 +171,7 @@
                             <h5>Termini:</h5>
                             <ul>
                                 <li v-for="(times, day) in currentGroup.times">
-                                    {{ times.day }}, {{ times.from | minuteTime }} - {{ times.to | minuteTime }}
+                                    {{ times.day | day }}, {{ times.from | minuteTime }} - {{ times.to | minuteTime }}
                                 </li>
                             </ul>
 
@@ -189,7 +189,7 @@
                                 <a href="#" @@click.prevent="deselect(act)"><small>(odstrani)</small></a>
                                 <ul>
                                     <li v-for="(times, day) in act.times">
-                                        {{ times.day }}, {{ times.from | minuteTime }} - {{ times.to | minuteTime }}
+                                        {{ times.day | day }}, {{ times.from | minuteTime }} - {{ times.to | minuteTime }}
                                     </li>
                                 </ul>
                             </li>
@@ -209,7 +209,48 @@
         </div>
     </div>
 
+
+    <!-- Modal dialog for timing conflicts + trigger -->
+    <!--div>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#conflictModal" id="conflictModalTrigger">
+            Launch demo modal
+        </button>
+    </div-->
+    <div class="modal" tabindex="-1" role="dialog" id="conflictModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document" v-if="conflicts">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nedoslednost v času odhoda iz šole</h5>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Aktivnost {{ conflicts.activity.name }} se v {{ conflicts.day | day }} zaključi ob {{ conflicts.timeActivity | minuteTime }},
+                        na ta dan pa ste navedli<!--
+                        --><span v-if="conflicts.timeHome"> čas odhoda domov že ob {{ conflicts.timeHome | minuteTime }}.</span><span v-else>, da vaš otrok ne bo v podaljšanjem bivanju.</span>
+                    </p>
+                    <p>
+                        Prosim izberite, kako želite razrešiti to nedoslednost?
+
+
+                    </p>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-warning btn-block" @@click.prevent="resolveConflictUpdateLeaveTime(conflicts.day, conflicts.fixedTimeHome)">V {{ conflicts.day | day }} odhod ob {{ conflicts.fixedTimeHome | minuteTime }}</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-danger btn-block" @@click.prevent="resolveConflictRemoveActivity(conflicts.activity)">Odstrani {{ conflicts.activity.name }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/lodash@@4.17.4/lodash.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="lib/fetchPolyfill.js"></script>
