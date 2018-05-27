@@ -54,6 +54,11 @@ fetch("/state", { credentials: 'include' } )
                     'leaveTimes.friday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
                 },
                 methods: {
+                    logout: function() {
+                        if (confirm("Ste prepričani da želite zapreti stran, ne da bi shranili spremembe?")) {
+                            window.location.href = "/logout"
+                        }
+                    },
                     isSelected: function(group) {
                         return _.find(this.pupilGroups, group);
                     },
