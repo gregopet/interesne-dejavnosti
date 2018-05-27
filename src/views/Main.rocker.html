@@ -155,10 +155,13 @@
                             <p>
                                 <small>Nosilec/nosilka dejavnosti: {{ currentGroup.leader }}</small>
                                 <br>
-                                <small>
+                                <small v-if="currentGroup.freePlaces < 100">
                                     Št. preostalih prostih mest: {{ currentGroup.freePlaces }}
                                     <span v-if="currentGroup.currentlyMine === true" class="text-success"><i>(na aktivnost je vaš otrok trenutno prijavljen)</i></span>
                                     <span v-if="currentGroup.currentlyMine === false"><i>(na aktivnost vaš otrok trenutno ni prijavljen)</i></span>
+                                </small>
+                                <small v-else>
+                                    Število mest ni omejeno.
                                 </small>
                                 <br>
                                 <small v-if="currentGroup.cost" class="text-danger">Cena: {{ currentGroup.cost }}</small>
