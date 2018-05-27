@@ -5,12 +5,14 @@ import org.apache.commons.mail.HtmlEmail
 import org.slf4j.LoggerFactory
 import si.francebevk.dto.Activity
 import si.francebevk.dto.PupilSettings
+import javax.mail.internet.InternetAddress
 
 object EmailDispatch {
 
     val LOG = LoggerFactory.getLogger(EmailDispatch::class.java)
 
     const val skipEmails = false
+    const val SCHOOL_REPLY_ADDRESS = "prijave.osfblj@guest.arnes.si"
 
     /**
      * Sends the invitation mail with the access code.
@@ -21,6 +23,8 @@ object EmailDispatch {
             val message = config.startNewMessage()
             message.subject = "OŠ Franceta Bevka: prijava interesnih dejavnosti za učenca/učenko $pupilName"
             message.addTo(to)
+            message.setFrom(SCHOOL_REPLY_ADDRESS)
+            message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS)))
             message.setHtmlMsg(WelcomeMailHtml.template(pupilName, pupilClass, accessCode).render().toString())
             message.setTextMsg(WelcomeMailPlain.template(pupilName, pupilClass, accessCode).render().toString())
             message.send()
@@ -36,6 +40,8 @@ object EmailDispatch {
             val message = config.startNewMessage()
             message.subject = "OŠ Franceta Bevka: uspešna prijava interesnih dejavnosti za učenca/učenko $pupilName"
             message.addTo(to)
+            message.setFrom(SCHOOL_REPLY_ADDRESS)
+            message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS)))
             message.setTextMsg(
                     ConfirmationMailPlain.template(pupilName, pupilClass, leaveTimes, leaveTimesRelevant, activities).render().toString()
             )
