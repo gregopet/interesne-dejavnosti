@@ -13,6 +13,7 @@ object EmailDispatch {
     val LOG = LoggerFactory.getLogger(EmailDispatch::class.java)
 
     const val skipEmails = false
+    const val skipCC = false
     const val SCHOOL_REPLY_ADDRESS = "prijave.osfblj@guest.arnes.si"
 
     /**
@@ -25,7 +26,9 @@ object EmailDispatch {
             message.subject = "OŠ Franceta Bevka: prijava interesnih dejavnosti za učenca/učenko $pupilName"
             message.addTo(to)
             message.setFrom(SCHOOL_REPLY_ADDRESS)
-            message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS)))
+            if (!skipCC) {
+                message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS)))
+            }
             message.setHtmlMsg(WelcomeMailHtml.template(pupilName, pupilClass, accessCode).render().toString())
             message.setTextMsg(WelcomeMailPlain.template(pupilName, pupilClass, accessCode).render().toString())
             message.attach(EmailAttachment().apply {
