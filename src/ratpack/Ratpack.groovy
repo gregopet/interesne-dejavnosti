@@ -17,6 +17,7 @@ import asset.pipeline.ratpack.AssetPipelineHandler
 import si.francebevk.db.Config
 import si.francebevk.db.HikariDataSourceFactory
 import si.francebevk.db.HikariShutdownService
+import si.francebevk.interesnedejavnosti.Admin
 import si.francebevk.interesnedejavnosti.DbAuthenticator
 import si.francebevk.interesnedejavnosti.EmailConfig
 import si.francebevk.interesnedejavnosti.EmailDispatch
@@ -89,6 +90,8 @@ ratpack {
             chain.all(AssetPipelineHandler)
             chain.all { it.response.status(404).send("Asset not found") }
         }
+
+        prefix("admin", Admin.INSTANCE)
 
         get("login-form", LoginPage.INSTANCE)
 

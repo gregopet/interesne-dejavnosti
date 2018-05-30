@@ -18,10 +18,11 @@ object EmailDispatch {
 
     /**
      * Sends the invitation mail with the access code.
+     *
+     * Example call: http -f POST http://localhost:5050/admin/welcome-emails password='Aslkjnm234lk2j3mnsdf2342d34212nmfskldjfljgh4A'
      */
     fun sendWelcomeEmail(to: String, pupilName: String, pupilClass: String, accessCode: String, config: EmailConfig, fileConfig: FileConfig) {
         if (!skipEmails) {
-            LOG.info("Sending welcome email to $to")
             val message = config.startNewMessage()
             message.subject = "OŠ Franceta Bevka: prijava interesnih dejavnosti za učenca/učenko $pupilName"
             message.addTo(to)
@@ -38,6 +39,7 @@ object EmailDispatch {
                 path = fileConfig.cataloguePath
             })
             message.send()
+            LOG.info("Email was sent!")
         }
     }
 
