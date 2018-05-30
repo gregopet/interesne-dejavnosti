@@ -55,7 +55,7 @@
         <div class="card-body">
             <h4 class="card-title">Odhodi iz šole</h4>
             <div class="form-group">
-                <label for="extended_stay_select">Prosimo izberite, ali bo vaš otrok vključen v podaljšano bivanje:</label>
+                <label for="extended_stay_select">Prosimo, izberite, ali bo vaš otrok vključen v podaljšano bivanje:</label>
                 <select class="form-control" v-model="extendedStay" id="extended_stay_select">
                     <option v-bind:value="false">Ne, moj otrok ne bo udeležen v podaljšanem bivanju</option>
                     <option v-bind:value="true">Da, moj otrok bo udeležen v podaljšanem bivanju</option>
@@ -236,7 +236,7 @@
                         --><span v-if="conflicts.timeHome"> čas odhoda domov že ob {{ conflicts.timeHome | minuteTime }}.</span><span v-else>, da vaš otrok ne bo v podaljšanjem bivanju.</span>
                     </p>
                     <p>
-                        Prosim izberite, kako želite razrešiti to nedoslednost?
+                        Prosimo, izberite, kako želite razrešiti to nedoslednost.
 
 
                     </p>

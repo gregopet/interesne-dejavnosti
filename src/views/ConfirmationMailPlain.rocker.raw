@@ -3,7 +3,7 @@
 @args(String pupilName, String pupilClass, PupilSettings leaveTimes, Boolean leaveTimesRelevant, List<Activity> activities)
 Pozdravljeni,
 
-Vaša prijava interesnih dejavnosti ter časov odhodov domov za učenca/učenko @pupilName je bila sprejeta. Za vašo evidenco vam pošiljamo kopijo vnešenega.
+vaša prijava interesnih dejavnosti ter časov odhodov domov za učenca/učenko @pupilName je bila sprejeta. Za vašo evidenco vam pošiljamo kopijo vnešenega.
 
 @if (leaveTimesRelevant) { @if (leaveTimes.getExtendedStay())
 {
