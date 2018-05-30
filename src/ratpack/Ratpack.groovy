@@ -20,6 +20,7 @@ import si.francebevk.db.HikariShutdownService
 import si.francebevk.interesnedejavnosti.DbAuthenticator
 import si.francebevk.interesnedejavnosti.EmailConfig
 import si.francebevk.interesnedejavnosti.EmailDispatch
+import si.francebevk.interesnedejavnosti.FileConfig
 import si.francebevk.interesnedejavnosti.LoginPage
 import si.francebevk.interesnedejavnosti.MainPage
 import si.francebevk.ratpack.error.UncaughtErrorHandler
@@ -51,6 +52,7 @@ ratpack {
             // database & JOOQ
             bindInstance Config, config.get("/database", Config)
             bindInstance EmailConfig, config.get("/smtp", EmailConfig)
+            bindInstance FileConfig, config.get("/files", FileConfig)
             module HikariDataSourceFactory
             add HikariShutdownService.INSTANCE
 

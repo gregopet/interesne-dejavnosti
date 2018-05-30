@@ -1,6 +1,7 @@
 package si.francebevk.interesnedejavnosti
 
 import org.apache.commons.mail.DefaultAuthenticator
+import org.apache.commons.mail.EmailAttachment
 import org.apache.commons.mail.HtmlEmail
 import org.slf4j.LoggerFactory
 import si.francebevk.dto.Activity
@@ -17,7 +18,7 @@ object EmailDispatch {
     /**
      * Sends the invitation mail with the access code.
      */
-    fun sendWelcomeEmail(to: String, pupilName: String, pupilClass: String, accessCode: String, config: EmailConfig) {
+    fun sendWelcomeEmail(to: String, pupilName: String, pupilClass: String, accessCode: String, config: EmailConfig, fileConfig: FileConfig) {
         if (!skipEmails) {
             LOG.info("Sending welcome email to $to")
             val message = config.startNewMessage()
@@ -27,6 +28,12 @@ object EmailDispatch {
             message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS)))
             message.setHtmlMsg(WelcomeMailHtml.template(pupilName, pupilClass, accessCode).render().toString())
             message.setTextMsg(WelcomeMailPlain.template(pupilName, pupilClass, accessCode).render().toString())
+            message.attach(EmailAttachment().apply {
+                disposition = EmailAttachment.ATTACHMENT
+                description = "Katalog interesnih dejavnosti"
+                name = "Katalog-interesnih-dejavnosti_2018-2019.pdf"
+                path = fileConfig.cataloguePath
+            })
             message.send()
         }
     }
