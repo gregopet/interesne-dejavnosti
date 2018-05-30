@@ -8,6 +8,7 @@ package si.francebevk.interesnedejavnosti
  * @property port Port of the SMTP server
  * @property host Host of the SMTP server
  * @property ssl Use SSL to connect?
+ * @property startTls Use startTLS?
  */
 class EmailConfig(
     var username: String,
@@ -15,5 +16,6 @@ class EmailConfig(
     var from: String,
     var port: Int,
     var host: String,
-    var ssl: Boolean = true
+    var ssl: Boolean = true,
+    var startTls: Boolean = true
 )

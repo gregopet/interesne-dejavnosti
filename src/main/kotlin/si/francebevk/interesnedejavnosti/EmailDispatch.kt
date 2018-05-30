@@ -61,6 +61,7 @@ object EmailDispatch {
         it.setSmtpPort(port)
         it.setAuthenticator(DefaultAuthenticator(username, password))
         it.isSSLOnConnect = ssl
+        it.isStartTLSEnabled = startTls
         it.setFrom(from)
         it.setCharset("UTF-8")
     }
