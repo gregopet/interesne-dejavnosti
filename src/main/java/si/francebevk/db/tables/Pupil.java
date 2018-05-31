@@ -4,6 +4,7 @@
 package si.francebevk.db.tables;
 
 
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,7 +39,7 @@ import si.francebevk.db.tables.records.PupilRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Pupil extends TableImpl<PupilRecord> {
 
-    private static final long serialVersionUID = 1488935370;
+    private static final long serialVersionUID = -661709909;
 
     /**
      * The reference instance of <code>public.pupil</code>
@@ -107,6 +108,11 @@ public class Pupil extends TableImpl<PupilRecord> {
      * The column <code>public.pupil.email</code>. The contact email via which the pupil may be contacted
      */
     public final TableField<PupilRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.CLOB, this, "The contact email via which the pupil may be contacted");
+
+    /**
+     * The column <code>public.pupil.last_login</code>.
+     */
+    public final TableField<PupilRecord, OffsetDateTime> LAST_LOGIN = createField("last_login", org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE, this, "");
 
     /**
      * Create a <code>public.pupil</code> table reference

@@ -2,6 +2,7 @@ package si.francebevk.interesnedejavnosti
 
 import org.jooq.DSLContext
 import si.francebevk.db.Tables.PUPIL
+import java.time.OffsetDateTime
 
 object PupilDAO {
 
@@ -14,8 +15,10 @@ object PupilDAO {
 
     fun getPupilByCode(code: String, jooq: DSLContext) = with(PUPIL) {
         jooq
-        .selectFrom(PUPIL)
+        .update(PUPIL)
+        .set(PUPIL.LAST_LOGIN, OffsetDateTime.now())
         .where(ACCESS_CODE.eq(code))
+        .returning()
         .fetchOne()
     }
 

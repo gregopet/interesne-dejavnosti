@@ -1,0 +1,1 @@
+ALTER TABLE pupil ADD last_login timestamptz;
