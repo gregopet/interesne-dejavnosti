@@ -92,14 +92,12 @@ fetch("/state", { credentials: 'include' } )
                                     if (leaveTime == null || leaveTime < slot.to) {
                                         var fixedTimeHome = _.find(this.leaveTimeRange, function(t) { return t >= slot.to })
                                         this.conflicts = { activity: activity, day: slot.day, timeHome: leaveTime, timeActivity: slot.to, fixedTimeHome: fixedTimeHome }
-                                        console.log("SHOWING DIALOG")
                                         $('#conflictModal').modal({keyboard: false, backdrop: 'static'})
                                         return // process conflicts one by one!
                                     }
                                 }
                             }
                          }
-                         console.log("HIDING DIALOG")
                          $('#conflictModal').modal('hide') // no return? hide dialog, no conflicts
                     },
 
