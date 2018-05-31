@@ -206,7 +206,7 @@
 
     <div class="row mt-2">
         <div class="col-6">
-            <a href="/finish" class="btn btn-success btn-block" @@click.prevent="save()">Potrjujem vnos</a>
+            <button class="btn btn-success btn-block" @@click.prevent="save()" :disabled="formIsSending">Potrjujem vnos</button>
         </div>
         <div class="col-6">
             <a href="/logout" class="btn btn-danger btn-block" @@click.prevent="logout()">Prekinitev in odjava</a>

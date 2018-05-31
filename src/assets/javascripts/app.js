@@ -44,7 +44,8 @@ fetch("/state", { credentials: 'include' } )
                         thursday: state.thursday,
                         friday: state.friday
                     },
-                    conflicts: null //an array of time coflicts with following fields: activity, day, timeHome, leaveTime, timeActivity, fixedTimeHome (see confirmNoLeaveTimesActivityConflicts)
+                    conflicts: null, //an array of time coflicts with following fields: activity, day, timeHome, leaveTime, timeActivity, fixedTimeHome (see confirmNoLeaveTimesActivityConflicts)
+                    formIsSending: false
                 },
                 watch: {
                     // Check for conflicts when users change leave times
@@ -127,7 +128,7 @@ fetch("/state", { credentials: 'include' } )
                             thursday: this.leaveTimes.thursday,
                             friday: this.leaveTimes.friday
                          }
-
+                        this.formIsSending = true
 
                         fetch("/store", {
                             body: JSON.stringify(payload),
@@ -138,6 +139,7 @@ fetch("/state", { credentials: 'include' } )
                                 'content-type': 'application/json'
                             }
                         }).then(function(response) {
+                            this.formIsSending = false
                             if (response.status == 200) {
                                 window.location.href = "/finish"
                             }
