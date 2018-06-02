@@ -2,6 +2,7 @@ package si.francebevk.interesnedejavnosti
 
 import org.apache.commons.mail.DefaultAuthenticator
 import org.apache.commons.mail.EmailAttachment
+import org.apache.commons.mail.EmailConstants
 import org.apache.commons.mail.HtmlEmail
 import org.slf4j.LoggerFactory
 import si.francebevk.dto.Activity
@@ -15,6 +16,7 @@ object EmailDispatch {
     const val skipEmails = false
     const val skipCC = false
     const val SCHOOL_REPLY_ADDRESS = "prijave.osfblj@guest.arnes.si"
+    const val SCHOOL_REPLY_NAME = "OŠ Franceta Bevka - prijava popoldanskih aktivnosti"
 
     /**
      * Sends the invitation mail with the access code.
@@ -26,9 +28,9 @@ object EmailDispatch {
             val message = config.startNewMessage()
             message.subject = "OŠ Franceta Bevka: prijava interesnih dejavnosti za učenca/učenko $pupilName"
             message.addTo(to)
-            message.setFrom(SCHOOL_REPLY_ADDRESS)
+            message.setFrom(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)
             if (!skipCC) {
-                message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS)))
+                message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)))
             }
             message.setHtmlMsg(WelcomeMailHtml.template(pupilName, pupilClass, accessCode).render().toString())
             message.setTextMsg(WelcomeMailPlain.template(pupilName, pupilClass, accessCode).render().toString())
@@ -52,8 +54,8 @@ object EmailDispatch {
             val message = config.startNewMessage()
             message.subject = "OŠ Franceta Bevka: uspešna prijava interesnih dejavnosti za učenca/učenko $pupilName"
             message.addTo(to)
-            message.setFrom(SCHOOL_REPLY_ADDRESS)
-            message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS)))
+            message.setFrom(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)
+            message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)))
             message.setTextMsg(
                     ConfirmationMailPlain.template(pupilName, pupilClass, leaveTimes, leaveTimesRelevant, activities).render().toString()
             )
@@ -68,6 +70,6 @@ object EmailDispatch {
         it.isSSLOnConnect = ssl
         it.isStartTLSEnabled = startTls
         it.setFrom(from)
-        it.setCharset("UTF-8")
+        it.setCharset(EmailConstants.UTF_8)
     }
 }
