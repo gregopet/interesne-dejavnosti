@@ -14,5 +14,14 @@ class TimeSlot (
     var to: Short
 ) {
     override fun toString(): String =
-        "$day: ${from.minuteTimeFormat} - ${to.minuteTimeFormat}"
+        "$daySlovenian: ${from.minuteTimeFormat} - ${to.minuteTimeFormat}"
+
+    val daySlovenian get() = when (day) {
+        "monday"    -> "ponedeljek"
+        "tuesday"   -> "torek"
+        "wednesday" -> "sreda"
+        "thursday"  -> "četrtek"
+        "friday"    -> "petek"
+        else        -> day
+    }
 }
