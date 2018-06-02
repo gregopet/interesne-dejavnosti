@@ -90,8 +90,14 @@ fetch("/state", { credentials: 'include' } )
                                 for (var s = 0; s < activity.times.length; s++) {
                                     var slot = activity.times[s];
                                     var leaveTime = this.leaveTimes[slot.day]
-                                    if (leaveTime == null || leaveTime < slot.to) {
+
+                                    // fix discrepancy - last leave time is at 17:00 but activities last until 17:05! So we subtract 5 minutes - shouldn't harm with non-edge cases!
+                                    if (leaveTime == null || leaveTime < slot.to - 5) {
                                         var fixedTimeHome = _.find(this.leaveTimeRange, function(t) { return t >= slot.to })
+
+                                        // other fix required for discrepancy (selector for leaving times doesn't know about 17:05!)
+                                        if (fixedTimeHome == null && slot.to == 1025) fixedTimeHome = 1020
+
                                         this.conflicts = { activity: activity, day: slot.day, timeHome: leaveTime, timeActivity: slot.to, fixedTimeHome: fixedTimeHome }
                                         $('#conflictModal').modal({keyboard: false, backdrop: 'static'})
                                         return // process conflicts one by one!
