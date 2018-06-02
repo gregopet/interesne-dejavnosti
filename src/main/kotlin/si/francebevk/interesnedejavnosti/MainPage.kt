@@ -1,5 +1,6 @@
 package si.francebevk.interesnedejavnosti
 
+import org.slf4j.LoggerFactory
 import ratpack.func.Action
 import ratpack.handling.Chain
 import ratpack.handling.Context
@@ -17,6 +18,8 @@ import si.francebevk.ratpack.*
  * The main activity setting page.
  */
 object MainPage : Action<Chain> {
+
+    private val LOG = LoggerFactory.getLogger(MainPage::class.java)
 
     override fun execute(t: Chain) = t.route {
         get { html(it) }
@@ -67,6 +70,8 @@ object MainPage : Action<Chain> {
         val pupilId = ctx.user.id.toLong()
         val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
         val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }
+
+        LOG.info("Storing activities for pupil ${pupil.id}")
 
         try {
             await {
