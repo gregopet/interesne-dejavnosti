@@ -47,15 +47,19 @@ object Admin : Action<Chain> {
             .where(PUPIL.EMAIL.isNotNull)
             .orderBy(PUPIL.ID)
             .fetch { pupil ->
-                LOG.info("Sending welcome email to pupil ${pupil.getValue(PUPIL.ID)} ${pupil.getValue(PUPIL.NAME)} at email ${pupil.getValue(PUPIL.EMAIL)}")
-                EmailDispatch.sendWelcomeEmail(
-                    to = pupil.getValue(PUPIL.EMAIL),
-                    pupilName = pupil.getValue(PUPIL.NAME),
-                    accessCode = pupil.getValue(PUPIL.ACCESS_CODE),
-                    pupilClass = pupil.getValue(PUPIL.PUPIL_GROUP),
-                    config = emailConfig,
-                    fileConfig = fileConfig
-                )
+                if (pupil.getValue(PUPIL.EMAIL) != null) {
+                    LOG.info("Sending welcome email to pupil ${pupil.getValue(PUPIL.ID)} ${pupil.getValue(PUPIL.NAME)} at email ${pupil.getValue(PUPIL.EMAIL)}")
+                    EmailDispatch.sendWelcomeEmail(
+                            to = pupil.getValue(PUPIL.EMAIL),
+                            pupilName = pupil.getValue(PUPIL.NAME),
+                            accessCode = pupil.getValue(PUPIL.ACCESS_CODE),
+                            pupilClass = pupil.getValue(PUPIL.PUPIL_GROUP),
+                            config = emailConfig,
+                            fileConfig = fileConfig
+                    )
+                } else {
+                    LOG.warn("Not sending email for pupil ${pupil.getValue(PUPIL.ID)} because they have no email defined!")
+                }
             }
         }
         LOG.info("All emails sent!")
