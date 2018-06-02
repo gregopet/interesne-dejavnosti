@@ -66,6 +66,7 @@ object MainPage : Action<Chain> {
         val payload = ctx.parse(PupilSettings::class.java).await()
         val pupilId = ctx.user.id.toLong()
         val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
+        val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }
 
         try {
             await {
@@ -85,7 +86,7 @@ object MainPage : Action<Chain> {
             }.map { it.toDTO(true) }
             await {
                 EmailDispatch.sendConfirmationMail(
-                        "gregap@gmail.com",
+                        pupil.email,
                         ctx.pupilName,
                         ctx.pupilClass,
                         payload,
