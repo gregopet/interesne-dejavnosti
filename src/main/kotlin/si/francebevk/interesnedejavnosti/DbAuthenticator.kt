@@ -1,5 +1,6 @@
 package si.francebevk.interesnedejavnosti
 
+import com.google.common.util.concurrent.RateLimiter
 import org.jooq.DSLContext
 import org.pac4j.http.credentials.UsernamePasswordCredentials
 import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator
@@ -18,11 +19,15 @@ class DbAuthenticator(private val jooq: DSLContext) : UsernamePasswordAuthentica
         const val PUPIL_NAME = "PUPIL_NAME"
         const val PUPIL_CLASS = "PUPIL_CLASS"
 
+        /** Don't allow password attempts to be attempted too often - that way a password guesser can DDOS the server but cannot guess the password */
+        private val ATTEMPT_LIMITER = RateLimiter.create(10.0)
+
         private val LOG = LoggerFactory.getLogger(DbAuthenticator::class.java)
     }
 
     override fun validate(credentials: UsernamePasswordCredentials) = with (PUPIL) {
         LOG.trace("Validating code {}", credentials.password)
+        ATTEMPT_LIMITER.acquire(1)
         val user = PupilDAO.getPupilByCode(credentials.password.toLowerCase().trim(), jooq)
         when {
             user == null                                              -> throw AccountNotFoundException("Unknown user")
