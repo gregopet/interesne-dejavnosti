@@ -15,7 +15,7 @@
 		<append>true</append>
 		<immediateFlush>true</immediateFlush>
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%10.10thread] %-5level %-28.28logger{5} - %msg%n</pattern>
+			<pattern>%d{dd.MM HH:mm:ss.SSS} [%10.10thread] %-5level %-28.28logger{5} - %msg%n</pattern>
 		</encoder>
 	</appender>
 
