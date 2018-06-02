@@ -1,5 +1,6 @@
 package si.francebevk.interesnedejavnosti
 
+import com.google.common.util.concurrent.RateLimiter
 import org.apache.commons.mail.DefaultAuthenticator
 import org.apache.commons.mail.EmailAttachment
 import org.apache.commons.mail.EmailConstants
@@ -17,6 +18,8 @@ object EmailDispatch {
     const val skipCC = false
     const val SCHOOL_REPLY_ADDRESS = "prijave.osfblj@guest.arnes.si"
     const val SCHOOL_REPLY_NAME = "OŠ Franceta Bevka - prijava popoldanskih aktivnosti"
+
+    private val rateLimit = RateLimiter.create(10.0)
 
     /**
      * Sends the invitation mail with the access code.
@@ -40,6 +43,7 @@ object EmailDispatch {
                 name = "Katalog-interesnih-dejavnosti_2018-2019.pdf"
                 path = fileConfig.cataloguePath
             })
+            rateLimit.acquire()
             message.send()
             LOG.info("Email was sent!")
         }
@@ -59,6 +63,7 @@ object EmailDispatch {
             message.setTextMsg(
                     ConfirmationMailPlain.template(pupilName, pupilClass, leaveTimes, leaveTimesRelevant, activities).render().toString()
             )
+            rateLimit.acquire()
             message.send()
         }
     }
