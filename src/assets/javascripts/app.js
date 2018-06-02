@@ -168,9 +168,16 @@ fetch("/state", { credentials: 'include' } )
             function checkVacancy() {
                 fetch("/vacancy", {
                     credentials: 'include',
-                    cache: 'no-cache'
+                    cache: 'no-cache',
+                    headers: new Headers({
+                        "X-Requested-With": "XMLHttpRequest"
+                    })
                 }).then(function(response) {
-                    if (response.status == 200) {
+                    if (response.status == 401) {
+                        alert("Žal je prišlo do neznane napake, vaša seja je bila prekinjena! Prosimo vas, da se ponovno prijavite!")
+                        window.location.href = "/login-form"
+                    }
+                    else if (response.status == 200) {
                         response.json().then(function(payload) {
                             _.each(app.groups, function(act) {
                                 var status = _.find(payload, function(p) { return p.id == act.id })
