@@ -100,7 +100,7 @@ fetch("/state", { credentials: 'include' } )
                     },
                     // returns true if there were no conflicts
                     confirmNoLeaveTimesActivityConflicts: function() {
-                        if (!this.extendedStay) return true;
+                        if (!this.extendedStayPossible) return true;
 
                          // go through all selected activities
                          for (var a = 0; a < this.pupilGroups.length; a++) {
@@ -110,7 +110,7 @@ fetch("/state", { credentials: 'include' } )
                             if (activity.times) {
                                 for (var s = 0; s < activity.times.length; s++) {
                                     var slot = activity.times[s];
-                                    var leaveTime = this.leaveTimes[slot.day]
+                                    var leaveTime = this.extendedStay ? this.leaveTimes[slot.day] : null;
 
                                     // fix discrepancy - last leave time is at 17:00 but activities last until 17:05! So we subtract 5 minutes - shouldn't harm with non-edge cases!
                                     if (leaveTime == null || leaveTime < slot.to - 5) {
@@ -138,6 +138,9 @@ fetch("/state", { credentials: 'include' } )
                     },
                     resolveConflictUpdateLeaveTime: function(day, leaveTime) {
                         this.leaveTimes[day] = leaveTime
+                        if (this.extendedStayPossible) {
+                            this.extendedStay = true
+                        }
 
                         // check for further conflicts
                         this.confirmNoLeaveTimesActivityConflicts()
