@@ -122,6 +122,8 @@ object MainPage : Action<Chain> {
             await {
                 EmailDispatch.sendConfirmationMail(
                         pupil.emails,
+                        pupilId,
+                        ctx.jooq,
                         ctx.pupilName,
                         translatePupilClass(ctx.pupilClass, klass.year),
                         payload,

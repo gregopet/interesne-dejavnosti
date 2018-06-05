@@ -7,6 +7,7 @@ package si.francebevk.db;
 import javax.annotation.Generated;
 
 import si.francebevk.db.tables.Activity;
+import si.francebevk.db.tables.ErrorLog;
 import si.francebevk.db.tables.Pupil;
 import si.francebevk.db.tables.PupilActivity;
 import si.francebevk.db.tables.PupilGroup;
@@ -29,6 +30,11 @@ public class Tables {
      * Contains activities children can participate in
      */
     public static final Activity ACTIVITY = si.francebevk.db.tables.Activity.ACTIVITY;
+
+    /**
+     * Contains errors that may have happened during the process
+     */
+    public static final ErrorLog ERROR_LOG = si.francebevk.db.tables.ErrorLog.ERROR_LOG;
 
     /**
      * Contains a single pupil

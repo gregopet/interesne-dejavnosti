@@ -5,7 +5,9 @@ import org.apache.commons.mail.DefaultAuthenticator
 import org.apache.commons.mail.EmailAttachment
 import org.apache.commons.mail.EmailConstants
 import org.apache.commons.mail.HtmlEmail
+import org.jooq.DSLContext
 import org.slf4j.LoggerFactory
+import si.francebevk.db.Tables.ERROR_LOG
 import si.francebevk.dto.Activity
 import si.francebevk.dto.PupilSettings
 import javax.mail.internet.InternetAddress
@@ -26,7 +28,7 @@ object EmailDispatch {
      *
      * Example call: http -f POST http://localhost:5050/admin/welcome-emails password='Aslkjnm234lk2j3mnsdf2342d34212nmfskldjfljgh4A'
      */
-    fun sendWelcomeEmail(to: Array<String>, pupilName: String, pupilClass: String, accessCode: String, leaveTimesRelevant: Boolean, config: EmailConfig, fileConfig: FileConfig) {
+    fun sendWelcomeEmail(to: Array<String>,  pupilId: Long, jooq: DSLContext, pupilName: String, pupilClass: String, accessCode: String, leaveTimesRelevant: Boolean, config: EmailConfig, fileConfig: FileConfig) {
         if (!skipEmails) {
             try {
                 val message = config.startNewMessage()
@@ -53,6 +55,7 @@ object EmailDispatch {
                 LOG.info("Email was sent!")
             } catch (ex: Exception) {
                 LOG.error("Error sending welcome email to ${to.joinToString()}", ex)
+                logError(pupilId, jooq, ex)
             }
         }
     }
@@ -60,7 +63,7 @@ object EmailDispatch {
     /**
      * Sends the confirmation mail once people have finished editing the page.
      */
-    fun sendConfirmationMail(to: Array<String>, pupilName: String, pupilClass: String, leaveTimes: PupilSettings, activities: List<Activity>, leaveTimesRelevant: Boolean, config: EmailConfig) {
+    fun sendConfirmationMail(to: Array<String>, pupilId: Long, jooq: DSLContext, pupilName: String, pupilClass: String, leaveTimes: PupilSettings, activities: List<Activity>, leaveTimesRelevant: Boolean, config: EmailConfig) {
         if (!skipEmails) {
             try {
                 LOG.info("Sending confirmation email to ${to.joinToString()}")
@@ -80,9 +83,18 @@ object EmailDispatch {
                 message.send()
             } catch (ex: Exception) {
                 LOG.error("Error sending confirmation mail to ${to.joinToString()}", ex)
+                logError(pupilId, jooq, ex)
             }
         }
     }
+
+    private fun logError(pupilId: Long, jooq: DSLContext, ex: Exception) = with(ERROR_LOG) {
+        jooq.insertInto(ERROR_LOG)
+        .set(PUPIL_ID, pupilId)
+        .set(MESSAGE, ex.message)
+        .execute()
+    }
+
 
     private fun EmailConfig.startNewMessage() = HtmlEmail().also {
         it.hostName = host
