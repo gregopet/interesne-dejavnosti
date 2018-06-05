@@ -58,7 +58,7 @@ object EmailDispatch {
      */
     fun sendConfirmationMail(to: Array<String>, pupilName: String, pupilClass: String, leaveTimes: PupilSettings, activities: List<Activity>, leaveTimesRelevant: Boolean, config: EmailConfig) {
         if (!skipEmails) {
-            LOG.info("Sending confirmation email to $to")
+            LOG.info("Sending confirmation email to ${to.joinToString()}")
             val message = config.startNewMessage()
             message.subject = if (leaveTimesRelevant) {
                 "Uspešna prijava v podaljšano bivanje in na interesne dejavnosti za učenca/učenko $pupilName"
