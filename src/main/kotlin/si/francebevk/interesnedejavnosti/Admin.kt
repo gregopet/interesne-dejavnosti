@@ -52,13 +52,13 @@ object Admin : Action<Chain> {
                 if (pupil.getValue(PUPIL.EMAILS).isNotEmpty()) {
                     LOG.info("Sending welcome email to pupil ${pupil.getValue(PUPIL.ID)} ${pupil.getValue(PUPIL.NAME)} at emails ${pupil.getValue(PUPIL.EMAILS).joinToString()}")
                     EmailDispatch.sendWelcomeEmail(
-                            to = pupil.getValue(PUPIL.EMAILS),
-                            pupilName = pupil.getValue(PUPIL.NAME),
-                            accessCode = pupil.getValue(PUPIL.ACCESS_CODE),
-                            pupilClass = pupil.getValue(PUPIL.PUPIL_GROUP),
-                            leaveTimesRelevant = MainPage.leaveTimesRelevant(pupil.getValue(PUPIL_GROUP.YEAR)),
-                            config = emailConfig,
-                            fileConfig = fileConfig
+                        to = pupil.getValue(PUPIL.EMAILS),
+                        pupilName = pupil.getValue(PUPIL.NAME),
+                        accessCode = pupil.getValue(PUPIL.ACCESS_CODE),
+                        pupilClass = MainPage.translatePupilClass(pupil.getValue(PUPIL.PUPIL_GROUP), pupil.getValue(PUPIL_GROUP.YEAR)),
+                        leaveTimesRelevant = MainPage.leaveTimesRelevant(pupil.getValue(PUPIL_GROUP.YEAR)),
+                        config = emailConfig,
+                        fileConfig = fileConfig
                     )
                 } else {
                     LOG.warn("Not sending email for pupil ${pupil.getValue(PUPIL.ID)} because they have no email defined!")

@@ -58,10 +58,13 @@ object MainPage : Action<Chain> {
     /** Are the leave times relevant for children going to this year */
     fun leaveTimesRelevant(year: Short) = year < 6
 
+    /** Translates the pupil's class if the proper name can't be used directly */
+    fun translatePupilClass(name: String, year: Short) = if (year > 1) name else "prvi razred"
+
     private fun html(ctx: Context) = ctx.async {
         val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }
         val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
-        ctx.render(Main.template(pupil.name, pupil.pupilGroup, leaveTimesRelevant(klass.year)))
+        ctx.render(Main.template(pupil.name, translatePupilClass(pupil.pupilGroup, klass.year), leaveTimesRelevant(klass.year)))
     }
 
     private fun endHtml(ctx: Context) {
@@ -120,7 +123,7 @@ object MainPage : Action<Chain> {
                 EmailDispatch.sendConfirmationMail(
                         pupil.emails,
                         ctx.pupilName,
-                        ctx.pupilClass,
+                        translatePupilClass(ctx.pupilClass, klass.year),
                         payload,
                         pupilActivities,
                         leaveTimesRelevant(klass.year),
