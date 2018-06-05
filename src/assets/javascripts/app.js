@@ -37,6 +37,7 @@ fetch("/state", { credentials: 'include' } )
                     currentGroup: sortedActivities[0],
                     pupilGroups: _.filter(state.activities, function(group) { return group.chosen }),
                     extendedStay: state.extendedStay,
+                    extendedStayPossible: !!document.getElementById('extended-stay-card'),
                     leaveTimes: {
                         monday: state.monday,
                         tuesday: state.tuesday,
