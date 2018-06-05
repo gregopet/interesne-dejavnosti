@@ -13,6 +13,10 @@ import si.francebevk.dto.PupilSettings
 import si.francebevk.dto.PupilState
 import si.francebevk.dto.TimeSlot
 import si.francebevk.ratpack.*
+import java.time.*
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.*
 
 /**
  * The main activity setting page.
@@ -20,6 +24,28 @@ import si.francebevk.ratpack.*
 object MainPage : Action<Chain> {
 
     private val LOG = LoggerFactory.getLogger(MainPage::class.java)
+
+    private val START_DATE = ZonedDateTime.of(LocalDateTime.of(LocalDate.of(2018, 6, 8), LocalTime.NOON), ZoneId.of("Europe/Ljubljana"))
+    private val END_DATE = ZonedDateTime.of(LocalDateTime.of(LocalDate.of(2018, 6, 15), LocalTime.NOON), ZoneId.of("Europe/Ljubljana"))
+
+    /** A formatted description of the date when the application opens */
+    val formattedStartDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.forLanguageTag("sl")).format(START_DATE)
+
+    /** A formatted description of the time when the application opens */
+    val formattedStartTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.forLanguageTag("sl")).format(START_DATE)
+
+    /** A formatted description of the date when the application closes */
+    val formattedEndDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.forLanguageTag("sl")).format(END_DATE)
+
+    /** A formatted description of the time when the application closes */
+    val formattedEndTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.forLanguageTag("sl")).format(END_DATE)
+
+    /** Are we still before the start date? */
+    val isBeforeStart get() = START_DATE.isAfter(ZonedDateTime.now())
+
+    /** Are we already after the end date? */
+    val isAfterEnd get() = END_DATE.isBefore(ZonedDateTime.now())
+
 
     override fun execute(t: Chain) = t.route {
         get { html(it) }

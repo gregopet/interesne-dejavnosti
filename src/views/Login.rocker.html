@@ -1,4 +1,4 @@
-@args(String message)
+@args(String message, String openDate, String openHour, String closeDate, String closeHour)
 <!doctype html>
 
 <html lang="en">
@@ -32,6 +32,20 @@
 	
 	<section class="pt-3">
 		<div class="container">
+		@if (openDate != null && openHour != null) {
+			<h3 class="text-center">
+				Prijave se bodo pričele @openDate ob @openHour.
+			</h3>
+			<p class="text-center">
+				Prosimo vas, da stran ponovno obiščete po tem času.
+			</p>
+		}
+		else if (closeDate != null && closeHour != null) {
+			<h3 class="text-center">
+				Čas za prijavo je potekel @closeDate ob @closeHour.
+			</h3>
+		}
+		else {
 			<form class="form" action="/login" method="POST">
 				<input type="hidden" name="client_name" value="FormClient">
 				<input type="hidden" name="username" value="username_stub">
@@ -48,6 +62,7 @@
 					<button class="btn btn-primary">Vstop</button>
 				</p>
 			</form>
+		}
 		</div>
 	</section>
 	

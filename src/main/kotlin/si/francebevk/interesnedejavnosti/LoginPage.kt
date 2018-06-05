@@ -27,6 +27,12 @@ object LoginPage : Handler {
                 LOG.error("Authentication error ${ctx.request.queryParams["error"]}")
             }
         }
-        ctx.render(Login.template(message))
+
+        val beforeStart = if (MainPage.isBeforeStart) MainPage.formattedStartDate else null
+        val beforeStartHour = if (MainPage.isBeforeStart) MainPage.formattedStartTime else null
+        val afterEnd = if (MainPage.isAfterEnd) MainPage.formattedEndDate else null
+        val afterEndHour = if (MainPage.isAfterEnd) MainPage.formattedEndTime else null
+
+        ctx.render(Login.template(message, beforeStart, beforeStartHour, afterEnd, afterEndHour))
     }
 }
