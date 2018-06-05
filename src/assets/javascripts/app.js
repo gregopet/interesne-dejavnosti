@@ -32,12 +32,26 @@ fetch("/state", { credentials: 'include' } )
             var app = new Vue({
                 el: '#app',
                 data: {
+
+                    // Times students can pick as leave times
                     leaveTimeRange: [775, 825, 875, 930, 980, 1020],
+
+                    // Total range of available activities
                     groups: sortedActivities,
+
+                    // What activity is currently displayed in the UI?
                     currentGroup: sortedActivities[0],
+
+                    // What activities did the pupil already select?
                     pupilGroups: _.filter(state.activities, function(group) { return group.chosen }),
+
+                    // Is pupil staying in extended stay (explicit consent..)
                     extendedStay: state.extendedStay,
+
+                    // Is pupil still young enough to be able to be in extended stay?
                     extendedStayPossible: !!document.getElementById('extended-stay-card'),
+
+                    // What leave times did the student have pre-selected?
                     leaveTimes: {
                         monday: state.monday,
                         tuesday: state.tuesday,
@@ -45,7 +59,13 @@ fetch("/state", { credentials: 'include' } )
                         thursday: state.thursday,
                         friday: state.friday
                     },
-                    conflicts: null, //an array of time coflicts with following fields: activity, day, timeHome, leaveTime, timeActivity, fixedTimeHome (see confirmNoLeaveTimesActivityConflicts)
+
+                    // Are we currently displaying a conflict?
+                    // Contains an array of time coflicts with following fields: activity, day, timeHome, leaveTime,
+                    // timeActivity, fixedTimeHome (see confirmNoLeaveTimesActivityConflicts)
+                    conflicts: null,
+
+                    // Should the buttons be blocked because the form is still processing?
                     formIsSending: false
                 },
                 watch: {
