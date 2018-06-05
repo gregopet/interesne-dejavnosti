@@ -28,28 +28,32 @@ object EmailDispatch {
      */
     fun sendWelcomeEmail(to: Array<String>, pupilName: String, pupilClass: String, accessCode: String, leaveTimesRelevant: Boolean, config: EmailConfig, fileConfig: FileConfig) {
         if (!skipEmails) {
-            val message = config.startNewMessage()
-            message.subject = if (leaveTimesRelevant) {
-                "Prijava v podaljšano bivanje in na interesne dejavnosti za učenca/učenko $pupilName"
-            } else {
-                "Prijava na interesne dejavnosti za učenca/učenko $pupilName"
+            try {
+                val message = config.startNewMessage()
+                message.subject = if (leaveTimesRelevant) {
+                    "Prijava v podaljšano bivanje in na interesne dejavnosti za učenca/učenko $pupilName"
+                } else {
+                    "Prijava na interesne dejavnosti za učenca/učenko $pupilName"
+                }
+                message.addTo(*to)
+                message.setFrom(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)
+                if (!skipCC) {
+                    message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)))
+                }
+                message.setHtmlMsg(WelcomeMailHtml.template(pupilName, pupilClass, accessCode).render().toString())
+                message.setTextMsg(WelcomeMailPlain.template(pupilName, pupilClass, accessCode).render().toString())
+                message.attach(EmailAttachment().apply {
+                    disposition = EmailAttachment.ATTACHMENT
+                    description = "Katalog interesnih dejavnosti"
+                    name = "Katalog-interesnih-dejavnosti_2018-2019.pdf"
+                    path = fileConfig.cataloguePath
+                })
+                rateLimit.acquire()
+                message.send()
+                LOG.info("Email was sent!")
+            } catch (ex: Exception) {
+                LOG.error("Error sending welcome email to ${to.joinToString()}", ex)
             }
-            message.addTo(*to)
-            message.setFrom(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)
-            if (!skipCC) {
-                message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)))
-            }
-            message.setHtmlMsg(WelcomeMailHtml.template(pupilName, pupilClass, accessCode).render().toString())
-            message.setTextMsg(WelcomeMailPlain.template(pupilName, pupilClass, accessCode).render().toString())
-            message.attach(EmailAttachment().apply {
-                disposition = EmailAttachment.ATTACHMENT
-                description = "Katalog interesnih dejavnosti"
-                name = "Katalog-interesnih-dejavnosti_2018-2019.pdf"
-                path = fileConfig.cataloguePath
-            })
-            rateLimit.acquire()
-            message.send()
-            LOG.info("Email was sent!")
         }
     }
 
@@ -58,21 +62,25 @@ object EmailDispatch {
      */
     fun sendConfirmationMail(to: Array<String>, pupilName: String, pupilClass: String, leaveTimes: PupilSettings, activities: List<Activity>, leaveTimesRelevant: Boolean, config: EmailConfig) {
         if (!skipEmails) {
-            LOG.info("Sending confirmation email to ${to.joinToString()}")
-            val message = config.startNewMessage()
-            message.subject = if (leaveTimesRelevant) {
-                "Uspešna prijava v podaljšano bivanje in na interesne dejavnosti za učenca/učenko $pupilName"
-            } else {
-                "Uspešna prijava na interesne dejavnosti za učenca/učenko $pupilName"
+            try {
+                LOG.info("Sending confirmation email to ${to.joinToString()}")
+                val message = config.startNewMessage()
+                message.subject = if (leaveTimesRelevant) {
+                    "Uspešna prijava v podaljšano bivanje in na interesne dejavnosti za učenca/učenko $pupilName"
+                } else {
+                    "Uspešna prijava na interesne dejavnosti za učenca/učenko $pupilName"
+                }
+                message.addTo(*to)
+                message.setFrom(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)
+                message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)))
+                message.setTextMsg(
+                        ConfirmationMailPlain.template(pupilName, pupilClass, leaveTimes, leaveTimesRelevant, activities).render().toString()
+                )
+                rateLimit.acquire()
+                message.send()
+            } catch (ex: Exception) {
+                LOG.error("Error sending confirmation mail to ${to.joinToString()}", ex)
             }
-            message.addTo(*to)
-            message.setFrom(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)
-            message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)))
-            message.setTextMsg(
-                    ConfirmationMailPlain.template(pupilName, pupilClass, leaveTimes, leaveTimesRelevant, activities).render().toString()
-            )
-            rateLimit.acquire()
-            message.send()
         }
     }
 
