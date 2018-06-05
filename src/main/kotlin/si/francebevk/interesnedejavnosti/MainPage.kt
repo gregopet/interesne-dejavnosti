@@ -92,7 +92,7 @@ object MainPage : Action<Chain> {
             }.map { it.toDTO(true) }
             await {
                 EmailDispatch.sendConfirmationMail(
-                        pupil.email,
+                        pupil.emails,
                         ctx.pupilName,
                         ctx.pupilClass,
                         payload,

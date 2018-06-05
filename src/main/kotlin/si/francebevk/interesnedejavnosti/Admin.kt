@@ -1,5 +1,6 @@
 package si.francebevk.interesnedejavnosti
 
+import org.jooq.util.postgres.PostgresDSL
 import org.slf4j.LoggerFactory
 import ratpack.form.Form
 import ratpack.func.Action
@@ -43,16 +44,15 @@ object Admin : Action<Chain> {
         val emailConfig = ctx.get(EmailConfig::class.java)
         val fileConfig = ctx.get(FileConfig::class.java)
         await {
-            ctx.jooq.select(PUPIL.ID, PUPIL.EMAIL, PUPIL.ACCESS_CODE, PUPIL.NAME, PUPIL.PUPIL_GROUP, PUPIL_GROUP.YEAR)
+            ctx.jooq.select(PUPIL.ID, PUPIL.EMAILS, PUPIL.ACCESS_CODE, PUPIL.NAME, PUPIL.PUPIL_GROUP, PUPIL_GROUP.YEAR)
             .from(PUPIL)
             .join(PUPIL_GROUP).on(PUPIL.PUPIL_GROUP.eq(PUPIL_GROUP.NAME))
-            .where(PUPIL.EMAIL.isNotNull)
             .orderBy(PUPIL.ID)
             .fetch { pupil ->
-                if (pupil.getValue(PUPIL.EMAIL) != null) {
-                    LOG.info("Sending welcome email to pupil ${pupil.getValue(PUPIL.ID)} ${pupil.getValue(PUPIL.NAME)} at email ${pupil.getValue(PUPIL.EMAIL)}")
+                if (pupil.getValue(PUPIL.EMAILS).isNotEmpty()) {
+                    LOG.info("Sending welcome email to pupil ${pupil.getValue(PUPIL.ID)} ${pupil.getValue(PUPIL.NAME)} at emails ${pupil.getValue(PUPIL.EMAILS).joinToString()}")
                     EmailDispatch.sendWelcomeEmail(
-                            to = pupil.getValue(PUPIL.EMAIL),
+                            to = pupil.getValue(PUPIL.EMAILS),
                             pupilName = pupil.getValue(PUPIL.NAME),
                             accessCode = pupil.getValue(PUPIL.ACCESS_CODE),
                             pupilClass = pupil.getValue(PUPIL.PUPIL_GROUP),

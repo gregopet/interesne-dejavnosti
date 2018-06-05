@@ -39,7 +39,7 @@ import si.francebevk.db.tables.records.PupilRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Pupil extends TableImpl<PupilRecord> {
 
-    private static final long serialVersionUID = -661709909;
+    private static final long serialVersionUID = 228732914;
 
     /**
      * The reference instance of <code>public.pupil</code>
@@ -105,14 +105,14 @@ public class Pupil extends TableImpl<PupilRecord> {
     public final TableField<PupilRecord, Short> LEAVE_FRI = createField("leave_fri", org.jooq.impl.SQLDataType.SMALLINT, this, "Indicates the minutes of day at which pupil will leave school on friday (null means student is not participating on that day)");
 
     /**
-     * The column <code>public.pupil.email</code>. The contact email via which the pupil may be contacted
-     */
-    public final TableField<PupilRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.CLOB, this, "The contact email via which the pupil may be contacted");
-
-    /**
      * The column <code>public.pupil.last_login</code>.
      */
     public final TableField<PupilRecord, OffsetDateTime> LAST_LOGIN = createField("last_login", org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE, this, "");
+
+    /**
+     * The column <code>public.pupil.emails</code>. All the emails to which messages for this pupil should be sent
+     */
+    public final TableField<PupilRecord, String[]> EMAILS = createField("emails", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "All the emails to which messages for this pupil should be sent");
 
     /**
      * Create a <code>public.pupil</code> table reference
