@@ -64,7 +64,7 @@ object MainPage : Action<Chain> {
     private fun html(ctx: Context) = ctx.async {
         val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }
         val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
-        ctx.render(Main.template(pupil.name, translatePupilClass(pupil.pupilGroup, klass.year), leaveTimesRelevant(klass.year)))
+        ctx.render(Main.template(pupil.name, translatePupilClass(pupil.pupilGroup, klass.year), leaveTimesRelevant(klass.year), formattedEndDate, formattedEndTime))
     }
 
     private fun endHtml(ctx: Context) {

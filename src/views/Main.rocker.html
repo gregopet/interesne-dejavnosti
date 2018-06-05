@@ -1,4 +1,4 @@
-@args(String pupilName, String pupilClass, Boolean pupilHasExtendedStay)
+@args(String pupilName, String pupilClass, Boolean pupilHasExtendedStay, String closeDate, String closeHour)
 <!doctype html>
 
 <html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
@@ -44,7 +44,7 @@
     </noscript>
 
     <div class="alert alert-warning" role="alert">
-        Vnešene podatke lahko naknadno še spremenite, prosimo pa vas, da s popravki zaključite do <strong>12. ure v ponedeljek, 11. 6. 2018</strong>!
+        Vnešene podatke lahko naknadno še spremenite, prosimo pa vas, da s popravki zaključite do <strong>@closeDate ob @closeHour</strong>!
         Po tem datumu bodo morebitne spremembe mogoče samo še z izrecnim soglasjem šole!
     </div>
 
