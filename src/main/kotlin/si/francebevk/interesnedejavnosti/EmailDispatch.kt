@@ -17,7 +17,7 @@ object EmailDispatch {
     const val skipEmails = false
     const val skipCC = false
     const val SCHOOL_REPLY_ADDRESS = "prijave.osfblj@guest.arnes.si"
-    const val SCHOOL_REPLY_NAME = "OŠ Franceta Bevka - prijava popoldanskih aktivnosti"
+    const val SCHOOL_REPLY_NAME = "OŠ Franceta Bevka"
 
     private val rateLimit = RateLimiter.create(10.0)
 
