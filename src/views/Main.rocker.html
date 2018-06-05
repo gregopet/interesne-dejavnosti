@@ -167,17 +167,17 @@
                                 <small v-if="currentGroup.cost" class="text-danger">Cena: {{ currentGroup.cost }}</small>
                             </p>
 
-                            <div>
-                                <paragraphs :text="currentGroup.description"></paragraphs>
-                            </div>
-
                             <div v-if="currentGroup.times.length">
-                                <h5>Termini:</h5>
+                                <h6>Termini:</h6>
                                 <ul>
                                     <li v-if="currentGroup.times" v-for="(times, day) in currentGroup.times">
                                         {{ times.day | day }}, {{ times.from | minuteTime }} - {{ times.to | minuteTime }}
                                     </li>
                                 </ul>
+                            </div>
+
+                            <div>
+                                <paragraphs :text="currentGroup.description"></paragraphs>
                             </div>
                         </div>
                     </div>
