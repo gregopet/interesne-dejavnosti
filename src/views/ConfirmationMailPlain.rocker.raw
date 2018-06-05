@@ -1,9 +1,9 @@
 @import si.francebevk.dto.*
 @import java.util.List
 @args(String pupilName, String pupilClass, PupilSettings leaveTimes, Boolean leaveTimesRelevant, List<Activity> activities)
-Pozdravljeni,
+Spoštovani,
 
-vaša prijava interesnih dejavnosti ter časov odhodov domov za učenca/učenko @pupilName je bila sprejeta. Za vašo evidenco vam pošiljamo kopijo vnešenega.
+vaša prijava v podaljšano bivanje in na interesne dejavnosti za učenca/učenko @pupilName je bila sprejeta. Za vašo evidenco vam pošiljamo kopijo vnešenega.
 
 @if (leaveTimesRelevant) { @if (leaveTimes.getExtendedStay())
 {
@@ -26,3 +26,6 @@ Izbrali ste naslednje interesne dejavnosti:
 }
 
 Zahvaljujemo se vam za sodelovanje in vam želimo uspešen zaključek šolskega leta!
+
+Lep pozdrav
+Barbara Kampjut, ravnateljica

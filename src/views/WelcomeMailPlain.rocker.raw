@@ -1,14 +1,14 @@
 @args(String pupilName, String pupilClass, String securityCode)
-Pozdravljeni,
+Spoštovani,
 
 v šolskem letu 2018/2019 smo za vas pripravili nov sistem elektronske prijave popoldanskih aktivnosti za vaše otroke.
 
-Do prijave interesnih dejavnosti dostopate tako, da v brskalniku odprete spletno stran https://ind.francebevk.si - za vstop potrebujete samo osebno varnostno kodo:
+Do prijave v podaljšano bivanje in na interesne dejavnosti dostopate tako, da v brskalniku odprete spletno stran https://ind.francebevk.si - za vstop potrebujete samo osebno varnostno kodo:
 
 @securityCode
 
-Varnostno kopijo prilepite v vnosno polje na spletni strani in sledite navodilom. Ko boste končali z vnašanjem podatkov za vašega otroka, vam bo sistem za vašo evidenco poslal še elektronsko sporočilo s popisom izbranih dejavnosti.
+Varnostno kodo prilepite v vnosno polje na spletni strani in sledite navodilom. Ko boste končali z vnašanjem podatkov za vašega otroka, vam bo sistem za vašo evidenco poslal še elektronsko sporočilo s popisom izbranih dejavnosti.
 
 
-S spoštovanjem,
+Lep pozdrav
 Barbara Kampjut, ravnateljica
