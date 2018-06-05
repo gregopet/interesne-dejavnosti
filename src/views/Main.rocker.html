@@ -72,7 +72,6 @@
                     <label for="pon" class="col-sm-2 col-form-label col-form-label-sm">Ponedeljek</label>
                     <div class="col-sm-10">
                         <select class="form-control form-control-sm" id="pon" v-model="leaveTimes.monday">
-                            <option v-bind:value="null">Otrok ni vključen v podaljšano bivanje</option>
                             <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
                         </select>
                     </div>
@@ -81,7 +80,6 @@
                     <label for="tor" class="col-sm-2 col-form-label col-form-label-sm">Torek</label>
                     <div class="col-sm-10">
                         <select class="form-control form-control-sm" id="tor" v-model="leaveTimes.tuesday">
-                            <option v-bind:value="null">Otrok ni vključen v podaljšano bivanje</option>
                             <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
                         </select>
                     </div>
@@ -90,7 +88,6 @@
                     <label for="sre" class="col-sm-2 col-form-label col-form-label-sm">Sreda</label>
                     <div class="col-sm-10">
                         <select class="form-control form-control-sm" id="sre" v-model="leaveTimes.wednesday">
-                            <option v-bind:value="null">Otrok ni vključen v podaljšano bivanje</option>
                             <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
                         </select>
                     </div>
@@ -99,7 +96,6 @@
                     <label for="cet" class="col-sm-2 col-form-label col-form-label-sm">Četrtek</label>
                     <div class="col-sm-10">
                         <select class="form-control form-control-sm" id="cet" v-model="leaveTimes.thursday">
-                            <option v-bind:value="null">Otrok ni vključen v podaljšano bivanje</option>
                             <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
                         </select>
                     </div>
@@ -108,7 +104,6 @@
                     <label for="pet" class="col-sm-2 col-form-label col-form-label-sm">Petek</label>
                     <div class="col-sm-10">
                         <select class="form-control form-control-sm" id="pet" v-model="leaveTimes.friday">
-                            <option v-bind:value="null">Otrok ni vključen v podaljšano bivanje</option>
                             <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
                         </select>
                     </div>

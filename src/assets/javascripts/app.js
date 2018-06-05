@@ -27,14 +27,14 @@ fetch("/state", { credentials: 'include' } )
                 act.freePlaces = 3
                 act.currentlyMine = null
             })
-
+            var leaveTimeRange = [775, 825, 875, 930, 980, 1020]
 
             var app = new Vue({
                 el: '#app',
                 data: {
 
                     // Times students can pick as leave times
-                    leaveTimeRange: [775, 825, 875, 930, 980, 1020],
+                    leaveTimeRange: leaveTimeRange,
 
                     // Total range of available activities
                     groups: sortedActivities,
@@ -53,11 +53,11 @@ fetch("/state", { credentials: 'include' } )
 
                     // What leave times did the student have pre-selected?
                     leaveTimes: {
-                        monday: state.monday,
-                        tuesday: state.tuesday,
-                        wednesday: state.wednesday,
-                        thursday: state.thursday,
-                        friday: state.friday
+                        monday: state.monday || leaveTimeRange[0],
+                        tuesday: state.tuesday || leaveTimeRange[0],
+                        wednesday: state.wednesday || leaveTimeRange[0],
+                        thursday: state.thursday || leaveTimeRange[0],
+                        friday: state.friday || leaveTimeRange[0]
                     },
 
                     // Are we currently displaying a conflict?
