@@ -6,6 +6,7 @@ import ratpack.func.Action
 import ratpack.handling.Chain
 import ratpack.handling.Context
 import si.francebevk.db.Tables.PUPIL
+import si.francebevk.db.Tables.PUPIL_GROUP
 import si.francebevk.ratpack.async
 import si.francebevk.ratpack.await
 import si.francebevk.ratpack.jooq
@@ -42,8 +43,9 @@ object Admin : Action<Chain> {
         val emailConfig = ctx.get(EmailConfig::class.java)
         val fileConfig = ctx.get(FileConfig::class.java)
         await {
-            ctx.jooq.select(PUPIL.ID, PUPIL.EMAIL, PUPIL.ACCESS_CODE, PUPIL.NAME, PUPIL.PUPIL_GROUP)
+            ctx.jooq.select(PUPIL.ID, PUPIL.EMAIL, PUPIL.ACCESS_CODE, PUPIL.NAME, PUPIL.PUPIL_GROUP, PUPIL_GROUP.YEAR)
             .from(PUPIL)
+            .join(PUPIL_GROUP).on(PUPIL.PUPIL_GROUP.eq(PUPIL_GROUP.NAME))
             .where(PUPIL.EMAIL.isNotNull)
             .orderBy(PUPIL.ID)
             .fetch { pupil ->
@@ -54,6 +56,7 @@ object Admin : Action<Chain> {
                             pupilName = pupil.getValue(PUPIL.NAME),
                             accessCode = pupil.getValue(PUPIL.ACCESS_CODE),
                             pupilClass = pupil.getValue(PUPIL.PUPIL_GROUP),
+                            leaveTimesRelevant = MainPage.leaveTimesRelevant(pupil.getValue(PUPIL_GROUP.YEAR)),
                             config = emailConfig,
                             fileConfig = fileConfig
                     )

@@ -29,7 +29,8 @@ object MainPage : Action<Chain> {
         get("vacancy") { vacancy(it) }
     }
 
-    private fun leaveTimesRelevant(year: Short) = year < 6
+    /** Are the leave times relevant for children going to this year */
+    fun leaveTimesRelevant(year: Short) = year < 6
 
     private fun html(ctx: Context) = ctx.async {
         val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }

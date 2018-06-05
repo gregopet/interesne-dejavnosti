@@ -26,10 +26,14 @@ object EmailDispatch {
      *
      * Example call: http -f POST http://localhost:5050/admin/welcome-emails password='Aslkjnm234lk2j3mnsdf2342d34212nmfskldjfljgh4A'
      */
-    fun sendWelcomeEmail(to: String, pupilName: String, pupilClass: String, accessCode: String, config: EmailConfig, fileConfig: FileConfig) {
+    fun sendWelcomeEmail(to: String, pupilName: String, pupilClass: String, accessCode: String, leaveTimesRelevant: Boolean, config: EmailConfig, fileConfig: FileConfig) {
         if (!skipEmails) {
             val message = config.startNewMessage()
-            message.subject = "OŠ Franceta Bevka: prijava interesnih dejavnosti za učenca/učenko $pupilName"
+            message.subject = if (leaveTimesRelevant) {
+                "Prijava v podaljšano bivanje in na interesne dejavnosti za učenca/učenko $pupilName"
+            } else {
+                "Prijava na interesne dejavnosti za učenca/učenko $pupilName"
+            }
             message.addTo(to)
             message.setFrom(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)
             if (!skipCC) {
@@ -56,7 +60,11 @@ object EmailDispatch {
         if (!skipEmails) {
             LOG.info("Sending confirmation email to $to")
             val message = config.startNewMessage()
-            message.subject = "OŠ Franceta Bevka: uspešna prijava interesnih dejavnosti za učenca/učenko $pupilName"
+            message.subject = if (leaveTimesRelevant) {
+                "Uspešna prijava v podaljšano bivanje in na interesne dejavnosti za učenca/učenko $pupilName"
+            } else {
+                "Uspešna prijava na interesne dejavnosti za učenca/učenko $pupilName"
+            }
             message.addTo(to)
             message.setFrom(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)
             message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)))
