@@ -54,7 +54,7 @@ object EmailDispatch {
                 message.send()
                 LOG.info("Email was sent!")
             } catch (ex: Exception) {
-                LOG.error("Error sending welcome email to ${to.joinToString()}", ex)
+                LOG.error("Error sending welcome email for pupil $pupilId to ${to.joinToString()}", ex)
                 logError(pupilId, jooq, ex)
             }
         }
@@ -82,7 +82,7 @@ object EmailDispatch {
                 rateLimit.acquire()
                 message.send()
             } catch (ex: Exception) {
-                LOG.error("Error sending confirmation mail to ${to.joinToString()}", ex)
+                LOG.error("Error sending confirmation mail for pupil $pupilId to ${to.joinToString()}", ex)
                 logError(pupilId, jooq, ex)
             }
         }
