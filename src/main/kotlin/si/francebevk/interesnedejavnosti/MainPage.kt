@@ -25,8 +25,8 @@ object MainPage : Action<Chain> {
 
     private val LOG = LoggerFactory.getLogger(MainPage::class.java)
 
-    private val START_DATE = ZonedDateTime.of(LocalDateTime.of(LocalDate.of(2018, 6, 8), LocalTime.NOON), ZoneId.of("Europe/Ljubljana"))
-    private val END_DATE = ZonedDateTime.of(LocalDateTime.of(LocalDate.of(2018, 6, 15), LocalTime.NOON), ZoneId.of("Europe/Ljubljana"))
+    private val START_DATE = ZonedDateTime.of(LocalDateTime.of(LocalDate.of(2018, 6, 7), LocalTime.of(16, 0)), ZoneId.of("Europe/Ljubljana"))
+    private val END_DATE = ZonedDateTime.of(LocalDateTime.of(LocalDate.of(2018, 6, 14), LocalTime.NOON), ZoneId.of("Europe/Ljubljana"))
 
     /** A formatted description of the date when the application opens */
     val formattedStartDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.forLanguageTag("sl")).format(START_DATE)
@@ -148,5 +148,4 @@ object MainPage : Action<Chain> {
         Activity(id, name, description, leader, slots.map { slot ->
             TimeSlot(slot.day.literal, slot.startMinutes, slot.endMinutes)
         }, isSelected, cost)
-
 }
