@@ -1,0 +1,30 @@
+@import si.francebevk.viewmodel.ActivityStats
+@import si.francebevk.db.tables.records.*
+@import java.util.List
+@import java.util.Map
+@import static org.apache.commons.lang3.StringUtils.join
+@import static si.francebevk.interesnedejavnosti.ExtensionsKt.getMinuteTimeFormat
+@import static si.francebevk.interesnedejavnosti.ExtensionsKt.shortActivityName
+@args(List<ActivityStats> stats)
+@admin.Layout.template() -> {
+    <h1>Statistika prijav na krožke</h1>
+
+    <table class="table table-sm table-bordered">
+        <thead>
+            <tr>
+                <th>Krožek</th>
+                <th>Prijavljenih</th>
+                <th>Normativ</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(stat: stats) {
+                <tr class="@if(stat.getPupils() == stat.getActivity().getMaxPupils()) {table-warning}">
+                    <td>@shortActivityName(stat.getActivity())</td>
+                    <td>@stat.getPupils()</td>
+                    <td>@stat.getActivity().getMaxPupils()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

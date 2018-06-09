@@ -1,7 +1,9 @@
 package si.francebevk.interesnedejavnosti
 
 import admin.PupilList
+import admin.Stats
 import org.jooq.impl.DSL.select
+import org.jooq.impl.DSL.selectCount
 import org.jooq.util.postgres.PostgresDSL
 import org.pac4j.core.authorization.Authorizer
 import org.pac4j.core.context.WebContext
@@ -19,6 +21,7 @@ import si.francebevk.ratpack.async
 import si.francebevk.ratpack.await
 import si.francebevk.ratpack.jooq
 import si.francebevk.ratpack.route
+import si.francebevk.viewmodel.ActivityStats
 import si.francebevk.viewmodel.PupilWithActivities
 
 /**
@@ -49,6 +52,7 @@ object Admin : Action<Chain> {
         all(RatpackPac4j.requireAuth(IndirectBasicAuthClient::class.java, Authorizer<HttpProfile> { _, profile -> profile.id == null }))
 
         get { summary(it) }
+        get("stats") { stats(it) }
 
 
         post("welcome-emails", ::sendEmails)
@@ -79,6 +83,22 @@ object Admin : Action<Chain> {
         }
 
         ctx.render(PupilList.template(pupils, activities))
+    }
+
+    /** Outputs a summary of how many pupils per activity have applied */
+    fun stats(ctx: Context) = ctx.async {
+        val activities = await {
+            ctx.jooq
+            .select(selectCount().from(PUPIL_ACTIVITY).where(PUPIL_ACTIVITY.ACTIVITY_ID.eq(ACTIVITY.ID)).asField<Int>())
+            .select(*ACTIVITY.fields())
+            .from(ACTIVITY)
+            .orderBy(ACTIVITY.NAME)
+            .fetch {
+                ActivityStats(it.into(ACTIVITY), it.getValue(0) as Int)
+            }
+        }
+
+        ctx.render(Stats.template(activities))
     }
 
 
