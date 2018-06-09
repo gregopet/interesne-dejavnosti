@@ -81,7 +81,6 @@ ratpack {
     handlers {
         def authenticator = new DbAuthenticator(registry.get(DSLContext))
         def parameterClient = new FormClient("/login-form", authenticator)
-        def httpBasicClient = new DirectBasicAuthClient(authenticator)
 
         get("favicon.ico") { ctx -> ctx.response.status(404).send() }
         get("jasmine-tests") { ctx -> ctx.render(Tests.template())}

@@ -1,11 +1,13 @@
 package si.francebevk.interesnedejavnosti
 
 import org.jooq.util.postgres.PostgresDSL
+import org.pac4j.http.client.indirect.IndirectBasicAuthClient
 import org.slf4j.LoggerFactory
 import ratpack.form.Form
 import ratpack.func.Action
 import ratpack.handling.Chain
 import ratpack.handling.Context
+import ratpack.pac4j.RatpackPac4j
 import si.francebevk.db.Tables.PUPIL
 import si.francebevk.db.Tables.PUPIL_GROUP
 import si.francebevk.ratpack.async
@@ -18,23 +20,16 @@ import si.francebevk.ratpack.route
  */
 object Admin : Action<Chain> {
 
-    private const val ADMIN_PASSWORD = "Aslkjnm234lk2j3mnsdf2342d34212nmfskldjfljgh4A"
     private val LOG = LoggerFactory.getLogger(Admin::class.java)
+    private val basicClient = IndirectBasicAuthClient(ConfigAuthenticator).apply {
+        realmName = "Osnovna šola Franceta Bevka"
+    }
 
     override fun execute(t: Chain) = t.route {
 
-        // simplified authentication
-        all { ctx -> ctx.async {
-                if (ctx.request.method.isPost) {
-                    var form = ctx.parse(Form::class.java).await()
-                    var password = form["password"]
-                    if (password == ADMIN_PASSWORD) ctx.next()
-                    else ctx.response.status(422).send()
-                } else {
-                    ctx.response.status(422).send()
-                }
-            }
-        }
+        // Need to use Basic authentication from here on
+        all(RatpackPac4j.authenticator(basicClient))
+        all(RatpackPac4j.requireAuth(IndirectBasicAuthClient::class.java))
 
         post("welcome-emails", ::sendEmails)
     }
