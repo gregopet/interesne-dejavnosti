@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fizzed.rocker.runtime.RockerRuntime
+import org.pac4j.core.authorization.Authorizer
 import org.pac4j.http.client.direct.DirectBasicAuthClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -28,7 +29,6 @@ import si.francebevk.ratpack.error.UncaughtErrorHandler
 import si.razum.ratpack.RockerRenderer
 
 import static ratpack.groovy.Groovy.ratpack
-
 
 ratpack {
     Logger LOG = LoggerFactory.getLogger("Ratpack bootstrap script")
@@ -91,6 +91,17 @@ ratpack {
         }
 
         prefix("admin", Admin.INSTANCE)
+
+        // Database authentication (=parents) is no good after this point!
+        all { ctx ->
+            RatpackPac4j.userProfile(ctx).then {
+                if (it.isPresent() && it.get().id == null) {
+                    RatpackPac4j.logout(ctx).then { ctx.next() }
+                } else {
+                    ctx.next()
+                }
+            }
+        }
 
         get("login-form", LoginPage.INSTANCE)
 

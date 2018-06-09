@@ -1,0 +1,51 @@
+@import si.francebevk.viewmodel.PupilWithActivities
+@import si.francebevk.viewmodel.PupilWithActivities
+@import si.francebevk.db.tables.records.*
+@import java.util.List
+@import java.util.Map
+@import static org.apache.commons.lang3.StringUtils.join
+@import static si.francebevk.interesnedejavnosti.ExtensionsKt.getMinuteTimeFormat
+@import static si.francebevk.interesnedejavnosti.ExtensionsKt.shortActivityName
+@args(List<PupilWithActivities> pupils, Map<Long, ActivityRecord> activities)
+@admin.Layout.template() -> {
+    <h1>Prijavljene aktivnosti učencev</h1>
+
+    <table class="table table-sm table-bordered">
+        <thead>
+            <tr>
+                <th>Razred</th>
+                <th>Ime</th>
+                <th>Odprl<br>prijave</th>
+                <th>Pon</th>
+                <th>Tor</th>
+                <th>Sre</th>
+                <th>Čet</th>
+                <th>Pet</th>
+                <th>Aktivnosti</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(pupil : pupils) {
+                <tr>
+                    <td>@pupil.getPupil().getPupilGroup()</td>
+                    <td>@pupil.getPupil().getName()</td>
+                    <td>@if(pupil.getPupil().getLastLogin() != null) { Da } else { <span class="text-danger">Ne</span> }</td>
+                    @if(pupil.getPupil().getExtendedStay()) {
+                        <td>@if(pupil.getPupil().getLeaveMon() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveMon()) }</td>
+                        <td>@if(pupil.getPupil().getLeaveTue() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveTue()) }</td>
+                        <td>@if(pupil.getPupil().getLeaveWed() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveWed()) }</td>
+                        <td>@if(pupil.getPupil().getLeaveThu() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveThu()) }</td>
+                        <td>@if(pupil.getPupil().getLeaveFri() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveFri()) }</td>
+                    } else {
+                        <td colspan="5" class="text-center"><i>Ni v podaljšanem bivanju</i></td>
+                    }
+                    <td>
+                        @for((i, activityId): pupil.getActivities()) {
+                            @shortActivityName(activities.get(activityId))@if(!i.last()) {,}
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
