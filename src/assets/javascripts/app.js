@@ -159,6 +159,7 @@ fetch("/state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credent
                             friday: this.leaveTimes.friday
                          }
                         this.formIsSending = true
+                        var that = this
 
                         fetch("/store", {
                             body: JSON.stringify(payload),
@@ -169,7 +170,8 @@ fetch("/state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credent
                                 'content-type': 'application/json'
                             }
                         }).then(function(response) {
-                            this.formIsSending = false
+                            that.formIsSending = false
+
                             if (response.status == 200) {
                                 window.location.href = "/finish"
                             }
@@ -180,7 +182,6 @@ fetch("/state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credent
                                         "Žal so naslednje aktivnosti že polno zasedene: " + taken + "\n\n" +
                                         "Prosimo vas, da jih odstranite iz spiska izbranih dejavnosti in ponovno poizkusite potrditi vnos!"
                                     )
-
                                 })
                             }
                         })
