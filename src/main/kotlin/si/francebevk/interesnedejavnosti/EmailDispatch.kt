@@ -26,10 +26,10 @@ object EmailDispatch {
     /**
      * Sends the invitation mail with the access code.
      *
-     * Example call: http -f POST http://localhost:5050/admin/welcome-emails password='Aslkjnm234lk2j3mnsdf2342d34212nmfskldjfljgh4A'
+     * @return true if sending was successful, false otherwise
      */
-    fun sendWelcomeEmail(to: Array<String>,  pupilId: Long, jooq: DSLContext, pupilName: String, pupilClass: String, accessCode: String, leaveTimesRelevant: Boolean, config: EmailConfig, fileConfig: FileConfig) {
-        if (!skipEmails) {
+    fun sendWelcomeEmail(to: Array<String>,  pupilId: Long, jooq: DSLContext, pupilName: String, pupilClass: String, accessCode: String, leaveTimesRelevant: Boolean, config: EmailConfig, fileConfig: FileConfig): Boolean {
+        return if (!skipEmails) {
             try {
                 val message = config.startNewMessage()
                 message.subject = if (leaveTimesRelevant) {
@@ -52,11 +52,18 @@ object EmailDispatch {
                 })
                 rateLimit.acquire()
                 message.send()
+                PupilDAO.updateEmailSent(pupilId, jooq)
                 LOG.info("Email was sent!")
+                true
             } catch (ex: Exception) {
                 LOG.error("Error sending welcome email for pupil $pupilId to ${to.joinToString()}", ex)
                 logError(pupilId, jooq, ex)
+                false
             }
+        } else {
+            // fake success
+            LOG.debug("Mails are not actually sent due to debug setting!")
+            true
         }
     }
 
@@ -77,7 +84,7 @@ object EmailDispatch {
                 message.setFrom(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)
                 message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)))
                 message.setTextMsg(
-                        ConfirmationMailPlain.template(pupilName, pupilClass, leaveTimes, leaveTimesRelevant, activities).render().toString()
+                    ConfirmationMailPlain.template(pupilName, pupilClass, leaveTimes, leaveTimesRelevant, activities).render().toString()
                 )
                 rateLimit.acquire()
                 message.send()

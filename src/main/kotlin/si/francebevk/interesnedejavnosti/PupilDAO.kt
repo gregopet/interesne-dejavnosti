@@ -53,4 +53,9 @@ object PupilDAO {
         .where(ID.eq(pupilId))
         .execute()
     }
+
+    /** Updates the pupil with the [pupilId], marking that the email was sent */
+    fun updateEmailSent(pupilId: Long, jooq: DSLContext) {
+        jooq.update(PUPIL).set(PUPIL.WELCOME_EMAIL_SENT, true).where(PUPIL.ID.eq(pupilId)).execute()
+    }
 }

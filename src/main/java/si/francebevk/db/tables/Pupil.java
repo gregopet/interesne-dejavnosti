@@ -39,7 +39,7 @@ import si.francebevk.db.tables.records.PupilRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Pupil extends TableImpl<PupilRecord> {
 
-    private static final long serialVersionUID = 228732914;
+    private static final long serialVersionUID = -1794617746;
 
     /**
      * The reference instance of <code>public.pupil</code>
@@ -113,6 +113,11 @@ public class Pupil extends TableImpl<PupilRecord> {
      * The column <code>public.pupil.emails</code>. All the emails to which messages for this pupil should be sent
      */
     public final TableField<PupilRecord, String[]> EMAILS = createField("emails", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "All the emails to which messages for this pupil should be sent");
+
+    /**
+     * The column <code>public.pupil.welcome_email_sent</code>. Set to true once an email was successfuly sent to this pupil
+     */
+    public final TableField<PupilRecord, Boolean> WELCOME_EMAIL_SENT = createField("welcome_email_sent", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "Set to true once an email was successfuly sent to this pupil");
 
     /**
      * Create a <code>public.pupil</code> table reference

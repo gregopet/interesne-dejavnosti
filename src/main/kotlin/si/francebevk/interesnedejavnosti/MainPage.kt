@@ -121,15 +121,15 @@ object MainPage : Action<Chain> {
             }.map { it.toDTO(true) }
             await {
                 EmailDispatch.sendConfirmationMail(
-                        pupil.emails,
-                        pupilId,
-                        ctx.jooq,
-                        ctx.pupilName,
-                        translatePupilClass(ctx.pupilClass, klass.year),
-                        payload,
-                        pupilActivities,
-                        leaveTimesRelevant(klass.year),
-                        ctx.get(EmailConfig::class.java)
+                    pupil.emails,
+                    pupilId,
+                    ctx.jooq,
+                    ctx.pupilName,
+                    translatePupilClass(ctx.pupilClass, klass.year),
+                    payload,
+                    pupilActivities,
+                    leaveTimesRelevant(klass.year),
+                    ctx.get(EmailConfig::class.java)
                 )
             }
             ctx.response.send("OK")

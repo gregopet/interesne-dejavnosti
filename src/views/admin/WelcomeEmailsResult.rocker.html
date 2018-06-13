@@ -1,0 +1,14 @@
+@import java.util.List
+@args(List<String> sentTo)
+@admin.Layout.template() -> {
+    <h1>Pošiljanje vabil</h1>
+    <p>
+        Maili so bili poslani staršem naslednjih učencev:
+    </p>
+    <p>
+        @for(pupil: sentTo) {
+            @pupil
+            <br>
+        }
+    </p>
+}

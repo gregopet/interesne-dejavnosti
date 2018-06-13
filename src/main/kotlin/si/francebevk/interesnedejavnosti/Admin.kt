@@ -2,6 +2,8 @@ package si.francebevk.interesnedejavnosti
 
 import admin.PupilList
 import admin.Stats
+import admin.WelcomeEmails
+import admin.WelcomeEmailsResult
 import org.jooq.impl.DSL.select
 import org.jooq.impl.DSL.selectCount
 import org.jooq.util.postgres.PostgresDSL
@@ -51,11 +53,12 @@ object Admin : Action<Chain> {
         all(RatpackPac4j.authenticator(basicClient))
         all(RatpackPac4j.requireAuth(IndirectBasicAuthClient::class.java, Authorizer<HttpProfile> { _, profile -> profile.id == null }))
 
-        get { summary(it) }
-        get("stats") { stats(it) }
-
-
-        post("welcome-emails", ::sendEmails)
+        get(::summary)
+        get("stats", ::stats)
+        path("welcome-emails") { it.byMethod { m ->
+            m.get(::showEmails)
+            m.post(::sendEmails)
+        } }
     }
 
     /** Outputs a summary list of all the pupils and their chosen activities */
@@ -101,19 +104,26 @@ object Admin : Action<Chain> {
         ctx.render(Stats.template(activities))
     }
 
+    fun showEmails(ctx: Context) = ctx.async {
+        val emailsToSend = await {
+            ctx.jooq.selectCount().from(PUPIL).where(PUPIL.WELCOME_EMAIL_SENT.eq(false)).fetchOne().value1()
+        }
+        ctx.render(WelcomeEmails.template(emailsToSend))
+    }
 
     fun sendEmails(ctx: Context) = ctx.async {
         val emailConfig = ctx.get(EmailConfig::class.java)
         val fileConfig = ctx.get(FileConfig::class.java)
-        await {
+        val sentTo = await {
             ctx.jooq.select(PUPIL.ID, PUPIL.EMAILS, PUPIL.ACCESS_CODE, PUPIL.NAME, PUPIL.PUPIL_GROUP, PUPIL_GROUP.YEAR)
             .from(PUPIL)
             .join(PUPIL_GROUP).on(PUPIL.PUPIL_GROUP.eq(PUPIL_GROUP.NAME))
+            .where(PUPIL.WELCOME_EMAIL_SENT.eq(false))
             .orderBy(PUPIL.ID)
             .fetch { pupil ->
                 if (pupil.getValue(PUPIL.EMAILS).isNotEmpty()) {
                     LOG.info("Sending welcome email to pupil ${pupil.getValue(PUPIL.ID)} ${pupil.getValue(PUPIL.NAME)} at emails ${pupil.getValue(PUPIL.EMAILS).joinToString()}")
-                    EmailDispatch.sendWelcomeEmail(
+                    if (EmailDispatch.sendWelcomeEmail(
                         to = pupil.getValue(PUPIL.EMAILS),
                         pupilId = pupil.getValue(PUPIL.ID),
                         pupilName = pupil.getValue(PUPIL.NAME),
@@ -123,13 +133,18 @@ object Admin : Action<Chain> {
                         config = emailConfig,
                         fileConfig = fileConfig,
                         jooq = ctx.jooq
-                    )
+                    )) {
+                        "${pupil.getValue(PUPIL.NAME)}: ${pupil.getValue(PUPIL.EMAILS).joinToString()}"
+                    } else {
+                        null
+                    }
                 } else {
                     LOG.warn("Not sending email for pupil ${pupil.getValue(PUPIL.ID)} because they have no email defined!")
+                    null
                 }
             }
-        }
+        }.filterNotNull()
         LOG.info("All emails sent!")
-        ctx.response.send("OK")
+        ctx.render(WelcomeEmailsResult.template(sentTo))
     }
 }

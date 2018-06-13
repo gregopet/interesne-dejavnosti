@@ -1,0 +1,8 @@
+@args(Integer mailsToSend)
+@admin.Layout.template() -> {
+    <h1>Pošiljanje vabil</h1>
+    <p>Maili bodo poslani @mailsToSend učencem</p>
+    <form method="POST" action="/admin/welcome-emails">
+        <button class="btn btn-primary">Pošlji</button>
+    </form>
+}
