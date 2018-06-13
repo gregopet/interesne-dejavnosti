@@ -1,9 +1,6 @@
 package si.francebevk.interesnedejavnosti
 
-import admin.PupilList
-import admin.Stats
-import admin.WelcomeEmails
-import admin.WelcomeEmailsResult
+import admin.*
 import org.jooq.impl.DSL.select
 import org.jooq.impl.DSL.selectCount
 import org.jooq.util.postgres.PostgresDSL
@@ -54,6 +51,7 @@ object Admin : Action<Chain> {
         all(RatpackPac4j.requireAuth(IndirectBasicAuthClient::class.java, Authorizer<HttpProfile> { _, profile -> profile.id == null }))
 
         get(::summary)
+        get("by-activity", ::summaryByActivity)
         get("stats", ::stats)
         path("welcome-emails") { it.byMethod { m ->
             m.get(::showEmails)
@@ -87,6 +85,23 @@ object Admin : Action<Chain> {
 
         ctx.render(PupilList.template(pupils, activities))
     }
+
+    fun summaryByActivity(ctx: Context) = ctx.async {
+        val activities = await { ctx.jooq.selectFrom(ACTIVITY).orderBy(ACTIVITY.NAME).fetch() }
+        val pupils = await {
+            ctx.jooq
+            .select()
+            .from(PUPIL_ACTIVITY)
+            .join(PUPIL).on(PUPIL_ACTIVITY.PUPIL_ID.eq(PUPIL.ID))
+            .orderBy(PUPIL.PUPIL_GROUP, PUPIL.NAME)
+            .fetchGroups(PUPIL_ACTIVITY.ACTIVITY_ID) {
+                it.into(PUPIL)
+            }
+        }
+
+        ctx.render(PupilListByActivity.template(activities, pupils))
+    }
+
 
     /** Outputs a summary of how many pupils per activity have applied */
     fun stats(ctx: Context) = ctx.async {

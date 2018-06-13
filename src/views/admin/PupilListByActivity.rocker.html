@@ -1,0 +1,36 @@
+@import java.util.List
+@import java.util.Map
+@import si.francebevk.db.tables.records.*
+@import static si.francebevk.interesnedejavnosti.ExtensionsKt.getMinuteTimeFormat
+@import static si.francebevk.interesnedejavnosti.ExtensionsKt.shortActivityName
+@args(List<ActivityRecord> activities, Map<Long, List<PupilRecord>> pupils)
+@admin.Layout.template() -> {
+    <h1>Učenci, prijavljeni po krožkih</h1>
+
+    
+
+    @for(activity: activities) {
+        <h3>@shortActivityName(activity)</h3>
+        @if (pupils.get(activity.getId()) != null) {
+        <table class="table table-sm table-bordered">
+            <thead>
+                <tr>
+                    <th>Razred</th>
+                    <th>Učenec</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(pupil: pupils.get(activity.getId())) {
+                    <tr>
+                        <td>@pupil.getPupilGroup()</td>
+                        <td>@pupil.getName()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        } else {
+            <p>Na krožek ni prijavljenih.</p>
+        }
+        <br>
+    }
+}

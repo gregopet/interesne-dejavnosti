@@ -24,4 +24,4 @@ val DayOfWeek.shortSlo get() = when(this) {
 }
 
 fun shortActivityName(rec: ActivityRecord) =
-    "${rec.name} (${rec.slots.map { it.day.shortSlo }.joinToString()})"
+    "${rec.name} (${rec.slots.map { "${it.day.shortSlo} ${it.startMinutes.minuteTimeFormat}" }.joinToString()})"
