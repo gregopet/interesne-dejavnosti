@@ -53,6 +53,7 @@ object Admin : Action<Chain> {
         get(::summary)
         get("by-activity", ::summaryByActivity)
         get("stats", ::stats)
+        get("prijava", ::afterDeadlineLogin)
         path("welcome-emails") { it.byMethod { m ->
             m.get(::showEmails)
             m.post(::sendEmails)
@@ -161,5 +162,16 @@ object Admin : Action<Chain> {
         }.filterNotNull()
         LOG.info("All emails sent!")
         ctx.render(WelcomeEmailsResult.template(sentTo))
+    }
+    fun afterDeadlineLogin(ctx: Context) {
+        val message = when(ctx.request.queryParams["error"]) {
+            null                       -> null
+            "AccountNotFoundException" -> "Koda, ki ste jo vnesli, je napačna!"
+            else                       -> "Napaka: ${ctx.request.queryParams["error"]}".also {
+                LOG.error("Admin authentication error ${ctx.request.queryParams["error"]}")
+            }
+        }
+
+        ctx.render(Login.template(message, null, null, null, null))
     }
 }
