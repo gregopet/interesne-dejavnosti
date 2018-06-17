@@ -1,8 +1,8 @@
-@args(Integer mailsToSend)
+@args(Integer mailsToSend, String postTo)
 @admin.Layout.template() -> {
     <h1>Pošiljanje vabil</h1>
     <p>Maili bodo poslani @mailsToSend učencem</p>
-    <form method="POST" action="/admin/welcome-emails">
+    <form method="POST" action="@postTo">
         <button class="btn btn-primary">Pošlji</button>
     </form>
 }

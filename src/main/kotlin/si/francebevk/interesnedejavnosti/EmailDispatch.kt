@@ -68,6 +68,43 @@ object EmailDispatch {
     }
 
     /**
+     * Sends the reopening mail with the access code.
+     *
+     * @return true if sending was successful, false otherwise
+     */
+    fun sendReopeningEmail(to: Array<String>, pupilId: Long, jooq: DSLContext, pupilName: String, pupilClass: String, accessCode: String, leaveTimesRelevant: Boolean, config: EmailConfig, fileConfig: FileConfig): Boolean {
+        return if (!skipEmails) {
+            try {
+                val message = config.startNewMessage()
+                message.subject = if (leaveTimesRelevant) {
+                    "Podaljšanje prijav v podaljšano bivanje in na interesne dejavnosti za učenca/učenko $pupilName"
+                } else {
+                    "Podaljšanje prijav na interesne dejavnosti za učenca/učenko $pupilName"
+                }
+                message.addTo(*to)
+                message.setFrom(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)
+                if (!skipCC) {
+                    message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)))
+                }
+                message.setTextMsg(ReopeningMailPlain.template(pupilName, pupilClass, accessCode).render().toString())
+                rateLimit.acquire()
+                message.send()
+                PupilDAO.updateEmailSent(pupilId, jooq)
+                LOG.info("Email was sent!")
+                true
+            } catch (ex: Exception) {
+                LOG.error("Error sending reopneing email for pupil $pupilId to ${to.joinToString()}", ex)
+                logError(pupilId, jooq, ex)
+                false
+            }
+        } else {
+            // fake success
+            LOG.debug("Mails are not actually sent due to debug setting!")
+            true
+        }
+    }
+
+    /**
      * Sends the confirmation mail once people have finished editing the page.
      */
     fun sendConfirmationMail(to: Array<String>, pupilId: Long, jooq: DSLContext, pupilName: String, pupilClass: String, leaveTimes: PupilSettings, activities: List<Activity>, leaveTimesRelevant: Boolean, config: EmailConfig) {

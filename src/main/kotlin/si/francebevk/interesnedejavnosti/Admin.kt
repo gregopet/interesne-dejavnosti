@@ -5,11 +5,9 @@ import org.jooq.impl.DSL.select
 import org.jooq.impl.DSL.selectCount
 import org.jooq.util.postgres.PostgresDSL
 import org.pac4j.core.authorization.Authorizer
-import org.pac4j.core.context.WebContext
 import org.pac4j.http.client.indirect.IndirectBasicAuthClient
 import org.pac4j.http.profile.HttpProfile
 import org.slf4j.LoggerFactory
-import ratpack.form.Form
 import ratpack.func.Action
 import ratpack.handling.Chain
 import ratpack.handling.Context
@@ -57,6 +55,10 @@ object Admin : Action<Chain> {
         path("welcome-emails") { it.byMethod { m ->
             m.get(::showEmails)
             m.post(::sendEmails)
+        } }
+        path("reopening-emails") { it.byMethod { m ->
+            m.get(::showReopeningEmails)
+            m.post(::sendReopeningEmails)
         } }
     }
 
@@ -124,7 +126,7 @@ object Admin : Action<Chain> {
         val emailsToSend = await {
             ctx.jooq.selectCount().from(PUPIL).where(PUPIL.WELCOME_EMAIL_SENT.eq(false)).fetchOne().value1()
         }
-        ctx.render(WelcomeEmails.template(emailsToSend))
+        ctx.render(WelcomeEmails.template(emailsToSend, "/admin/welcome-emails"))
     }
 
     fun sendEmails(ctx: Context) = ctx.async {
@@ -163,6 +165,51 @@ object Admin : Action<Chain> {
         LOG.info("All emails sent!")
         ctx.render(WelcomeEmailsResult.template(sentTo))
     }
+
+    fun showReopeningEmails(ctx: Context) = ctx.async {
+        val emailsToSend = await {
+            ctx.jooq.selectCount().from(PUPIL).where(PUPIL.WELCOME_EMAIL_SENT.eq(false)).fetchOne().value1()
+        }
+        ctx.render(WelcomeEmails.template(emailsToSend, "/admin/reopening-emails"))
+    }
+
+    fun sendReopeningEmails(ctx: Context) = ctx.async {
+        val emailConfig = ctx.get(EmailConfig::class.java)
+        val fileConfig = ctx.get(FileConfig::class.java)
+        val sentTo = await {
+            ctx.jooq.select(PUPIL.ID, PUPIL.EMAILS, PUPIL.ACCESS_CODE, PUPIL.NAME, PUPIL.PUPIL_GROUP, PUPIL_GROUP.YEAR)
+            .from(PUPIL)
+            .join(PUPIL_GROUP).on(PUPIL.PUPIL_GROUP.eq(PUPIL_GROUP.NAME))
+            .where(PUPIL.WELCOME_EMAIL_SENT.eq(false))
+            .orderBy(PUPIL.ID)
+            .fetch { pupil ->
+                if (pupil.getValue(PUPIL.EMAILS).isNotEmpty()) {
+                    LOG.info("Sending reopening email to pupil ${pupil.getValue(PUPIL.ID)} ${pupil.getValue(PUPIL.NAME)} at emails ${pupil.getValue(PUPIL.EMAILS).joinToString()}")
+                    if (EmailDispatch.sendReopeningEmail(
+                        to = pupil.getValue(PUPIL.EMAILS),
+                        pupilId = pupil.getValue(PUPIL.ID),
+                        pupilName = pupil.getValue(PUPIL.NAME),
+                        accessCode = pupil.getValue(PUPIL.ACCESS_CODE),
+                        pupilClass = MainPage.translatePupilClass(pupil.getValue(PUPIL.PUPIL_GROUP), pupil.getValue(PUPIL_GROUP.YEAR)),
+                        leaveTimesRelevant = MainPage.leaveTimesRelevant(pupil.getValue(PUPIL_GROUP.YEAR)),
+                        config = emailConfig,
+                        fileConfig = fileConfig,
+                        jooq = ctx.jooq
+                    )) {
+                        "${pupil.getValue(PUPIL.NAME)}: ${pupil.getValue(PUPIL.EMAILS).joinToString()}"
+                    } else {
+                        null
+                    }
+                } else {
+                    LOG.warn("Not sending email for pupil ${pupil.getValue(PUPIL.ID)} because they have no email defined!")
+                    null
+                }
+            }
+        }.filterNotNull()
+        LOG.info("All emails sent!")
+        ctx.render(WelcomeEmailsResult.template(sentTo))
+    }
+
     fun afterDeadlineLogin(ctx: Context) {
         val message = when(ctx.request.queryParams["error"]) {
             null                       -> null
