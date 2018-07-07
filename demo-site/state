@@ -1,0 +1,315 @@
+{
+   "friday" : 775,
+   "activities" : [
+      {
+         "cost" : null,
+         "description" : "Nič hudega, če ne veste, kako sta masa in hitrost povezani z energijo:\nna poti po vesolju boste potrebovali predvsem dobro voljo in domišljijo.",
+         "times" : [
+            {
+               "from" : 875,
+               "daySlovenian" : "torek",
+               "day" : "tuesday",
+               "to" : 920
+            }
+         ],
+         "chosen" : true,
+         "name" : "Astronomski krožek",
+         "leader" : "Jernej Košir",
+         "id" : 118
+      },
+      {
+         "times" : [
+            {
+               "day" : "tuesday",
+               "to" : 920,
+               "daySlovenian" : "torek",
+               "from" : 875
+            }
+         ],
+         "description" : "Veliko francoskih besed že poznate. Ne verjamete? Pa poglejmo:\n \nAli radi jeste POMMES FRITES, PURÉE, BIFTECK, SARDINES, \nANANAS, BANANES, BONBONS, CHOCOLAT, SALADE, BROCCOLI?\nAli se radi vozite z AVION, AUTOBUS, AUTOMOBILE, LIMOUSINE, TAXI, HÉLICOPTÈRE, CAMION, BARQUE, GONDOLE?\nAli greste v živalski vrt pogledat GIRAFES, CROCODILES, TIGRES, ZÈBRES, PANDAS, KOALAS, KANGOUROUS, COBRA, CHIMPANZÉ?\nAli poznate kakšnega PROFESSEUR, DIRECTEUR, PHOTOGRAPHE, DOCTEUR, VÉTÉRINAIRE, CHAUFFEUR, PILOTE, DÉTECTIVE, GANGSTER, VAMPIRE?\nAli podnevi nosite CRAVATE, ponoči PYJAMA, na plaži BIKINI, na zabavi pa PARFUM?\nDoma imate zagotovo TÉLÉVISION, RADIO, TÉLÉPHONE, ASPIRINE.\nSe radi ukvarjate s SPORT: GOLF, KARATÉ, TENNIS, PING-PONG, FOOTBALL, BOXE?\nIgrate kakšen INSTRUMENT de la MUSIQUE: VIOLON, CLARINETTE, TROMPETTE, GUITARE, MANDOLINE, CONTREBASSE?\nAli greste radi v RESTAURANT, BAR, DISCOTHÈQUE, BOUTIQUE, PARC, MUSÉE?  \n \nFrancoščina ni težka, slovnica je lažja kot slovenska, \nsaj nima dvojine in srednjega spola, črko r malo pogrkujejo, \nko izgovorijo črki m in n, to storijo skozi nos in naglas je vedno na zadnjem zlogu.",
+         "name" : "Francoščina – začetni",
+         "chosen" : false,
+         "leader" : "Katarina Zajc",
+         "id" : 97,
+         "cost" : null
+      },
+      {
+         "cost" : null,
+         "leader" : "Jernej Košir",
+         "id" : 106,
+         "chosen" : false,
+         "name" : "Lego krožek",
+         "times" : [
+            {
+               "daySlovenian" : "sreda",
+               "from" : 930,
+               "day" : "wednesday",
+               "to" : 975
+            }
+         ],
+         "description" : "Kdor se rad igra, sestavlja in gradi, po načrtu, domišljiji, sam ali s prijatelji, je vabljen na oblikovanje z Lego kockami."
+      },
+      {
+         "cost" : null,
+         "chosen" : false,
+         "name" : "Ročna ustvarjalnica",
+         "leader" : "Jurij Novak",
+         "id" : 107,
+         "times" : [
+            {
+               "daySlovenian" : "ponedeljek",
+               "from" : 875,
+               "day" : "monday",
+               "to" : 920
+            }
+         ],
+         "description" : "Ustvarjalni krožek je namenjen vsem tistim, ki so ustvarjalni, inovativni in imajo željo po oblikovanju iz najrazličnejših materialov in v različnih likovnih tehnikah.\nIzdelovali bomo iz papirja, odpadne embalaže, blaga, das-mase in gline, fimo mase, gumbov, volne …  \n \nMotive in materiale bomo izbirali glede na letni čas, mesec, bližajoč praznik ... \nUčenci si bodo razvijali ročne spretnosti, fino motoriko, ustvarjalnost, domišljijo, čut za estetiko, natančnost ter vztrajnost. \n \nPri ustvarjalnem krožku domišljija nima meja …"
+      },
+      {
+         "cost" : null,
+         "leader" : "Luka Jeglič",
+         "id" : 108,
+         "chosen" : false,
+         "name" : "Likovni krožek – prva skupina",
+         "times" : [
+            {
+               "from" : 930,
+               "daySlovenian" : "torek",
+               "day" : "tuesday",
+               "to" : 975
+            }
+         ],
+         "description" : "Pri likovnem krožku učitelj otroke usmerja k spoznavanju različnih likovnih tehnik in orodij, lahko pa si tudi sami izbirajo likovne materiale in pripomočke. \n\n Učenci bodo pri likovnem krožku spoznavali naslednja likovna področja, materiale in pripomočke:\nRISANJE s svinčnikom (B2), grafitom, peresom in tušem, čopičem in tušem, ogljem, flomastri, suhimi barvicami in voščenkami;\nSLIKANJE s tempera barvami, suhimi in akvarelnimi barvicami, voščenkami, suhimi pasteli in kredami;\nKIPARSTVO z glino in papirjem;\nOBLIKOVANJE PROSTORA s tršim papirjem in odpadno embalažo;\nGRAFIKO in tisk s pečatniki;\nRAČUNALNIŠKO GRAFIKO bodo spoznavali vodeno, v računalniški učilnici.\n\nSodelovali bodo na likovnih natečajih, pri pripravi razstav in novoletni krasitvi šolske avle."
+      },
+      {
+         "description" : "Pri likovnem krožku učitelj otroke usmerja k spoznavanju različnih likovnih tehnik in orodij, lahko pa si tudi sami izbirajo likovne materiale in pripomočke. \n\n Učenci bodo pri likovnem krožku spoznavali naslednja likovna področja, materiale in pripomočke:\nRISANJE s svinčnikom (B2), grafitom, peresom in tušem, čopičem in tušem, ogljem, flomastri, suhimi barvicami in voščenkami;\nSLIKANJE s tempera barvami, suhimi in akvarelnimi barvicami, voščenkami, suhimi pasteli in kredami;\nKIPARSTVO z glino in papirjem;\nOBLIKOVANJE PROSTORA s tršim papirjem in odpadno embalažo;\nGRAFIKO in tisk s pečatniki;\nRAČUNALNIŠKO GRAFIKO bodo spoznavali vodeno, v računalniški učilnici.\n\nSodelovali bodo na likovnih natečajih, pri pripravi razstav in novoletni krasitvi šolske avle.",
+         "times" : [
+            {
+               "day" : "friday",
+               "to" : 920,
+               "daySlovenian" : "petek",
+               "from" : 875
+            }
+         ],
+         "chosen" : false,
+         "name" : "Likovni krožek – druga skupina",
+         "leader" : "Luka Jeglič",
+         "id" : 109,
+         "cost" : null
+      },
+      {
+         "name" : "Otroški pevski zbor 2",
+         "chosen" : false,
+         "id" : 114,
+         "leader" : "Karmen Zupančič",
+         "times" : [
+            {
+               "day" : "wednesday",
+               "to" : 975,
+               "from" : 930,
+               "daySlovenian" : "sreda"
+            }
+         ],
+         "description" : "Otroški pevski zbor združuje učence od 1. do 5. razreda. Ker so sposobnosti in glasovni obseg učencev različni, vsako leto oblikujem dva otroška pevska zbora. Sodelovanje v pevskem zboru omogoča otrokom večstransko napredovanje in razvijanje spodobnosti: poleg razvijanja glasbeno-pevskih sposobnosti, učenci razvijajo estetki čut, discipliniranost, vztrajnost, doslednost, natančnost, razvijajo čut odgovornosti in pripadnosti skupini (vzgoja za delo v skupini). Druženju s sovrstniki in spoznavanje bogastva glasbenega izročila pa naj bi pevce tudi razveseljevalo in sproščalo.",
+         "cost" : null
+      },
+      {
+         "times" : [
+            {
+               "from" : 980,
+               "daySlovenian" : "četrtek",
+               "day" : "thursday",
+               "to" : 1025
+            },
+            {
+               "from" : 980,
+               "daySlovenian" : "petek",
+               "day" : "friday",
+               "to" : 1025
+            }
+         ],
+         "description" : "Gimnastika je osnovni šport, ki razvija gibalne spretnosti, osebnost otrok ter nudi izhodišče za ukvarjanje z drugimi športi in kakovost življenja na višji ravni. Strokovno dognano je, da so otroci v času med petim in devetim letom starosti najbolj dovzetni za razvoj gibalnih spretnosti. Trenerji športne gimnastike so tem namenom pripravili program rekreativne športne gimnastike, ki bo poskrbel za skladen telesni razvoj in razvoj gibalnih ter funkcionalnih sposobnosti vašega otroka.",
+         "leader" : "ŠD Sokol Bežigrad",
+         "id" : 122,
+         "name" : "Športna gimnastika (dečki in deklice)",
+         "chosen" : false,
+         "cost" : null
+      },
+      {
+         "description" : "Trenerji in vodje oddelkov ter drugi člani ONŠ Ljubljana se zavedajo pomembne družbene vloge, ki jo predstavlja šport, zato osnovne usmeritve njihovega delovanja temeljijo na plemenitih vrednotah, kot so delavnost, solidarnost, strpnost, tovarištvo in samozavest ter seveda znanje. \n\nSpoštuj nasprotnike in ostale športne akterje, vedno igraj pošteno in na zmago ter sprejmi poraz z dostojanstvom - to so najpomembnejša pravila fair playa, ki so vodilo pri navajanju na zdravo tekmovalnost in so pomembna tako za športno kot širšo socializacijo otrok.",
+         "times" : [
+            {
+               "daySlovenian" : "ponedeljek",
+               "from" : 875,
+               "to" : 920,
+               "day" : "monday"
+            },
+            {
+               "day" : "wednesday",
+               "to" : 920,
+               "daySlovenian" : "sreda",
+               "from" : 875
+            }
+         ],
+         "id" : 125,
+         "leader" : "ŠD Otroška nogometna šola Ljubljana",
+         "name" : "Nogomet (dečki)",
+         "chosen" : false,
+         "cost" : "10 €/mesec"
+      },
+      {
+         "times" : [
+            {
+               "day" : "wednesday",
+               "to" : 975,
+               "daySlovenian" : "sreda",
+               "from" : 930
+            }
+         ],
+         "description" : "Dekleta bodo pri interesni dejavnosti „cici rokomet“ naredila svoje prve korake v tem dinamičnem športu. Posvetili se bomo predvsem osnovam rokometa, torej pravilnemu vodenju, lovljenju in podajanju žoge, raznim strelom na gol, različnim gibanjem po igrišču, razvoju splošnih motoričnih sposobnosti, precej časa pa bomo namenili igri cici rokometa in drugim prilagojenim igram z žogo. \n\nKot ekipa bomo tekmovali v šolskem pokalu v „cici rokometu“, vsaka udeleženka se bo tekom šolskega leta lahko udeležila Krimovih mini turnirjev, ki so namenjeni najmlajšim rokometašicam. \n\nZa vpis na interesno dejavnost predznanje ni potrebno. Treninge bo vodil licencirani trener rokometa iz vrst Rokometne šole Krim Junior. Dekleta, ki bi se rada preizkusila v tako zanimivem in vznemirljivem športu kot je rokomet, vabimo, da se nam pridružijo. Ne bo vam žal!",
+         "leader" : "Rokometni klub Krim",
+         "id" : 128,
+         "name" : "Rokomet (deklice)",
+         "chosen" : true,
+         "cost" : null
+      },
+      {
+         "cost" : null,
+         "id" : 129,
+         "leader" : "Atletsko društvo MASS",
+         "chosen" : false,
+         "name" : "Atletika (dečki in deklice)",
+         "times" : [
+            {
+               "daySlovenian" : "četrtek",
+               "from" : 930,
+               "to" : 975,
+               "day" : "thursday"
+            }
+         ],
+         "description" : "Atletsko društvo Mass Ljubljana za otroke, stare od 6. leta naprej, izvaja program otroške atletike (Kids' Atlhetics). Program vsebuje vadbo, ki je primerna otrokovim potrebam, njihovim razvojnim sposobnostim in njihovi motivaciji. Otroška atletika je zasnovana tako, da otroci razvijajo gibalne spretnosti ter postopoma širijo in nadgrajujejo svoja gibalna znanja in sposobnosti. Atletski pripomočki, s katerimi se otroci učijo osnov atletskih disciplin, so po obliki in teži njim prilagojeni. Otroška atletika je zabavna, pisana in igriva, zato k vpisu vabimo vse, ki radi skačejo, tečejo in mečejo."
+      },
+      {
+         "cost" : null,
+         "description" : "Program je namenjen otrokom, ki se želijo seznaniti s tenisom in nimajo predhodnega znanja. Otroci osvajajo tehnike tenisa in pridobivajo nove motorične sposobnosti. Skozi igralni pristop se usmeri otroke v samostojno odločanje pri iskanju rešitev v različnih situacijah. Tehnični, taktični, gibalni in moštveni deli so vodilo za osvojitev nivoja – igra čez mrežo, mehka teniška žoga, junior loparji in mreža.",
+         "times" : [
+            {
+               "to" : 920,
+               "day" : "tuesday",
+               "daySlovenian" : "torek",
+               "from" : 875
+            }
+         ],
+         "leader" : "Jaki šport",
+         "id" : 130,
+         "chosen" : false,
+         "name" : "Tenis (dečki in deklice)"
+      },
+      {
+         "times" : [
+            {
+               "to" : 975,
+               "day" : "tuesday",
+               "from" : 930,
+               "daySlovenian" : "torek"
+            },
+            {
+               "from" : 875,
+               "daySlovenian" : "petek",
+               "day" : "friday",
+               "to" : 920
+            }
+         ],
+         "description" : "S kvalitetnimi programi otrokom in mladostnikom privzgajajo potrebo po gibanju in pozitivni agresivnosti ter jim tako pomagajo graditi samozavest, spoštovanje, pogum, odgovornost in vztrajnost.\nPoudarek je predvsem na: \nučenju pravilnega in varnega padanja;\nučenju osnovnih elementov juda in osvajanje načel juda; \nrazvijanje osnovnih psihomotorične sposobnosti in spretnosti; \nnadzorovanje, preprečevanje in usmerjanje telesne agresivnost ter razvijanje odločnosti, moči, spretnosti in poguma z borilnimi igrami.",
+         "leader" : "Športno društvo Mala šola juda",
+         "id" : 132,
+         "name" : "Judo (dečki in deklice)",
+         "chosen" : false,
+         "cost" : "10 €/mesec"
+      },
+      {
+         "cost" : null,
+         "leader" : "ŠD Otroška košarkarska šola Ljubljana",
+         "id" : 134,
+         "chosen" : false,
+         "name" : "Košarka (dečki in deklice)",
+         "times" : [
+            {
+               "daySlovenian" : "ponedeljek",
+               "from" : 930,
+               "day" : "monday",
+               "to" : 975
+            },
+            {
+               "to" : 975,
+               "day" : "wednesday",
+               "daySlovenian" : "sreda",
+               "from" : 930
+            }
+         ],
+         "description" : "Njihova primarna naloga je otrokom približati šport kot način življenja. Otroška košarkarska šola ponuja strokovno in organizirano udejstvovanje dečkov in deklic na nevsiljiv način, kjer s pomočjo igre pridobijo osnovna košarkarska znanja. Projekt je usmerjen k vključevanju otrok v košarko in kasneje v košarkarske klube."
+      },
+      {
+         "cost" : null,
+         "id" : 137,
+         "leader" : "Športni klub Bleščica",
+         "chosen" : false,
+         "name" : "Ritmična gimnastika (deklice)",
+         "times" : [
+            {
+               "to" : 1025,
+               "day" : "monday",
+               "from" : 980,
+               "daySlovenian" : "ponedeljek"
+            }
+         ],
+         "description" : "Ritmična gimnastika je dragulj v kroni ženskih olimpijskih športov. Združuje prvine baleta, modernega plesa, akrobatike in rokovanja s pripomočki (kolebnica, žoga, obroč, kiji in trak). Mnogi ta zdrav šport povezujejo z umetnostjo, kajti v njem izstopata eleganca in gracioznost, vaje pa pripovedujejo čudovite izrazne zgodbe. \nNajpomembnejše vodilo našega dela, ki se nanaša na dekleta, je iskanje sposobnosti preko katere se otrok lahko pozitivno afirmira in s tem preko športa raste v samozavestno in ustvarjalno dekle."
+      },
+      {
+         "cost" : null,
+         "leader" : "ŠD Badminton",
+         "id" : 140,
+         "chosen" : false,
+         "name" : "Plesne vaje",
+         "description" : "…",
+         "times" : [
+            {
+               "from" : 875,
+               "daySlovenian" : "petek",
+               "day" : "friday",
+               "to" : 920
+            }
+         ]
+      },
+      {
+         "cost" : "5 €/mesec",
+         "times" : [
+            {
+               "daySlovenian" : "četrtek",
+               "from" : 875,
+               "day" : "thursday",
+               "to" : 920
+            }
+         ],
+         "description" : "Badminton je moderna športna igra, ki zahteva od igralca veliko napora in odrekanja. Uvršča se med dvoranske športe. S tem se verjetno ne bodo strinjali tisti, ki lopar vihtijo na bližnjem travniku ali lastnem igrišču. Čeprav tudi ta vrsta igranja prinaša sodelujočim kopico užitkov, pa se igranje badmintona v dvorani od le tega na prostem močno razlikuje. V dvorani veter ne usmerja peresno lahke žogice, zato leti tja, kamor ste jo poslali; zaradi ravne podlage je tekanje hitrejše in varnejše, igra pa bolj dinamična. BK Ježica je klub z dolgoletno tradicijo in želi nadaljevati tradicijo badmintona na tej šoli. Tako bi želeli najmlajšim predstaviti osnove badmintona, jim omogočiti zdravo druženje, ter jih naučiti navezovanja stikov, tekmovalnosti, zmagovati, prenašati poraze in navsezadnje vzdrževati psihofizično kondicijo za vsakodnevne stresne obremenitve.",
+         "name" : "Šola badmintona",
+         "chosen" : false,
+         "leader" : "Badmintonski klub Ježica",
+         "id" : 141
+      },
+      {
+         "cost" : null,
+         "leader" : "Julij Kranjc",
+         "id" : 116,
+         "chosen" : false,
+         "name" : "Planinstvo",
+         "times" : [],
+         "description" : "S pohodi v naravo si krepimo zdravje, se družimo s prijatelji in sošolci. Na planinskem krožku spoznavamo in osvajamo znanja s področja planinstva. Glavni cilj krožka pa je navajanje mladih na aktivno preživljanje prostega časa v naravi. Učenci razvijajo pozitiven odnos do narave, njenih naravnih lepot in bogastev.\n\nTermin: ena sobota v mesecu"
+      }
+   ],
+   "wednesday" : 980,
+   "extendedStay" : true,
+   "thursday" : 775,
+   "tuesday" : 930,
+   "monday" : 775
+}

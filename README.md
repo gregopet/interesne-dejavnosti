@@ -4,6 +4,14 @@ Pred vami je spletna aplikacija, ki smo jo junija 2018 na osnovni šoli Franceta
 Bevka uporabili za prijavo učencev na popoldanske aktivnosti ter registracijo
 časov odhodov domov v naslednjem šolskem letu.
 
+Aplikacijo si boste najlažje predstavljali, če si pogledate 
+[demonstracijsko verzijo](https://s3-us-west-1.amazonaws.com/publicstash/sola/login.html).
+V njo se lahko prijavite brez gesla, podatki so izmišljeni in ne bo vam
+pošiljala elektronske pošte, sicer pa izgleda enako, kot prava.
+
+V naslednjih poglavjih si lahko preberete daljši opis aplikacije in navodila za
+uporabo.
+
 
 ## Potek prijav - starši
 
@@ -30,9 +38,6 @@ morajo biti mlajši otroci prijavljeni v podaljšano bivanje vsaj do časa, ko
 se na nek dan konča njihova zadnja interesna dejavnost. Starše, ki imajo
 dober razlog za to, da njihov (mlajši) otrok ne bo v podaljšanem bivanju do
 interesnih dejavnosti smo prosili, da to šoli obrazložijo osebno.
-
-Primer obrazca si lahko pogledate na . Na tej vzorčni strani bo sprejeta vsaka
-varnostna koda, vnešeni podatki pa se ne bodo shranili.
 
 Po vnosu podatkov za svojega otroka morajo starši pritisniti na gumb za
 shranjevanje obrazca. Če so bili za kakšno interesno dejavnost prepozni in
