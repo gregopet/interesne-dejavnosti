@@ -23,5 +23,15 @@ val DayOfWeek.shortSlo get() = when(this) {
     DayOfWeek.sunday -> "ned"
 }
 
+val DayOfWeek.fullSlo get() = when(this) {
+    DayOfWeek.monday -> "Ponedeljek"
+    DayOfWeek.tuesday -> "Torek"
+    DayOfWeek.wednesday -> "Sreda"
+    DayOfWeek.thursday -> "Četrtek"
+    DayOfWeek.friday -> "Petek"
+    DayOfWeek.saturday -> "Sobota"
+    DayOfWeek.sunday -> "Nedelja"
+}
+
 fun shortActivityName(rec: ActivityRecord) =
     "${rec.name} (${rec.slots.map { "${it.day.shortSlo} ${it.startMinutes.minuteTimeFormat}" }.joinToString()})"

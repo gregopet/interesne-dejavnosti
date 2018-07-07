@@ -52,6 +52,7 @@ object Admin : Action<Chain> {
         get("by-activity", ::summaryByActivity)
         get("stats", ::stats)
         get("prijava", ::afterDeadlineLogin)
+        get("planner", ::planningYaml)
         path("welcome-emails") { it.byMethod { m ->
             m.get(::showEmails)
             m.post(::sendEmails)
@@ -221,4 +222,82 @@ object Admin : Action<Chain> {
 
         ctx.render(Login.template(message, null, null, null, null))
     }
+
+    /**
+     * Outputs a YAML file for the planner.
+     */
+    fun planningYaml(ctx: Context) = ctx.async {
+        fun canonicalName(act: ActivityRecord) = "${act.name} (${act.id})"
+
+        val output = StringBuilder()
+
+        output.appendln("classes:")
+        val classes = await { ctx.jooq.selectFrom(PUPIL_GROUP).fetch() }
+        classes.forEach { output.appendln("- ${it.name}") }
+
+        output.appendln("times:")
+        output.appendln(
+        """|- from: 13:45
+           |  to: 14:35
+           |- from: 14:35
+           |  to: 15:20
+           |- from: 15:30
+           |  to: 16:15
+           |- from: 16:20
+           |  to: 17:05""".trimMargin("|")
+        )
+
+        output.appendln("activities:")
+        val activities = await { ctx.jooq.selectFrom(ACTIVITY).orderBy(ACTIVITY.NAME).fetch() }
+        activities.forEach { act ->
+            output.appendln("- id: ${canonicalName(act)}")
+            if (act.slots.isNotEmpty()) {
+                output.appendln("  timeSlots:")
+                act.slots.forEach { slot ->
+                    output.appendln("  - day: ${slot.day.fullSlo}")
+                    output.appendln("    from: ${slot.startMinutes.minuteTimeFormat}")
+                    output.appendln("    to: ${slot.endMinutes.minuteTimeFormat}")
+                }
+            } else {
+                output.appendln("  timeSlots: []")
+            }
+        }
+
+        output.appendln("pupils:")
+        val pupils = await { ctx.jooq.selectFrom(PUPIL).orderBy(PUPIL.NAME).fetch() }
+        val pupilActivities = await { ctx.jooq.selectFrom(PUPIL_ACTIVITY).fetch() }.groupBy { it.pupilId }
+        val activityById = activities.associateBy { it.id }
+        pupils.forEach { pupil ->
+            output.appendln("- name: ${pupil.name}")
+            output.appendln("  klass: ${pupil.pupilGroup}")
+
+            val selectedActivities = pupilActivities.get(pupil.id)
+            if (selectedActivities != null) {
+                output.appendln("  activities:")
+                selectedActivities.forEach { act ->
+                    output.appendln("  - ${canonicalName(activityById[act.activityId]!!)}")
+                }
+
+            }
+
+            output.appendln("  leaveTimes:")
+            if (pupil.extendedStay) {
+                output.appendln("    Ponedeljek: ${pupil.leaveMon?.minuteTimeFormat ?: ""}")
+                output.appendln("    Torek: ${pupil.leaveTue?.minuteTimeFormat ?: ""}")
+                output.appendln("    Sreda: ${pupil.leaveWed?.minuteTimeFormat ?: ""}")
+                output.appendln("    Četrtek: ${pupil.leaveThu?.minuteTimeFormat ?: ""}")
+                output.appendln("    Petek: ${pupil.leaveFri?.minuteTimeFormat ?: ""}")
+            } else {
+                output.appendln("    Ponedeljek:")
+                output.appendln("    Torek:")
+                output.appendln("    Sreda:")
+                output.appendln("    Četrtek:")
+                output.appendln("    Petek:")
+            }
+        }
+
+        ctx.response.headers.add("Content-Disposition", "attachment; filename=\"2018.yaml\"")
+        ctx.response.send(output.toString())
+    }
+
 }
