@@ -182,10 +182,17 @@ ter ga zamenjate z imenom svoje šole).
 Za lokalni zagon aplikacije potrebujete dostop do neke baze Postgres, podatke
 za dostop do baze vnesite v datoteko `src/ratpack/config.yaml`. Potem zaženite
 `./gradlew run` (oziroma `gradlew.bat run` na Windowsih) in aplikacija bi se 
-morala zgraditi in zagnati. Če naredite spremembe na strežniškem delu morate
-aplikacijo ustaviti in ponovno zagnati, lahko pa pri zagonu s pomočjo `gradlew`
-dodate parameter `-t`, da bo orodje samo zaznalo spremembe in ponovno zagnalo
-aplikacijo.
+morala zgraditi in zagnati. 
+
+*Pozor*: če testno aplikacijo odpirate na lokalnem
+računalniku, jo morate odpreti preko naslova `http://127.0.0.1:5050` in _ne_
+preko naslova `http://localhost:5050`, sicer se vam na nekaterih sistemih lahko
+zgodi, da prijava ne bo delovala! Ta težava na produkcijski verziji aplikacije
+ni prisotna.
+
+Če naredite spremembe na strežniškem delu morate aplikacijo ustaviti in ponovno
+zagnati, lahko pa pri zagonu s pomočjo `gradlew` dodate parameter `-t`, da bo
+orodje samo zaznalo spremembe in ponovno zagnalo aplikacijo.
 
 Pri spremembah tekstovnih predlog ponovni zagon ni potreben, predloge lahko
 osvežite s klicem `./gradlew generateRockerTemplateSource`.
