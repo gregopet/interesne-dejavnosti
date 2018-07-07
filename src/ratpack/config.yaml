@@ -10,6 +10,6 @@ smtp:
     password: reallysecret!
     from: me@example.org
     host: smtp.example.org
-    port: 25files:
+    port: 25
 files:
     cataloguePath: /home/file.pdf
