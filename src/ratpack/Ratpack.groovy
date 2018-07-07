@@ -39,7 +39,7 @@ ratpack {
 
             final config = DefaultServerConfig.of {
                 it.configureObjectMapper { it.registerModule(new KotlinModule()) }
-                if (System.getProperty("db.file")) {
+                if (System.getProperty("config.file")) {
                     it.sysProps().env().yaml(System.getProperty("config.file")).build()
                 } else {
                     it.sysProps().env().yaml("${BaseDir.find()}/config.yaml").build()
