@@ -28,10 +28,11 @@ object LoginPage : Handler {
             }
         }
 
-        val beforeStart = if (MainPage.isBeforeStart) MainPage.formattedStartDate else null
-        val beforeStartHour = if (MainPage.isBeforeStart) MainPage.formattedStartTime else null
-        val afterEnd = if (MainPage.isAfterEnd) MainPage.formattedEndDate else null
-        val afterEndHour = if (MainPage.isAfterEnd) MainPage.formattedEndTime else null
+        val deadlines = ctx.get(Deadlines::class.java)
+        val beforeStart = if (deadlines.isBeforeStart) deadlines.startDateString else null
+        val beforeStartHour = if (deadlines.isBeforeStart) deadlines.startTimeString else null
+        val afterEnd = if (deadlines.isAfterEnd) deadlines.endDateString else null
+        val afterEndHour = if (deadlines.isAfterEnd) deadlines.endTimeString else null
 
         ctx.render(Login.template(message, beforeStart, beforeStartHour, afterEnd, afterEndHour))
     }

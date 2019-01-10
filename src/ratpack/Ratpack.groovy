@@ -20,6 +20,7 @@ import si.francebevk.db.HikariDataSourceFactory
 import si.francebevk.db.HikariShutdownService
 import si.francebevk.interesnedejavnosti.Admin
 import si.francebevk.interesnedejavnosti.DbAuthenticator
+import si.francebevk.interesnedejavnosti.Deadlines
 import si.francebevk.interesnedejavnosti.EmailConfig
 import si.francebevk.interesnedejavnosti.EmailDispatch
 import si.francebevk.interesnedejavnosti.FileConfig
@@ -54,6 +55,7 @@ ratpack {
             bindInstance Config, config.get("/database", Config)
             bindInstance EmailConfig, config.get("/smtp", EmailConfig)
             bindInstance FileConfig, config.get("/files", FileConfig)
+            bindInstance Deadlines, config.get("/deadlines", Deadlines)
             module HikariDataSourceFactory
             add HikariShutdownService.INSTANCE
 

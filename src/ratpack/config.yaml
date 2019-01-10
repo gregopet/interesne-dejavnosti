@@ -11,5 +11,11 @@ smtp:
     from: me@example.org
     host: smtp.example.org
     port: 25
+
 files:
     cataloguePath: /home/file.pdf
+
+deadlines:
+    timezone: Europe/Ljubljana
+    startAt: 2018-01-01T14:00
+    endAt: 2021-01-01T15:00

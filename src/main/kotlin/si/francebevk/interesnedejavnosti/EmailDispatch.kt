@@ -28,7 +28,7 @@ object EmailDispatch {
      *
      * @return true if sending was successful, false otherwise
      */
-    fun sendWelcomeEmail(to: Array<String>,  pupilId: Long, jooq: DSLContext, pupilName: String, pupilClass: String, accessCode: String, leaveTimesRelevant: Boolean, config: EmailConfig, fileConfig: FileConfig): Boolean {
+    fun sendWelcomeEmail(to: Array<String>,  pupilId: Long, jooq: DSLContext, pupilName: String, pupilClass: String, accessCode: String, leaveTimesRelevant: Boolean, config: EmailConfig, fileConfig: FileConfig, deadlines: Deadlines): Boolean {
         return if (!skipEmails) {
             try {
                 val message = config.startNewMessage()
@@ -42,8 +42,8 @@ object EmailDispatch {
                 if (!skipCC) {
                     message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)))
                 }
-                message.setHtmlMsg(WelcomeMailHtml.template(pupilName, pupilClass, accessCode, MainPage.formattedStartDate, MainPage.formattedStartTime, MainPage.formattedEndDate, MainPage.formattedEndTime).render().toString())
-                message.setTextMsg(WelcomeMailPlain.template(pupilName, pupilClass, accessCode, MainPage.formattedStartDate, MainPage.formattedStartTime, MainPage.formattedEndDate, MainPage.formattedEndTime).render().toString())
+                message.setHtmlMsg(WelcomeMailHtml.template(pupilName, pupilClass, accessCode, deadlines.startDateString, deadlines.startTimeString, deadlines.endDateString, deadlines.endTimeString).render().toString())
+                message.setTextMsg(WelcomeMailPlain.template(pupilName, pupilClass, accessCode, deadlines.startDateString, deadlines.startTimeString, deadlines.endDateString, deadlines.endTimeString).render().toString())
                 message.attach(EmailAttachment().apply {
                     disposition = EmailAttachment.ATTACHMENT
                     description = "Katalog interesnih dejavnosti"

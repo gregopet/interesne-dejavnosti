@@ -25,28 +25,6 @@ object MainPage : Action<Chain> {
 
     private val LOG = LoggerFactory.getLogger(MainPage::class.java)
 
-    private val START_DATE = ZonedDateTime.of(LocalDateTime.of(LocalDate.of(2018, 6, 16), LocalTime.of(7, 0)), ZoneId.of("Europe/Ljubljana"))
-    private val END_DATE = ZonedDateTime.of(LocalDateTime.of(LocalDate.of(2018, 6, 18), LocalTime.of(10, 0)), ZoneId.of("Europe/Ljubljana"))
-
-    /** A formatted description of the date when the application opens */
-    val formattedStartDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.forLanguageTag("sl")).format(START_DATE)
-
-    /** A formatted description of the time when the application opens */
-    val formattedStartTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.forLanguageTag("sl")).format(START_DATE)
-
-    /** A formatted description of the date when the application closes */
-    val formattedEndDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.forLanguageTag("sl")).format(END_DATE)
-
-    /** A formatted description of the time when the application closes */
-    val formattedEndTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.forLanguageTag("sl")).format(END_DATE)
-
-    /** Are we still before the start date? */
-    val isBeforeStart get() = START_DATE.isAfter(ZonedDateTime.now())
-
-    /** Are we already after the end date? */
-    val isAfterEnd get() = END_DATE.isBefore(ZonedDateTime.now())
-
-
     override fun execute(t: Chain) = t.route {
         get { html(it) }
         get("state") { pupilState(it) }
@@ -64,7 +42,8 @@ object MainPage : Action<Chain> {
     private fun html(ctx: Context) = ctx.async {
         val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }
         val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
-        ctx.render(Main.template(pupil.name, translatePupilClass(pupil.pupilGroup, klass.year), leaveTimesRelevant(klass.year), formattedEndDate, formattedEndTime))
+        val deadline = ctx.get(Deadlines::class.java)
+        ctx.render(Main.template(pupil.name, translatePupilClass(pupil.pupilGroup, klass.year), leaveTimesRelevant(klass.year), deadline.endDateString, deadline.endTimeString))
     }
 
     private fun endHtml(ctx: Context) {

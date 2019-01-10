@@ -151,6 +151,7 @@ object Admin : Action<Chain> {
                         leaveTimesRelevant = MainPage.leaveTimesRelevant(pupil.getValue(PUPIL_GROUP.YEAR)),
                         config = emailConfig,
                         fileConfig = fileConfig,
+                        deadlines = ctx.get(Deadlines::class.java),
                         jooq = ctx.jooq
                     )) {
                         "${pupil.getValue(PUPIL.NAME)}: ${pupil.getValue(PUPIL.EMAILS).joinToString()}"
