@@ -26,7 +26,7 @@ import si.francebevk.interesnedejavnosti.FileConfig
 import si.francebevk.interesnedejavnosti.LoginPage
 import si.francebevk.interesnedejavnosti.MainPage
 import si.francebevk.ratpack.error.UncaughtErrorHandler
-import si.razum.ratpack.RockerRenderer
+import si.francebevk.ratpack.RockerRenderer
 
 import static ratpack.groovy.Groovy.ratpack
 

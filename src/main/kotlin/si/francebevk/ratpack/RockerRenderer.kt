@@ -1,4 +1,4 @@
-package si.razum.ratpack
+package si.francebevk.ratpack
 
 import com.fizzed.rocker.RenderingException
 import com.fizzed.rocker.runtime.ArrayOfByteArraysOutput
