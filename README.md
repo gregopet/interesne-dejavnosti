@@ -184,10 +184,15 @@ ter ga zamenjate z imenom svoje šole).
 
 ### Testni zagon
 
-Za lokalni zagon aplikacije potrebujete dostop do neke baze Postgres, podatke
-za dostop do baze vnesite v datoteko `src/ratpack/config.yaml`. Potem zaženite
-`./gradlew run` (oziroma `gradlew.bat run` na Windowsih) in aplikacija bi se 
-morala zgraditi in zagnati. 
+Preden zaženete aplikacijo potrebujete Postgres bazo, v katero bo aplikacija
+shranjevala podatke. Najlažji način je z uporabo orodja Docker Compose, za
+katerega je konfiguracija dostopna v direktoriju `dev-db` (v tem primeru tudi
+ne potrebujete nobenih sprememb v konfiguraciji aplikacije). Če pa želite
+uporabiti kakšno drugo instanco Postgres baze, morate popraviti konfiguracijo
+aplikacije, ki se nahaja v datoteki `src/ratpack/config.yaml`. 
+
+Ko imate bazo pripravljeno zaženite `./gradlew run` (oziroma `gradlew.bat run`
+na Windowsih) in aplikacija bi se morala zgraditi ter zagnati.
 
 *Pozor*: če testno aplikacijo odpirate na lokalnem
 računalniku, jo morate odpreti preko naslova `http://127.0.0.1:5050` in _ne_

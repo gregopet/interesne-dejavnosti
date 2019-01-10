@@ -1,0 +1,12 @@
+version: '3'
+services:
+    postgres:
+        image: postgres:11
+        ports: 
+            - 5432:5432
+        volumes:
+            - ./postgres-scripts:/docker-entrypoint-initdb.d
+            - ./flyway-5.2.4:/flyway
+            - ../src/migrations/flyway:/flyway/sql
+        environment:
+            POSTGRES_DB: interesne-dejavnosti
