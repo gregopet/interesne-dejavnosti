@@ -12,7 +12,7 @@ buildscript {
 		classpath "io.ratpack:ratpack-gradle:$ratpackVersion"
 
 		// Fat JAR
-		classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+		classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.3'
 
 		// Jooq
 		classpath "org.jooq:jooq-meta:$jooqVersion"
@@ -186,11 +186,6 @@ dependencies {
 	// Flyway database migrations
 	compile "org.flywaydb:flyway-core:${flywayVersion}"
 }
-
-task wrapper(type: Wrapper) {
-	gradleVersion = gradleWrapperVersion
-}
-
 
 tasks.create(name:'jooqModel', description: 'Generates the jOOQ model from database', group: 'DB'/*, dependsOn: 'flywayMigrate'*/).doLast {
 	description = "Generates the jOOQ model from the dev database"
