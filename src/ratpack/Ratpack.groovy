@@ -1,5 +1,4 @@
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fizzed.rocker.runtime.RockerRuntime
 import org.pac4j.core.authorization.Authorizer
 import org.pac4j.http.client.direct.DirectBasicAuthClient
 import org.slf4j.Logger
@@ -61,9 +60,6 @@ ratpack {
 
             //template rendering
             add RockerRenderer.INSTANCE
-            if (config.development) {
-                RockerRuntime.instance.reloading = true
-            }
 
             // Error renderer
             bindInstance(ClientErrorHandler, UncaughtErrorHandler.INSTANCE)

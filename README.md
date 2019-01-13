@@ -200,12 +200,9 @@ preko naslova `http://localhost:5050`, sicer se vam na nekaterih sistemih lahko
 zgodi, da prijava ne bo delovala! Ta težava na produkcijski verziji aplikacije
 ni prisotna.
 
-Če naredite spremembe na strežniškem delu morate aplikacijo ustaviti in ponovno
+Ob vsaki spremembi morate aplikacijo ustaviti in ponovno
 zagnati, lahko pa pri zagonu s pomočjo `gradlew` dodate parameter `-t`, da bo
 orodje samo zaznalo spremembe in ponovno zagnalo aplikacijo.
-
-Pri spremembah tekstovnih predlog ponovni zagon ni potreben, predloge lahko
-osvežite s klicem `./gradlew generateRockerTemplateSource`.
 
 
 ### Namestitev na produkcijski strežnik
