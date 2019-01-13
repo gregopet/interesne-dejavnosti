@@ -259,7 +259,11 @@ minute v dnevu (torej za 15:30 uporabite formulo `15 * 60 + 30 = 930`).
 ### Nadaljni razvoj
 
 Če bi se kdo odločil za korenitejše spremembe, za lažje delo prilagamo spisek
-glavnih orodij in tehnologij, uporabljenih pri izdelavi aplikacije.
+glavnih orodij in tehnologij, uporabljenih pri izdelavi aplikacije. Za razvoj
+predlagamo orodje [Intellij IDEA](https://www.jetbrains.com/idea/) - _Community_
+verzija je brezplačna in popolnoma zadostuje za delo na projektu (da uvozite
+projekt, uporabite funkcijo _Project from existing sources_ ter izberite datoteko
+`build.gradle`).
 
 Strežniški del aplikacije je večinoma napisan v programskem jeziku 
 [Kotlin](https://kotlinlang.org/), deluje pa s pomočjo spletnega ogrodja
