@@ -27,7 +27,7 @@
             @for(pupil : pupils) {
                 <tr>
                     <td>@pupil.getPupil().getPupilGroup()</td>
-                    <td>@pupil.getPupil().getName()</td>
+                    <td><a href="/admin/pupil/@pupil.getPupil().getId()/">@pupil.getPupil().getName()</a></td>
                     <td>@if(pupil.getPupil().getLastLogin() != null) { Da } else { <span class="text-danger">Ne</span> }</td>
                     @if(pupil.getPupil().getExtendedStay()) {
                         <td>@if(pupil.getPupil().getLeaveMon() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveMon()) }</td>

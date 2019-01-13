@@ -88,6 +88,7 @@ ratpack {
             chain.all { it.response.status(404).send("Asset not found") }
         }
 
+        // All admin requests "peel off" here, avoiding the usual handler tree
         prefix("admin", Admin.INSTANCE)
 
         // Database authentication (=parents) is no good after this point!

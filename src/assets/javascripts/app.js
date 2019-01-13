@@ -18,7 +18,7 @@ Vue.component('paragraphs', {
 Vue.filter('minuteTime', formatMinutes)
 Vue.filter('day', formatDay)
 
-fetch("/state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credentials: 'include', cache: 'no-cache' } )
+fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credentials: 'include', cache: 'no-cache' } )
 .then(
     function(response) {
         response.json().then(function(state) {
@@ -191,7 +191,7 @@ fetch("/state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credent
 
             // Vacancy checks
             function checkVacancy() {
-                fetch("/vacancy", {
+                fetch("vacancy", {
                     credentials: 'include',
                     cache: 'no-cache',
                     headers: new Headers({

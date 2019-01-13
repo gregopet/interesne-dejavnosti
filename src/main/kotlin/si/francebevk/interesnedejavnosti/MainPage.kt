@@ -20,6 +20,8 @@ import java.util.*
 
 /**
  * The main activity setting page.
+ * The entire Chain requires a HttpProfile object to be present in the request representing the user we are getting
+ * When a
  */
 object MainPage : Action<Chain> {
 
@@ -40,7 +42,7 @@ object MainPage : Action<Chain> {
     fun translatePupilClass(name: String, year: Short) = if (year > 1) name else "prvi razred"
 
     private fun html(ctx: Context) = ctx.async {
-        val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }
+        val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }!!
         val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
         val deadline = ctx.get(Deadlines::class.java)
         ctx.render(Main.template(pupil.name, translatePupilClass(pupil.pupilGroup, klass.year), leaveTimesRelevant(klass.year), deadline.endDateString, deadline.endTimeString))
@@ -54,7 +56,7 @@ object MainPage : Action<Chain> {
 
     /** Lists all selected activities */
     private fun pupilState(ctx: Context) = ctx.async {
-        val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }
+        val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }!!
         val klassRecord = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
         val selected = await { ActivityDAO.getSelectedActivityIds(ctx.user.id.toLong(), ctx.jooq) }
         val activities = await { ActivityDAO.getActivitiesForClass(klassRecord.year, ctx.jooq) }
@@ -78,7 +80,7 @@ object MainPage : Action<Chain> {
         val payload = ctx.parse(PupilSettings::class.java).await()
         val pupilId = ctx.user.id.toLong()
         val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
-        val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }
+        val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }!!
 
         LOG.info("Storing activities for pupil ${pupil.id}")
 

@@ -61,6 +61,21 @@ object Admin : Action<Chain> {
             m.get(::showReopeningEmails)
             m.post(::sendReopeningEmails)
         } }
+
+        // Admins can emulate parents
+        prefix("pupil/:pupilId:\\d+") { chain ->
+            chain.all { ctx ->
+                val pupilId = ctx.allPathTokens.get("pupilId")!!.toLong()
+                val pupil = PupilDAO.getPupilById(pupilId, ctx.jooq)
+                if (pupil == null) {
+                    ctx.response.status(404).send("Učenca nismo našli")
+                } else {
+                    ctx.request.add(createUserProfile(pupil))
+                    ctx.next()
+                }
+            }
+            chain.insert(MainPage)
+        }
     }
 
     /** Outputs a summary list of all the pupils and their chosen activities */

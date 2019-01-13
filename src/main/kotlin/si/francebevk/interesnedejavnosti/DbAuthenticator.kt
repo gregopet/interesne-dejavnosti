@@ -11,6 +11,7 @@ import org.pac4j.http.profile.HttpProfile
 import org.slf4j.LoggerFactory
 import ratpack.handling.Context
 import si.francebevk.db.Tables.PUPIL
+import si.francebevk.db.tables.records.PupilRecord
 
 class DbAuthenticator(private val jooq: DSLContext) : UsernamePasswordAuthenticator {
 
@@ -30,16 +31,16 @@ class DbAuthenticator(private val jooq: DSLContext) : UsernamePasswordAuthentica
         ATTEMPT_LIMITER.acquire(1)
         val user = PupilDAO.getPupilByCode(credentials.password.toLowerCase().trim(), jooq)
         when {
-            user == null                                              -> throw AccountNotFoundException("Unknown user")
-            else                                                      -> {
-                credentials.userProfile = HttpProfile().also {
-                    it.setId(user.id.toString())
-                    it.addAttribute(PUPIL_NAME, user.name)
-                    it.addAttribute(PUPIL_CLASS, user.pupilGroup)
-                }
-            }
+            user == null -> throw AccountNotFoundException("Unknown user")
+            else         -> credentials.userProfile = createUserProfile(user)
         }
     }
+}
+
+fun createUserProfile(user: PupilRecord) = HttpProfile().also {
+    it.setId(user.id.toString())
+    it.addAttribute(DbAuthenticator.PUPIL_NAME, user.name)
+    it.addAttribute(DbAuthenticator.PUPIL_CLASS, user.pupilGroup)
 }
 
 val Context.user get() = get(UserProfile::class.java) as HttpProfile

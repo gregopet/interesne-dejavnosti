@@ -2,11 +2,12 @@ package si.francebevk.interesnedejavnosti
 
 import org.jooq.DSLContext
 import si.francebevk.db.Tables.PUPIL
+import si.francebevk.db.tables.records.PupilRecord
 import java.time.OffsetDateTime
 
 object PupilDAO {
 
-    fun getPupilById(pupilId: Long, jooq: DSLContext) = with(PUPIL) {
+    fun getPupilById(pupilId: Long, jooq: DSLContext): PupilRecord? = with(PUPIL) {
         jooq
         .selectFrom(PUPIL)
         .where(ID.eq(pupilId))
