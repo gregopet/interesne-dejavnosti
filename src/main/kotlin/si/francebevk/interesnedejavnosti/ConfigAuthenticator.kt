@@ -21,6 +21,7 @@ object ConfigAuthenticator : UsernamePasswordAuthenticator {
     private val ATTEMPT_LIMITER = RateLimiter.create(1.0)
 
     override fun validate(credentials: UsernamePasswordCredentials) {
+        ATTEMPT_LIMITER.acquire(1)
         if (
             credentials.username != USERNAME ||
             credentials.password == null ||
