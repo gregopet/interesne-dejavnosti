@@ -1,4 +1,4 @@
-@args(String pupilName, String pupilClass, Boolean pupilHasExtendedStay, String closeDate, String closeHour)
+@args(String pupilName, String pupilClass, Boolean pupilHasExtendedStay, String closeDate, String closeHour, Boolean isAdminRequest)
 <!doctype html>
 
 <html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
@@ -18,6 +18,16 @@
 
 <body>
 <div class="container" id="app">
+
+    @if (isAdminRequest) {
+        <div class="alert alert-danger fixed-top">
+            <strong>Administratorski dostop:</strong>
+
+            <label class="ml-2" for="send-email">pošlji email staršem?</label>
+            <input type="checkbox" id="send-email" v-model="adminNotifyViaEmail">
+
+        </div>
+    }
 
     <h1>Prijava popoldanskih aktivnosti v šolskem letu 2018 / 2019</h1>
 
@@ -201,10 +211,18 @@
 
     <div class="row mt-4">
         <div class="col-6">
-            <button class="btn btn-success btn-block" @@click.prevent="save()" :disabled="formIsSending">Zaključujem in potrjujem izbor</button>
+            @if (isAdminRequest) {
+                <button class="btn btn-block" @@click.prevent="save()" :disabled="formIsSending" v-bind:class="{ 'btn-warning': adminNotifyViaEmail, 'btn-danger': !adminNotifyViaEmail }">Shrani in {{sendAdminEmailAsText}}</button>
+            } else {
+                <button class="btn btn-success btn-block" @@click.prevent="save()" :disabled="formIsSending">Zaključujem in potrjujem izbor</button>
+            }
         </div>
         <div class="col-6">
-            <button class="btn btn-danger btn-block" @@click.prevent="logout()" :disabled="formIsSending">Prekinitev</button>
+            @if (isAdminRequest) {
+                <a class="btn btn-link btn-block" href="/admin">Nazaj na spisek učencev</a>
+            } else {
+                <button class="btn btn-danger btn-block" @@click.prevent="logout()" :disabled="formIsSending">Prekinitev</button>
+            }
         </div>
     </div>
 

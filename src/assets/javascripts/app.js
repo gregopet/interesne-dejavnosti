@@ -66,7 +66,15 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                     conflicts: null,
 
                     // Should the buttons be blocked because the form is still processing?
-                    formIsSending: false
+                    formIsSending: false,
+
+                    // Admins can override email notification to parents
+                    adminNotifyViaEmail: true
+                },
+                computed: {
+                    sendAdminEmailAsText: function() {
+                        return this.adminNotifyViaEmail ? "obvesti starše preko e-pošte" : "NE obvesti staršev preko e-pošte"
+                    }
                 },
                 watch: {
                     // Check for conflicts when users change leave times
@@ -156,12 +164,13 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                             tuesday: this.leaveTimes.tuesday,
                             wednesday: this.leaveTimes.wednesday,
                             thursday: this.leaveTimes.thursday,
-                            friday: this.leaveTimes.friday
+                            friday: this.leaveTimes.friday,
+                            notifyViaEmail: this.adminNotifyViaEmail
                          }
                         this.formIsSending = true
                         var that = this
 
-                        fetch("/store", {
+                        fetch("store", {
                             body: JSON.stringify(payload),
                             cache: 'no-cache',
                             credentials: 'include',

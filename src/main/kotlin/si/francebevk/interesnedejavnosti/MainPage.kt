@@ -21,7 +21,6 @@ import java.util.*
 /**
  * The main activity setting page.
  * The entire Chain requires a HttpProfile object to be present in the request representing the user we are getting
- * When a
  */
 object MainPage : Action<Chain> {
 
@@ -41,11 +40,14 @@ object MainPage : Action<Chain> {
     /** Translates the pupil's class if the proper name can't be used directly */
     fun translatePupilClass(name: String, year: Short) = if (year > 1) name else "prvi razred"
 
+    /** Is this page displayed via admin authentication (i.e. an admin is editing a pupil)? */
+    private fun isAdminRequest(ctx: Context) = ctx.request.uri.startsWith(prefix = "/admin/", ignoreCase = true)
+
     private fun html(ctx: Context) = ctx.async {
         val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }!!
         val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
         val deadline = ctx.get(Deadlines::class.java)
-        ctx.render(Main.template(pupil.name, translatePupilClass(pupil.pupilGroup, klass.year), leaveTimesRelevant(klass.year), deadline.endDateString, deadline.endTimeString))
+        ctx.render(Main.template(pupil.name, translatePupilClass(pupil.pupilGroup, klass.year), leaveTimesRelevant(klass.year), deadline.endDateString, deadline.endTimeString, isAdminRequest(ctx)))
     }
 
     private fun endHtml(ctx: Context) {
@@ -82,7 +84,11 @@ object MainPage : Action<Chain> {
         val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
         val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }!!
 
-        LOG.info("Storing activities for pupil ${pupil.id}")
+        if (isAdminRequest(ctx)) {
+            LOG.info("Administrator storing activities for pupil ${pupil.id}")
+        } else {
+            LOG.info("Storing activities for pupil ${pupil.id}")
+        }
 
         try {
             await {
@@ -100,18 +106,22 @@ object MainPage : Action<Chain> {
             val pupilActivities = await {
                 ActivityDAO.getSelectedActivitiesForPupil(pupilId, ctx.jooq)
             }.map { it.toDTO(true) }
-            await {
-                EmailDispatch.sendConfirmationMail(
-                    pupil.emails,
-                    pupilId,
-                    ctx.jooq,
-                    ctx.pupilName,
-                    translatePupilClass(ctx.pupilClass, klass.year),
-                    payload,
-                    pupilActivities,
-                    leaveTimesRelevant(klass.year),
-                    ctx.get(EmailConfig::class.java)
-                )
+            if (payload.notifyViaEmail) {
+                await {
+                    EmailDispatch.sendConfirmationMail(
+                            pupil.emails,
+                            pupilId,
+                            ctx.jooq,
+                            ctx.pupilName,
+                            translatePupilClass(ctx.pupilClass, klass.year),
+                            payload,
+                            pupilActivities,
+                            leaveTimesRelevant(klass.year),
+                            ctx.get(EmailConfig::class.java)
+                    )
+                }
+            } else {
+                LOG.info("Saved activities for pupil ${pupil.id} without sending an email!")
             }
             ctx.response.send("OK")
         } catch(ex: ActivityFullException) {

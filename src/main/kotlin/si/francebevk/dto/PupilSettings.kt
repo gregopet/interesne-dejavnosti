@@ -11,6 +11,7 @@ import si.francebevk.interesnedejavnosti.minuteTimeFormat
  * @property wednesday The pupil leave time on wednesday or null if pupil will not be in the school's jurisdiction at all
  * @property thursday The pupil leave time on thursday or null if pupil will not be in the school's jurisdiction at all
  * @property friday The pupil leave time on friday or null if pupil will not be in the school's jurisdiction at all
+ * @property notifyViaEmail When admins edit the pupil profiles they can specify the notification emails not to be sent out (for parents they are always sent out)
  */
 class PupilSettings(
     var extendedStay: Boolean,
@@ -19,7 +20,8 @@ class PupilSettings(
     var tuesday: Short?,
     var wednesday: Short?,
     var thursday: Short?,
-    var friday: Short?
+    var friday: Short?,
+    var notifyViaEmail: Boolean
 ) {
     val monNice get() = format(monday)
     val tueNice get() = format(tuesday)
