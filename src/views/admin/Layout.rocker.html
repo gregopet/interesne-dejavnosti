@@ -1,4 +1,4 @@
-@args(RockerBody body)
+@args(String scriptSource, RockerBody body)
 <!doctype html>
 
 <html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
@@ -40,6 +40,9 @@
 
     </div>
 
+    @if(scriptSource != null) {
+    <script src="/assets/@scriptSource"></script>
+    }
 
 </body>
 </html>

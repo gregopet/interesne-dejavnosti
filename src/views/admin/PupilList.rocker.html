@@ -6,7 +6,7 @@
 @import static si.francebevk.interesnedejavnosti.ExtensionsKt.getMinuteTimeFormat
 @import static si.francebevk.interesnedejavnosti.ExtensionsKt.shortActivityName
 @args(List<PupilWithActivities> pupils, Map<Long, ActivityRecord> activities)
-@admin.Layout.template() -> {
+@admin.Layout.template(null) -> {
     <h1>Prijavljene aktivnosti učencev</h1>
 
     <table class="table table-sm table-bordered">
