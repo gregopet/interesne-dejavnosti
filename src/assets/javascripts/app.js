@@ -182,7 +182,11 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                             that.formIsSending = false
 
                             if (response.status == 200) {
-                                window.location.href = "/finish"
+                                if (window.location.href.indexOf('/admin/') != -1) {
+                                    window.location.href = "/admin"
+                                } else {
+                                    window.location.href = "/finish"
+                                }
                             }
                             else if (response.status = 409) {
                                 response.json().then(function(offending) {
