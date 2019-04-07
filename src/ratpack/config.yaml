@@ -9,8 +9,9 @@ smtp:
     username: username@example.org
     password: reallysecret!
     from: me@example.org
-    host: smtp.example.org
-    port: 25
+    host: localhost
+    port: 1025
+    ssl: false
 
 files:
     cataloguePath: /home/file.pdf

@@ -10,3 +10,9 @@ services:
             - ../src/migrations/flyway:/flyway/sql
         environment:
             POSTGRES_DB: interesne-dejavnosti
+    maildev:
+        image: djfarrelly/maildev
+        command: bin/maildev --web 8025 --smtp 1025 --hide-extensions STARTTLS
+        ports:
+            - '8025:8025'
+            - '1025:1025'

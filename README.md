@@ -195,6 +195,14 @@ ne potrebujete nobenih sprememb v konfiguraciji aplikacije). Če pa želite
 uporabiti kakšno drugo instanco Postgres baze, morate popraviti konfiguracijo
 aplikacije, ki se nahaja v datoteki `src/ratpack/config.yaml`. 
 
+Podobno, kot z bazo, je tudi s strežnikom za pošiljanje elektronske pošte. 
+Docker Compose konfiguracija, ki vam priskrbi testno bazo, vsebuje tudi
+strežnik, ki bo sprejel vso vašo poslano pošto in jo prikazal v preprostem
+spletnem vmesniku, ki bo dostopen na naslovu `http://127.0.0.1:8025/` - na
+ta način lahko elegantno testirate pošiljanje mailov, ne da bi za to 
+potrebovali dejanski email račun. Tako kot pri bazi je tudi za uporabo 
+tega testnega email strežnika aplikacija že prednastavljena.
+
 Ko imate bazo pripravljeno zaženite `./gradlew run` (oziroma `gradlew.bat run`
 na Windowsih) in aplikacija bi se morala zgraditi ter zagnati.
 
