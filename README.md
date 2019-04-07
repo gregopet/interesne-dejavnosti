@@ -71,6 +71,10 @@ preko vmesnika možen dostop do obrazca posameznih učencev tudi po datumu, ko
 se za starše prijave že zaprejo (predvsem za reševanje posebnih zahtev in v
 pomoč staršem, ki prijave niso uspeli izvesti sami).
 
+**Pomembno:** ne pozabite administratorskega gesla zamenjati, preden spletno
+stran javno objavite, saj je prednastavljeno geslo vidno celemu svetu! 
+Priporočam, da uporabite močno geslo, ki ga pozna čim manj ljudi!
+
 Preko administratorskega vmesnika je mogoče dobiti tudi posebno datoteko z 
 zapisom izbir za vse učence, ki lahko služi kot vhodni podatek programu za
 načrtovanje skupin popoldanskih dejavnosti, ki ga ravno tako pripravljamo za 
