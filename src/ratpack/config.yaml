@@ -20,3 +20,7 @@ deadlines:
     timezone: Europe/Ljubljana
     startAt: 2018-01-01T14:00
     endAt: 2021-01-01T15:00
+
+admin:
+    username: šola
+    password: "včeraj zeleno pošta zvoni"

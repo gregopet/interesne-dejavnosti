@@ -24,10 +24,10 @@ import si.francebevk.viewmodel.PupilWithActivities
 /**
  * Contains various administration functions.
  */
-object Admin : Action<Chain> {
+class Admin(config: AdminConfig) : Action<Chain> {
 
     private val LOG = LoggerFactory.getLogger(Admin::class.java)
-    private val basicClient = IndirectBasicAuthClient(ConfigAuthenticator).apply {
+    private val basicClient = IndirectBasicAuthClient(ConfigAuthenticator(config.username, config.password)).apply {
         realmName = "Osnovna šola Franceta Bevka"
     }
 

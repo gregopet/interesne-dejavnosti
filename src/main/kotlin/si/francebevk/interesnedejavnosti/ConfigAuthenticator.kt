@@ -11,10 +11,9 @@ import java.util.*
 /**
  * A simple authenticator that is configured with usernames & passwords manually.
  */
-object ConfigAuthenticator : UsernamePasswordAuthenticator {
+class ConfigAuthenticator(private val username: String, password: String) : UsernamePasswordAuthenticator {
 
-    const val USERNAME = "šola"
-    val PASSWORD = "včeraj zeleno pošta zvoni".md5
+    val PASSWORD = password.md5
 
 
     /** Don't allow password attempts to be attempted too often - that way a password guesser can DDOS the server but cannot guess the password */
@@ -23,7 +22,7 @@ object ConfigAuthenticator : UsernamePasswordAuthenticator {
     override fun validate(credentials: UsernamePasswordCredentials) {
         ATTEMPT_LIMITER.acquire(1)
         if (
-            credentials.username != USERNAME ||
+            credentials.username != username ||
             credentials.password == null ||
             !Arrays.equals(credentials.password.md5, PASSWORD)
         ) {

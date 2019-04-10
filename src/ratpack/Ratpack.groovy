@@ -7,6 +7,7 @@ import ratpack.error.ClientErrorHandler
 import ratpack.error.ServerErrorHandler
 import org.jooq.DSLContext
 import org.pac4j.http.client.indirect.FormClient
+import ratpack.groovy.handling.GroovyChain
 import ratpack.pac4j.RatpackPac4j
 import ratpack.server.BaseDir
 import ratpack.server.internal.DefaultServerConfig
@@ -18,6 +19,7 @@ import si.francebevk.db.Config
 import si.francebevk.db.HikariDataSourceFactory
 import si.francebevk.db.HikariShutdownService
 import si.francebevk.interesnedejavnosti.Admin
+import si.francebevk.interesnedejavnosti.AdminConfig
 import si.francebevk.interesnedejavnosti.DbAuthenticator
 import si.francebevk.interesnedejavnosti.Deadlines
 import si.francebevk.interesnedejavnosti.EmailConfig
@@ -55,6 +57,7 @@ ratpack {
             bindInstance EmailConfig, config.get("/smtp", EmailConfig)
             bindInstance FileConfig, config.get("/files", FileConfig)
             bindInstance Deadlines, config.get("/deadlines", Deadlines)
+            bindInstance AdminConfig, config.get("/admin", AdminConfig)
             module HikariDataSourceFactory
             add HikariShutdownService.INSTANCE
 
@@ -76,7 +79,7 @@ ratpack {
         }
     }
 
-    handlers {
+    handlers { AdminConfig cfg ->
         def authenticator = new DbAuthenticator(registry.get(DSLContext))
         def parameterClient = new FormClient("/login-form", authenticator)
 
@@ -89,7 +92,7 @@ ratpack {
         }
 
         // All admin requests "peel off" here, avoiding the usual handler tree
-        prefix("admin", Admin.INSTANCE)
+        prefix("admin", new Admin(cfg))
 
         // Database authentication (=parents) is no good after this point!
         all { ctx ->
