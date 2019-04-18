@@ -5,13 +5,14 @@ import org.jooq.DSLContext
 import org.pac4j.http.credentials.UsernamePasswordCredentials
 import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator
 import org.pac4j.core.exception.AccountNotFoundException
-import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.profile.UserProfile
 import org.pac4j.http.profile.HttpProfile
 import org.slf4j.LoggerFactory
 import ratpack.handling.Context
 import si.francebevk.db.Tables.PUPIL
+import si.francebevk.db.enums.ActivityLogType
 import si.francebevk.db.tables.records.PupilRecord
+
 
 class DbAuthenticator(private val jooq: DSLContext) : UsernamePasswordAuthenticator {
 
@@ -32,7 +33,10 @@ class DbAuthenticator(private val jooq: DSLContext) : UsernamePasswordAuthentica
         val user = PupilDAO.getPupilByCode(credentials.password.toLowerCase().trim(), jooq)
         when {
             user == null -> throw AccountNotFoundException("Unknown user")
-            else         -> credentials.userProfile = createUserProfile(user)
+            else         -> {
+                ActivityLogDAO.insertEvent(ActivityLogType.login, user.id.toLong(), false, null, jooq)
+                credentials.userProfile = createUserProfile(user)
+            }
         }
     }
 }

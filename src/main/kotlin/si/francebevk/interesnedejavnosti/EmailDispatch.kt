@@ -143,6 +143,7 @@ object EmailDispatch {
     private fun EmailConfig.startNewMessage() = HtmlEmail().also {
         it.hostName = host
         it.setSmtpPort(port)
+        it.setSslSmtpPort(port.toString())
         it.setAuthenticator(DefaultAuthenticator(username, password))
         it.isSSLOnConnect = ssl
         it.isStartTLSEnabled = startTls

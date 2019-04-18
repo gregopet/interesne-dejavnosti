@@ -71,6 +71,10 @@ preko vmesnika možen dostop do obrazca posameznih učencev tudi po datumu, ko
 se za starše prijave že zaprejo (predvsem za reševanje posebnih zahtev in v
 pomoč staršem, ki prijave niso uspeli izvesti sami).
 
+**Pomembno:** ne pozabite administratorskega gesla zamenjati, preden spletno
+stran javno objavite, saj je prednastavljeno geslo vidno celemu svetu! 
+Priporočam, da uporabite močno geslo, ki ga pozna čim manj ljudi!
+
 Preko administratorskega vmesnika je mogoče dobiti tudi posebno datoteko z 
 zapisom izbir za vse učence, ki lahko služi kot vhodni podatek programu za
 načrtovanje skupin popoldanskih dejavnosti, ki ga ravno tako pripravljamo za 
@@ -190,6 +194,14 @@ katerega je konfiguracija dostopna v direktoriju `dev-db` (v tem primeru tudi
 ne potrebujete nobenih sprememb v konfiguraciji aplikacije). Če pa želite
 uporabiti kakšno drugo instanco Postgres baze, morate popraviti konfiguracijo
 aplikacije, ki se nahaja v datoteki `src/ratpack/config.yaml`. 
+
+Podobno, kot z bazo, je tudi s strežnikom za pošiljanje elektronske pošte. 
+Docker Compose konfiguracija, ki vam priskrbi testno bazo, vsebuje tudi
+strežnik, ki bo sprejel vso vašo poslano pošto in jo prikazal v preprostem
+spletnem vmesniku, ki bo dostopen na naslovu `http://127.0.0.1:8025/` - na
+ta način lahko elegantno testirate pošiljanje mailov, ne da bi za to 
+potrebovali dejanski email račun. Tako kot pri bazi je tudi za uporabo 
+tega testnega email strežnika aplikacija že prednastavljena.
 
 Ko imate bazo pripravljeno zaženite `./gradlew run` (oziroma `gradlew.bat run`
 na Windowsih) in aplikacija bi se morala zgraditi ter zagnati.

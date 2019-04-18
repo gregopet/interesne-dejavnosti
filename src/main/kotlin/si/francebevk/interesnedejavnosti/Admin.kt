@@ -24,10 +24,10 @@ import si.francebevk.viewmodel.PupilWithActivities
 /**
  * Contains various administration functions.
  */
-object Admin : Action<Chain> {
+class Admin(config: AdminConfig) : Action<Chain> {
 
     private val LOG = LoggerFactory.getLogger(Admin::class.java)
-    private val basicClient = IndirectBasicAuthClient(ConfigAuthenticator).apply {
+    private val basicClient = IndirectBasicAuthClient(ConfigAuthenticator(config.username, config.password)).apply {
         realmName = "Osnovna šola Franceta Bevka"
     }
 
@@ -50,6 +50,7 @@ object Admin : Action<Chain> {
 
         get(::summary)
         get("by-activity", ::summaryByActivity)
+        get("by-hours", ::summaryHoursDaily)
         get("stats", ::stats)
         get("prijava", ::afterDeadlineLogin)
         get("planner", ::planningYaml)
@@ -119,6 +120,11 @@ object Admin : Action<Chain> {
         }
 
         ctx.render(PupilListByActivity.template(activities, pupils))
+    }
+
+    fun summaryHoursDaily(ctx: Context) = ctx.async {
+        val reportLines = await { ctx.jooq.selectFrom(DEPARTURES_HOURLY_REPORT).fetch() }
+        ctx.render(SummaryHoursDaily.template(reportLines))
     }
 
 

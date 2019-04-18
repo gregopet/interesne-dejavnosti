@@ -9,8 +9,9 @@ smtp:
     username: username@example.org
     password: reallysecret!
     from: me@example.org
-    host: smtp.example.org
-    port: 25
+    host: localhost
+    port: 1025
+    ssl: false
 
 files:
     cataloguePath: /home/file.pdf
@@ -19,3 +20,7 @@ deadlines:
     timezone: Europe/Ljubljana
     startAt: 2018-01-01T14:00
     endAt: 2021-01-01T15:00
+
+admin:
+    username: šola
+    password: "včeraj zeleno pošta zvoni"

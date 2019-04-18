@@ -28,7 +28,7 @@ buildscript {
 		classpath "org.flywaydb:flyway-gradle-plugin:$flywayVersion"
 
 		// SSH plugin
-		classpath 'org.hidetake:gradle-ssh-plugin:2.9.0'
+		classpath 'org.hidetake:gradle-ssh-plugin:2.10.1'
 	}
 }
 
@@ -60,6 +60,10 @@ sourceSets {
 			srcDirs "src/main/resources", "src/migrations"
 		}
 	}
+}
+
+shadowJar {
+	archiveName = "${baseName}-${version}-${classifier}.${extension}"
 }
 
 // flyway migrations
