@@ -50,6 +50,7 @@ class Admin(config: AdminConfig) : Action<Chain> {
 
         get(::summary)
         get("by-activity", ::summaryByActivity)
+        get("by-hours", ::summaryHoursDaily)
         get("stats", ::stats)
         get("prijava", ::afterDeadlineLogin)
         get("planner", ::planningYaml)
@@ -119,6 +120,11 @@ class Admin(config: AdminConfig) : Action<Chain> {
         }
 
         ctx.render(PupilListByActivity.template(activities, pupils))
+    }
+
+    fun summaryHoursDaily(ctx: Context) = ctx.async {
+        val reportLines = await { ctx.jooq.selectFrom(DEPARTURES_HOURLY_REPORT).fetch() }
+        ctx.render(SummaryHoursDaily.template(reportLines))
     }
 
 

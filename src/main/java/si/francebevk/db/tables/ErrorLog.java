@@ -39,7 +39,7 @@ import si.francebevk.db.tables.records.ErrorLogRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ErrorLog extends TableImpl<ErrorLogRecord> {
 
-    private static final long serialVersionUID = -2098805407;
+    private static final long serialVersionUID = -1181264696;
 
     /**
      * The reference instance of <code>public.error_log</code>
@@ -67,7 +67,7 @@ public class ErrorLog extends TableImpl<ErrorLogRecord> {
     /**
      * The column <code>public.error_log.created_on</code>. The timestamp on which the error happened
      */
-    public final TableField<ErrorLogRecord, OffsetDateTime> CREATED_ON = createField("created_on", org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE.defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "The timestamp on which the error happened");
+    public final TableField<ErrorLogRecord, OffsetDateTime> CREATED_ON = createField("created_on", org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "The timestamp on which the error happened");
 
     /**
      * The column <code>public.error_log.message</code>. The error message

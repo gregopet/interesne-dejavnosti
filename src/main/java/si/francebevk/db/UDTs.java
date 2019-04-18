@@ -6,6 +6,7 @@ package si.francebevk.db;
 
 import javax.annotation.Generated;
 
+import si.francebevk.db.udt.NamedStrings;
 import si.francebevk.db.udt.TimeSlot;
 
 
@@ -21,6 +22,11 @@ import si.francebevk.db.udt.TimeSlot;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UDTs {
+
+    /**
+     * The type <code>public.named_strings</code>
+     */
+    public static NamedStrings NAMED_STRINGS = si.francebevk.db.udt.NamedStrings.NAMED_STRINGS;
 
     /**
      * The type <code>public.time_slot</code>

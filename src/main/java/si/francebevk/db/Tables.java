@@ -7,9 +7,13 @@ package si.francebevk.db;
 import javax.annotation.Generated;
 
 import si.francebevk.db.tables.Activity;
+import si.francebevk.db.tables.ActivitySlots;
+import si.francebevk.db.tables.DeparturesHourlyReport;
 import si.francebevk.db.tables.ErrorLog;
+import si.francebevk.db.tables.FlywaySchemaHistory;
 import si.francebevk.db.tables.Pupil;
 import si.francebevk.db.tables.PupilActivity;
+import si.francebevk.db.tables.PupilDepartures;
 import si.francebevk.db.tables.PupilGroup;
 
 
@@ -32,9 +36,24 @@ public class Tables {
     public static final Activity ACTIVITY = si.francebevk.db.tables.Activity.ACTIVITY;
 
     /**
+     * All the various slots belonging to activities
+     */
+    public static final ActivitySlots ACTIVITY_SLOTS = si.francebevk.db.tables.ActivitySlots.ACTIVITY_SLOTS;
+
+    /**
+     * A review of hourly activity per-class
+     */
+    public static final DeparturesHourlyReport DEPARTURES_HOURLY_REPORT = si.francebevk.db.tables.DeparturesHourlyReport.DEPARTURES_HOURLY_REPORT;
+
+    /**
      * Contains errors that may have happened during the process
      */
     public static final ErrorLog ERROR_LOG = si.francebevk.db.tables.ErrorLog.ERROR_LOG;
+
+    /**
+     * The table <code>public.flyway_schema_history</code>.
+     */
+    public static final FlywaySchemaHistory FLYWAY_SCHEMA_HISTORY = si.francebevk.db.tables.FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY;
 
     /**
      * Contains a single pupil
@@ -45,6 +64,11 @@ public class Tables {
      * A mapping table between pupils and their chosen activities
      */
     public static final PupilActivity PUPIL_ACTIVITY = si.francebevk.db.tables.PupilActivity.PUPIL_ACTIVITY;
+
+    /**
+     * Pupil's departures as a proper table to be used in reports
+     */
+    public static final PupilDepartures PUPIL_DEPARTURES = si.francebevk.db.tables.PupilDepartures.PUPIL_DEPARTURES;
 
     /**
      * A class of pupils

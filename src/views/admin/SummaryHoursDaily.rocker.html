@@ -1,0 +1,50 @@
+@import org.jooq.Result;
+@import si.francebevk.db.tables.records.DeparturesHourlyReportRecord;
+@import si.francebevk.db.tables.records.*
+@import si.francebevk.db.enums.DayOfWeek;
+@import static si.francebevk.interesnedejavnosti.ExtensionsKt.getMinuteTimeFormat
+@import static si.francebevk.interesnedejavnosti.ExtensionsKt.getFullSlo
+@import si.francebevk.viewmodel.Crate;
+@import static org.apache.commons.lang3.StringUtils.join;
+@args(Result<DeparturesHourlyReportRecord> reportLines)
+@admin.Layout.template() -> {
+    <h1>Odhodi po urah</h1>
+    @with(
+        currentDay = new Crate<DayOfWeek>(),
+        currentClass = new Crate<String>()
+    ) {
+
+        @for(row: reportLines) {
+            @if (currentDay.isNotEmpty() && currentDay.willChange(row.getDay())) {
+                </tbody></table>
+            }
+
+            @if (currentDay.hasChanged(row.getDay())) {
+                <h5>@row.getPupilGroup() - @getFullSlo(row.getDay())</h5>
+                <table class="table table-sm" style="page-break-after: always">
+                    <thead>
+                        <tr>
+                            <th>Ura</th>
+                            <th>Ostanejo</th>
+                            <th>Odšli</th>
+                            <th>Krožki</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            }
+            <tr>
+                <td>@getMinuteTimeFormat(row.getLeaveMinutes())</td>
+                <td>@join(row.getStillHere(), ", ") <strong>(@row.getStillHere().length)</strong></td>
+                <td>@join(row.getLeave(), ", ") <strong>(@row.getLeave().length)</strong></td>
+                <td>
+                    @for(int i = 0; i < row.getAtActivities().length; i++) {
+                        <strong>@row.getAtActivities()[i].getName():</strong>
+                        @join(row.getAtActivities()[i].getStrings(), ", ")
+                        <br>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody></table>
+    }
+}

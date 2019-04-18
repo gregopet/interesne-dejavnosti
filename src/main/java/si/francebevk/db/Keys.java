@@ -13,11 +13,13 @@ import org.jooq.impl.AbstractKeys;
 
 import si.francebevk.db.tables.Activity;
 import si.francebevk.db.tables.ErrorLog;
+import si.francebevk.db.tables.FlywaySchemaHistory;
 import si.francebevk.db.tables.Pupil;
 import si.francebevk.db.tables.PupilActivity;
 import si.francebevk.db.tables.PupilGroup;
 import si.francebevk.db.tables.records.ActivityRecord;
 import si.francebevk.db.tables.records.ErrorLogRecord;
+import si.francebevk.db.tables.records.FlywaySchemaHistoryRecord;
 import si.francebevk.db.tables.records.PupilActivityRecord;
 import si.francebevk.db.tables.records.PupilGroupRecord;
 import si.francebevk.db.tables.records.PupilRecord;
@@ -51,6 +53,7 @@ public class Keys {
 
     public static final UniqueKey<ActivityRecord> ACTIVITY_PKEY = UniqueKeys0.ACTIVITY_PKEY;
     public static final UniqueKey<ErrorLogRecord> ERROR_LOG_PKEY = UniqueKeys0.ERROR_LOG_PKEY;
+    public static final UniqueKey<FlywaySchemaHistoryRecord> FLYWAY_SCHEMA_HISTORY_PK = UniqueKeys0.FLYWAY_SCHEMA_HISTORY_PK;
     public static final UniqueKey<PupilRecord> PUPIL_PKEY = UniqueKeys0.PUPIL_PKEY;
     public static final UniqueKey<PupilActivityRecord> PUPIL_ACTIVITY_PKEY = UniqueKeys0.PUPIL_ACTIVITY_PKEY;
     public static final UniqueKey<PupilGroupRecord> PUPIL_GROUP_PKEY = UniqueKeys0.PUPIL_GROUP_PKEY;
@@ -77,6 +80,7 @@ public class Keys {
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<ActivityRecord> ACTIVITY_PKEY = createUniqueKey(Activity.ACTIVITY, "activity_pkey", Activity.ACTIVITY.ID);
         public static final UniqueKey<ErrorLogRecord> ERROR_LOG_PKEY = createUniqueKey(ErrorLog.ERROR_LOG, "error_log_pkey", ErrorLog.ERROR_LOG.ID);
+        public static final UniqueKey<FlywaySchemaHistoryRecord> FLYWAY_SCHEMA_HISTORY_PK = createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, "flyway_schema_history_pk", FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK);
         public static final UniqueKey<PupilRecord> PUPIL_PKEY = createUniqueKey(Pupil.PUPIL, "pupil_pkey", Pupil.PUPIL.ID);
         public static final UniqueKey<PupilActivityRecord> PUPIL_ACTIVITY_PKEY = createUniqueKey(PupilActivity.PUPIL_ACTIVITY, "pupil_activity_pkey", PupilActivity.PUPIL_ACTIVITY.ACTIVITY_ID, PupilActivity.PUPIL_ACTIVITY.PUPIL_ID);
         public static final UniqueKey<PupilGroupRecord> PUPIL_GROUP_PKEY = createUniqueKey(PupilGroup.PUPIL_GROUP, "pupil_group_pkey", PupilGroup.PUPIL_GROUP.NAME);
