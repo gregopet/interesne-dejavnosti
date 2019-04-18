@@ -12,11 +12,13 @@ import org.jooq.UniqueKey;
 import org.jooq.impl.AbstractKeys;
 
 import si.francebevk.db.tables.Activity;
+import si.francebevk.db.tables.ActivityLog;
 import si.francebevk.db.tables.ErrorLog;
 import si.francebevk.db.tables.FlywaySchemaHistory;
 import si.francebevk.db.tables.Pupil;
 import si.francebevk.db.tables.PupilActivity;
 import si.francebevk.db.tables.PupilGroup;
+import si.francebevk.db.tables.records.ActivityLogRecord;
 import si.francebevk.db.tables.records.ActivityRecord;
 import si.francebevk.db.tables.records.ErrorLogRecord;
 import si.francebevk.db.tables.records.FlywaySchemaHistoryRecord;
@@ -44,6 +46,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final Identity<ActivityRecord, Long> IDENTITY_ACTIVITY = Identities0.IDENTITY_ACTIVITY;
+    public static final Identity<ActivityLogRecord, Long> IDENTITY_ACTIVITY_LOG = Identities0.IDENTITY_ACTIVITY_LOG;
     public static final Identity<ErrorLogRecord, Long> IDENTITY_ERROR_LOG = Identities0.IDENTITY_ERROR_LOG;
     public static final Identity<PupilRecord, Long> IDENTITY_PUPIL = Identities0.IDENTITY_PUPIL;
 
@@ -52,6 +55,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<ActivityRecord> ACTIVITY_PKEY = UniqueKeys0.ACTIVITY_PKEY;
+    public static final UniqueKey<ActivityLogRecord> ACTIVITY_LOG_PKEY = UniqueKeys0.ACTIVITY_LOG_PKEY;
     public static final UniqueKey<ErrorLogRecord> ERROR_LOG_PKEY = UniqueKeys0.ERROR_LOG_PKEY;
     public static final UniqueKey<FlywaySchemaHistoryRecord> FLYWAY_SCHEMA_HISTORY_PK = UniqueKeys0.FLYWAY_SCHEMA_HISTORY_PK;
     public static final UniqueKey<PupilRecord> PUPIL_PKEY = UniqueKeys0.PUPIL_PKEY;
@@ -62,6 +66,7 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final ForeignKey<ActivityLogRecord, PupilRecord> ACTIVITY_LOG__ACTIVITY_LOG_PUPIL_ID_FKEY = ForeignKeys0.ACTIVITY_LOG__ACTIVITY_LOG_PUPIL_ID_FKEY;
     public static final ForeignKey<ErrorLogRecord, PupilRecord> ERROR_LOG__ERROR_LOG_PUPIL_ID_FKEY = ForeignKeys0.ERROR_LOG__ERROR_LOG_PUPIL_ID_FKEY;
     public static final ForeignKey<PupilRecord, PupilGroupRecord> PUPIL__PUPIL_PUPIL_GROUP_FKEY = ForeignKeys0.PUPIL__PUPIL_PUPIL_GROUP_FKEY;
     public static final ForeignKey<PupilActivityRecord, PupilRecord> PUPIL_ACTIVITY__PUPIL_ACTIVITY_PUPIL_ID_FKEY = ForeignKeys0.PUPIL_ACTIVITY__PUPIL_ACTIVITY_PUPIL_ID_FKEY;
@@ -73,12 +78,14 @@ public class Keys {
 
     private static class Identities0 extends AbstractKeys {
         public static Identity<ActivityRecord, Long> IDENTITY_ACTIVITY = createIdentity(Activity.ACTIVITY, Activity.ACTIVITY.ID);
+        public static Identity<ActivityLogRecord, Long> IDENTITY_ACTIVITY_LOG = createIdentity(ActivityLog.ACTIVITY_LOG, ActivityLog.ACTIVITY_LOG.ID);
         public static Identity<ErrorLogRecord, Long> IDENTITY_ERROR_LOG = createIdentity(ErrorLog.ERROR_LOG, ErrorLog.ERROR_LOG.ID);
         public static Identity<PupilRecord, Long> IDENTITY_PUPIL = createIdentity(Pupil.PUPIL, Pupil.PUPIL.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<ActivityRecord> ACTIVITY_PKEY = createUniqueKey(Activity.ACTIVITY, "activity_pkey", Activity.ACTIVITY.ID);
+        public static final UniqueKey<ActivityLogRecord> ACTIVITY_LOG_PKEY = createUniqueKey(ActivityLog.ACTIVITY_LOG, "activity_log_pkey", ActivityLog.ACTIVITY_LOG.ID);
         public static final UniqueKey<ErrorLogRecord> ERROR_LOG_PKEY = createUniqueKey(ErrorLog.ERROR_LOG, "error_log_pkey", ErrorLog.ERROR_LOG.ID);
         public static final UniqueKey<FlywaySchemaHistoryRecord> FLYWAY_SCHEMA_HISTORY_PK = createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, "flyway_schema_history_pk", FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK);
         public static final UniqueKey<PupilRecord> PUPIL_PKEY = createUniqueKey(Pupil.PUPIL, "pupil_pkey", Pupil.PUPIL.ID);
@@ -87,6 +94,7 @@ public class Keys {
     }
 
     private static class ForeignKeys0 extends AbstractKeys {
+        public static final ForeignKey<ActivityLogRecord, PupilRecord> ACTIVITY_LOG__ACTIVITY_LOG_PUPIL_ID_FKEY = createForeignKey(si.francebevk.db.Keys.PUPIL_PKEY, ActivityLog.ACTIVITY_LOG, "activity_log__activity_log_pupil_id_fkey", ActivityLog.ACTIVITY_LOG.PUPIL_ID);
         public static final ForeignKey<ErrorLogRecord, PupilRecord> ERROR_LOG__ERROR_LOG_PUPIL_ID_FKEY = createForeignKey(si.francebevk.db.Keys.PUPIL_PKEY, ErrorLog.ERROR_LOG, "error_log__error_log_pupil_id_fkey", ErrorLog.ERROR_LOG.PUPIL_ID);
         public static final ForeignKey<PupilRecord, PupilGroupRecord> PUPIL__PUPIL_PUPIL_GROUP_FKEY = createForeignKey(si.francebevk.db.Keys.PUPIL_GROUP_PKEY, Pupil.PUPIL, "pupil__pupil_pupil_group_fkey", Pupil.PUPIL.PUPIL_GROUP);
         public static final ForeignKey<PupilActivityRecord, PupilRecord> PUPIL_ACTIVITY__PUPIL_ACTIVITY_PUPIL_ID_FKEY = createForeignKey(si.francebevk.db.Keys.PUPIL_PKEY, PupilActivity.PUPIL_ACTIVITY, "pupil_activity__pupil_activity_pupil_id_fkey", PupilActivity.PUPIL_ACTIVITY.PUPIL_ID);

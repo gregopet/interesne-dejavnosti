@@ -17,6 +17,7 @@ import org.jooq.UDT;
 import org.jooq.impl.SchemaImpl;
 
 import si.francebevk.db.tables.Activity;
+import si.francebevk.db.tables.ActivityLog;
 import si.francebevk.db.tables.ActivitySlots;
 import si.francebevk.db.tables.DeparturesHourlyReport;
 import si.francebevk.db.tables.ErrorLog;
@@ -42,7 +43,7 @@ import si.francebevk.db.udt.TimeSlot;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1813273800;
+    private static final long serialVersionUID = 349892006;
 
     /**
      * The reference instance of <code>public</code>
@@ -53,6 +54,11 @@ public class Public extends SchemaImpl {
      * Contains activities children can participate in
      */
     public final Activity ACTIVITY = si.francebevk.db.tables.Activity.ACTIVITY;
+
+    /**
+     * Records the activity related to a pupil
+     */
+    public final ActivityLog ACTIVITY_LOG = si.francebevk.db.tables.ActivityLog.ACTIVITY_LOG;
 
     /**
      * All the various slots belonging to activities
@@ -120,6 +126,7 @@ public class Public extends SchemaImpl {
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
             Sequences.ACTIVITY_ID_SEQ,
+            Sequences.ACTIVITY_LOG_ID_SEQ,
             Sequences.ERROR_LOG_ID_SEQ,
             Sequences.PUPIL_ID_SEQ);
     }
@@ -134,6 +141,7 @@ public class Public extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             Activity.ACTIVITY,
+            ActivityLog.ACTIVITY_LOG,
             ActivitySlots.ACTIVITY_SLOTS,
             DeparturesHourlyReport.DEPARTURES_HOURLY_REPORT,
             ErrorLog.ERROR_LOG,

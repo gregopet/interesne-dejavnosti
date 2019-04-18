@@ -7,6 +7,7 @@ package si.francebevk.db;
 import javax.annotation.Generated;
 
 import si.francebevk.db.tables.Activity;
+import si.francebevk.db.tables.ActivityLog;
 import si.francebevk.db.tables.ActivitySlots;
 import si.francebevk.db.tables.DeparturesHourlyReport;
 import si.francebevk.db.tables.ErrorLog;
@@ -34,6 +35,11 @@ public class Tables {
      * Contains activities children can participate in
      */
     public static final Activity ACTIVITY = si.francebevk.db.tables.Activity.ACTIVITY;
+
+    /**
+     * Records the activity related to a pupil
+     */
+    public static final ActivityLog ACTIVITY_LOG = si.francebevk.db.tables.ActivityLog.ACTIVITY_LOG;
 
     /**
      * All the various slots belonging to activities
