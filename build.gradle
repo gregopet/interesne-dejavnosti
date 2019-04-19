@@ -90,6 +90,11 @@ rocker {
 // Kotlin cannot compile without the template sources!
 tasks.compileKotlin.dependsOn compileRocker
 
+// Use externalized logging config
+run.doFirst {
+	systemProperty 'logback.configurationFile', "$projectDir/src/ratpack/logback.xml"
+}
+
 assets {
 	minifyJs = false
 	minifyCss = true
