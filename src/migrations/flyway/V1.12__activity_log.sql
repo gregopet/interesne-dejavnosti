@@ -1,4 +1,4 @@
-CREATE TYPE activity_log_type AS ENUM ('login', 'submit');
+CREATE TYPE activity_log_type AS ENUM ('login', 'abort', 'submit', 'failed-submit');
 
 CREATE TABLE activity_log(
     id BIGSERIAL PRIMARY KEY,

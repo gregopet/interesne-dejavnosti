@@ -28,7 +28,11 @@ public enum ActivityLogType implements EnumType {
 
     login("login"),
 
-    submit("submit");
+    abort("abort"),
+
+    submit("submit"),
+
+    failed_submit("failed-submit");
 
     private final String literal;
 

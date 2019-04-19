@@ -24,4 +24,13 @@ class TimeSlot (
         "friday"    -> "petek"
         else        -> day
     }
+
+    val daySlovenianShort get() = when (day) {
+        "monday"    -> "pon"
+        "tuesday"   -> "tor"
+        "wednesday" -> "sre"
+        "thursday"  -> "čet"
+        "friday"    -> "pet"
+        else        -> day
+    }
 }

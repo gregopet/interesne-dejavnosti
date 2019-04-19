@@ -1,6 +1,8 @@
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.pac4j.core.authorization.Authorizer
+import org.pac4j.core.profile.UserProfile
 import org.pac4j.http.client.direct.DirectBasicAuthClient
+import org.pac4j.http.profile.HttpProfile
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import ratpack.error.ClientErrorHandler
@@ -18,6 +20,8 @@ import asset.pipeline.ratpack.AssetPipelineHandler
 import si.francebevk.db.Config
 import si.francebevk.db.HikariDataSourceFactory
 import si.francebevk.db.HikariShutdownService
+import si.francebevk.db.enums.ActivityLogType
+import si.francebevk.interesnedejavnosti.ActivityLogDAO
 import si.francebevk.interesnedejavnosti.Admin
 import si.francebevk.interesnedejavnosti.AdminConfig
 import si.francebevk.interesnedejavnosti.DbAuthenticator
@@ -110,7 +114,16 @@ ratpack {
         // Authentication setup
         all(RatpackPac4j.authenticator("login", parameterClient)) //init auth framework
 
-        path("logout") { c -> RatpackPac4j.logout(c).then { c.redirect("/") }}
+        path("logout") { c ->
+            // try logging that the parent had aborted, while we still have the profile
+            RatpackPac4j.userProfile(c).then {
+                it.ifPresent { profile ->
+                    ActivityLogDAO.INSTANCE.insertEvent(ActivityLogType.abort, profile.id.toLong(), false, null, c.get(DSLContext))
+                }
+            }
+
+            // now for the actual logout..
+            RatpackPac4j.logout(c).then { c.redirect("/") }}
         post("login") { c -> RatpackPac4j.login(c, FormClient).then {
             c.redirect("/")
         } }

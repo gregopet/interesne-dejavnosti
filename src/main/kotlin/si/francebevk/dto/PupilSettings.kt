@@ -33,4 +33,18 @@ class PupilSettings(
     private fun format(time: Short?): String =
         if (time == null) "odide takoj po pouku"
         else time.minuteTimeFormat
+
+    fun appendDescriptionTo(description: StringBuilder) {
+        if (!extendedStay) {
+            description.append("NI v podaljšanem bivanju")
+        } else {
+            description.append("JE v podaljšanem bivanju")
+            description.append(", pon ").append(monNice)
+            description.append(", tor ").append(tueNice)
+            description.append(", sre ").append(wedNice)
+            description.append(", čet ").append(thuNice)
+            description.append(", pet ").append(friNice)
+        }
+        description.append("; ")
+    }
 }

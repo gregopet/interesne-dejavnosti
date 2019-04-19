@@ -5,18 +5,11 @@ import ratpack.func.Action
 import ratpack.handling.Chain
 import ratpack.handling.Context
 import ratpack.pac4j.RatpackPac4j
-import si.francebevk.db.enums.DayOfWeek
+import si.francebevk.db.enums.ActivityLogType
 import si.francebevk.db.tables.records.ActivityRecord
 import si.francebevk.db.withTransaction
-import si.francebevk.dto.Activity
-import si.francebevk.dto.PupilSettings
-import si.francebevk.dto.PupilState
-import si.francebevk.dto.TimeSlot
+import si.francebevk.dto.*
 import si.francebevk.ratpack.*
-import java.time.*
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.*
 
 /**
  * The main activity setting page.
@@ -90,7 +83,16 @@ object MainPage : Action<Chain> {
             LOG.info("Storing activities for pupil ${pupil.id}")
         }
 
+        val description = StringBuilder()
+        payload.appendDescriptionTo(description)
+
         try {
+            val pupilActivities = await {
+                ActivityDAO.getSelectedActivitiesForPupil(pupilId, ctx.jooq)
+            }.map { it.toDTO(true) }
+
+            pupilActivities.appendDescriptionTo(description.append("DEJAVNOSTI: "))
+
             await {
                 ctx.jooq.withTransaction { t ->
                     ActivityDAO.storeSelectedActivityIds(pupilId, payload.selectedActivities, t)
@@ -102,31 +104,34 @@ object MainPage : Action<Chain> {
                 }
             }
 
-            // send confirmation email
-            val pupilActivities = await {
-                ActivityDAO.getSelectedActivitiesForPupil(pupilId, ctx.jooq)
-            }.map { it.toDTO(true) }
+            ActivityLogDAO.insertEvent(ActivityLogType.submit, pupilId, isAdminRequest(ctx), description.toString(), ctx.jooq)
+
             if (payload.notifyViaEmail) {
                 await {
                     EmailDispatch.sendConfirmationMail(
-                            pupil.emails,
-                            pupilId,
-                            ctx.jooq,
-                            ctx.pupilName,
-                            translatePupilClass(ctx.pupilClass, klass.year),
-                            payload,
-                            pupilActivities,
-                            leaveTimesRelevant(klass.year),
-                            ctx.get(EmailConfig::class.java)
+                        pupil.emails,
+                        pupilId,
+                        ctx.jooq,
+                        ctx.pupilName,
+                        translatePupilClass(ctx.pupilClass, klass.year),
+                        payload,
+                        pupilActivities,
+                        leaveTimesRelevant(klass.year),
+                        ctx.get(EmailConfig::class.java)
                     )
                 }
             } else {
                 LOG.info("Saved activities for pupil ${pupil.id} without sending an email!")
             }
+
             ctx.response.send("OK")
+            null
+
         } catch(ex: ActivityFullException) {
             ctx.response.status(409)
             ctx.renderJson(ex.activities.map { it.name })
+            ex.appendDescriptionTo(description.append("; "))
+            ActivityLogDAO.insertEvent(ActivityLogType.failed_submit, pupilId, isAdminRequest(ctx), description.toString(), ctx.jooq)
         }
     }
 

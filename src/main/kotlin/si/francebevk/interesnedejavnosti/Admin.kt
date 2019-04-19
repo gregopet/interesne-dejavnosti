@@ -1,6 +1,7 @@
 package si.francebevk.interesnedejavnosti
 
 import admin.*
+import org.jooq.JSONFormat
 import org.jooq.impl.DSL.select
 import org.jooq.impl.DSL.selectCount
 import org.jooq.util.postgres.PostgresDSL
@@ -54,6 +55,7 @@ class Admin(config: AdminConfig) : Action<Chain> {
         get("stats", ::stats)
         get("prijava", ::afterDeadlineLogin)
         get("planner", ::planningYaml)
+        get("activity/:pupilId:\\d+") { ctx -> activity(ctx.allPathTokens.get("pupilId")!!.toLong(), ctx) }
         path("welcome-emails") { it.byMethod { m ->
             m.get(::showEmails)
             m.post(::sendEmails)
@@ -243,6 +245,13 @@ class Admin(config: AdminConfig) : Action<Chain> {
         }
 
         ctx.render(Login.template(message, null, null, null, null))
+    }
+
+    fun activity(pupilId: Long, ctx: Context) = ctx.async {
+        val logs = await { ActivityLogDAO.getForPupil(pupilId, ctx.jooq) }
+        ctx.response.contentType("application/json").send(
+            logs.formatJSON(JSONFormat().recordFormat(JSONFormat.RecordFormat.OBJECT).header(false))
+        )
     }
 
     /**
