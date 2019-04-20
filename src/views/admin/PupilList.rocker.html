@@ -6,45 +6,57 @@
 @import static si.francebevk.interesnedejavnosti.ExtensionsKt.getMinuteTimeFormat
 @import static si.francebevk.interesnedejavnosti.ExtensionsKt.shortActivityName
 @args(List<PupilWithActivities> pupils, Map<Long, ActivityRecord> activities)
-@admin.Layout.template(null) -> {
-    <h1>Prijavljene aktivnosti učencev</h1>
+@admin.Layout.template("pupilList.js") -> {
+    <h1 class="mb-5 mt-3">Prijavljene aktivnosti učencev</h1>
 
-    <table class="table table-sm table-bordered">
-        <thead>
-            <tr>
-                <th>Razred</th>
-                <th>Ime</th>
-                <th>Odprl<br>prijave</th>
-                <th>Pon</th>
-                <th>Tor</th>
-                <th>Sre</th>
-                <th>Čet</th>
-                <th>Pet</th>
-                <th>Aktivnosti</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for(pupil : pupils) {
+    <div id="app">
+        <div>
+            <input id="filter" class="form-control" type="search" :autofocus="'autofocus'" v-model="search" placeholder="Iskanje po učencih in razredih">
+            <small class="form-text text-muted">
+                Iščete lahko po letu (npr. 2), oznaki razreda (npr. 3B) ter po delih imen in priimkov. S presledkom
+                lahko naenkrat uporabite več iskanih terminov.
+            </small>
+        </div>
+
+        <hr>
+
+        <table class="table table-sm table-bordered">
+            <thead>
                 <tr>
-                    <td>@pupil.getPupil().getPupilGroup()</td>
-                    <td><a href="/admin/pupil/@pupil.getPupil().getId()/">@pupil.getPupil().getName()</a></td>
-                    <td>@if(pupil.getPupil().getLastLogin() != null) { Da } else { <span class="text-danger">Ne</span> }</td>
-                    @if(pupil.getPupil().getExtendedStay()) {
-                        <td>@if(pupil.getPupil().getLeaveMon() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveMon()) }</td>
-                        <td>@if(pupil.getPupil().getLeaveTue() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveTue()) }</td>
-                        <td>@if(pupil.getPupil().getLeaveWed() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveWed()) }</td>
-                        <td>@if(pupil.getPupil().getLeaveThu() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveThu()) }</td>
-                        <td>@if(pupil.getPupil().getLeaveFri() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveFri()) }</td>
-                    } else {
-                        <td colspan="5" class="text-center"><i>Ni v podaljšanem bivanju</i></td>
-                    }
-                    <td>
-                        @for((i, activityId): pupil.getActivities()) {
-                            @shortActivityName(activities.get(activityId))@if(!i.last()) {,}
-                        }
-                    </td>
+                    <th>Razred</th>
+                    <th>Ime</th>
+                    <th>Odprl<br>prijave</th>
+                    <th>Pon</th>
+                    <th>Tor</th>
+                    <th>Sre</th>
+                    <th>Čet</th>
+                    <th>Pet</th>
+                    <th>Aktivnosti</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @for(pupil : pupils) {
+                    <tr v-if="matchesFilter('@pupil.getPupil().getPupilGroup()', '@pupil.getPupil().getName()')">
+                        <td>@pupil.getPupil().getPupilGroup()</td>
+                        <td><a href="/admin/pupil/@pupil.getPupil().getId()/">@pupil.getPupil().getName()</a></td>
+                        <td>@if(pupil.getPupil().getLastLogin() != null) { Da } else { <span class="text-danger">Ne</span> }</td>
+                        @if(pupil.getPupil().getExtendedStay()) {
+                            <td>@if(pupil.getPupil().getLeaveMon() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveMon()) }</td>
+                            <td>@if(pupil.getPupil().getLeaveTue() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveTue()) }</td>
+                            <td>@if(pupil.getPupil().getLeaveWed() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveWed()) }</td>
+                            <td>@if(pupil.getPupil().getLeaveThu() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveThu()) }</td>
+                            <td>@if(pupil.getPupil().getLeaveFri() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveFri()) }</td>
+                        } else {
+                            <td colspan="5" class="text-center"><i>Ni v podaljšanem bivanju</i></td>
+                        }
+                        <td>
+                            @for((i, activityId): pupil.getActivities()) {
+                                @shortActivityName(activities.get(activityId))@if(!i.last()) {,}
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
