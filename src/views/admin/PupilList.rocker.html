@@ -5,6 +5,7 @@
 @import static org.apache.commons.lang3.StringUtils.join
 @import static si.francebevk.interesnedejavnosti.ExtensionsKt.getMinuteTimeFormat
 @import static si.francebevk.interesnedejavnosti.ExtensionsKt.shortActivityName
+@import static org.apache.commons.lang3.StringEscapeUtils.escapeEcmaScript
 @args(List<PupilWithActivities> pupils, Map<Long, ActivityRecord> activities)
 @admin.Layout.template("pupilList.js") -> {
     <h1 class="mb-5 mt-3">Prijavljene aktivnosti učencev</h1>
@@ -36,11 +37,11 @@
             </thead>
             <tbody>
                 @for(pupil : pupils) {
-                    <tr v-if="matchesFilter('@pupil.getPupil().getPupilGroup()', '@pupil.getPupil().getName()')">
+                    <tr v-if="matchesFilter('@escapeEcmaScript(pupil.getPupil().getPupilGroup())', '@escapeEcmaScript(pupil.getPupil().getName())')">
                         <td>@pupil.getPupil().getPupilGroup()</td>
                         <td><a href="/admin/pupil/@pupil.getPupil().getId()/">@pupil.getPupil().getName()</a></td>
                         <td>
-                            <a href="#" @@click.prevent="showEvents(@pupil.getPupil().getId(), '@pupil.getPupil().getName()')">
+                            <a href="#" @@click.prevent="showEvents(@pupil.getPupil().getId(), '@escapeEcmaScript(pupil.getPupil().getName())')">
                                 @if(pupil.getPupil().getLastLogin() != null) { Da } else { <span class="text-danger">Ne</span> }
                             </a>
                         </td>
