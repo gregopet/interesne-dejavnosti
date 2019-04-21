@@ -87,12 +87,8 @@ object MainPage : Action<Chain> {
         payload.appendDescriptionTo(description)
 
         try {
-            val pupilActivities = await {
-                ActivityDAO.getSelectedActivitiesForPupil(pupilId, ctx.jooq)
-            }.map { it.toDTO(true) }
 
-            pupilActivities.appendDescriptionTo(description.append("DEJAVNOSTI: "))
-
+            // Try to save selection - this method may terminate with an exception!
             await {
                 ctx.jooq.withTransaction { t ->
                     ActivityDAO.storeSelectedActivityIds(pupilId, payload.selectedActivities, t)
@@ -104,6 +100,12 @@ object MainPage : Action<Chain> {
                 }
             }
 
+            // Get what the user had selected (with names and everything - we need it for logging!)
+            val pupilActivities = await {
+                ActivityDAO.getSelectedActivitiesForPupil(pupilId, ctx.jooq)
+            }.map { it.toDTO(true) }
+
+            pupilActivities.appendDescriptionTo(description.append("DEJAVNOSTI: "))
             ActivityLogDAO.insertEvent(ActivityLogType.submit, pupilId, isAdminRequest(ctx), description.toString(), ctx.jooq)
 
             if (payload.notifyViaEmail) {
