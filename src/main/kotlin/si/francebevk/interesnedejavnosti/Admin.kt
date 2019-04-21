@@ -247,6 +247,9 @@ class Admin(config: AdminConfig) : Action<Chain> {
         ctx.render(Login.template(message, null, null, null, null))
     }
 
+    /**
+     * Displays the login / storage activity for this pupil.
+     */
     fun activity(pupilId: Long, ctx: Context) = ctx.async {
         val logs = await { ActivityLogDAO.getForPupil(pupilId, ctx.jooq) }
         ctx.response.contentType("application/json").send(

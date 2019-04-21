@@ -39,7 +39,11 @@
                     <tr v-if="matchesFilter('@pupil.getPupil().getPupilGroup()', '@pupil.getPupil().getName()')">
                         <td>@pupil.getPupil().getPupilGroup()</td>
                         <td><a href="/admin/pupil/@pupil.getPupil().getId()/">@pupil.getPupil().getName()</a></td>
-                        <td>@if(pupil.getPupil().getLastLogin() != null) { Da } else { <span class="text-danger">Ne</span> }</td>
+                        <td>
+                            <a href="#" @@click.prevent="showEvents(@pupil.getPupil().getId(), '@pupil.getPupil().getName()')">
+                                @if(pupil.getPupil().getLastLogin() != null) { Da } else { <span class="text-danger">Ne</span> }
+                            </a>
+                        </td>
                         @if(pupil.getPupil().getExtendedStay()) {
                             <td>@if(pupil.getPupil().getLeaveMon() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveMon()) }</td>
                             <td>@if(pupil.getPupil().getLeaveTue() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveTue()) }</td>
@@ -58,5 +62,47 @@
                 }
             </tbody>
         </table>
+
+        <div class="modal" tabindex="-1" role="dialog" ref="activityDialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Aktivnost v aplikaciji za učenca/učenko {{pupilEventsForPupil}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Čas</th>
+                                    <th>Tip dogodka</th>
+                                    <th>Vnesla šola</th>
+                                    <th>Opis</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-if="pupilEvents.length == 0">
+                                    <td colspan="4">
+                                        Za učenca/učenko ni bilo še nobene aktivnosti.
+                                    </td>
+                                </tr>
+                                <tr v-for="event in pupilEvents" :class="eventClass(event)">
+                                    <td>{{ event.time | date }}</td>
+                                    <td>{{ event.type | event_type }}</td>
+                                    <td><span v-if="event.admin_user" class="text-danger">Vnesla šola</span><span v-else class="text-muted">ne</span></td>
+                                    <td>{{ event.details }}</td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 }
