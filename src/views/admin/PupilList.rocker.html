@@ -37,7 +37,7 @@
             </thead>
             <tbody>
                 @for(pupil : pupils) {
-                    <tr v-if="matchesFilter('@escapeEcmaScript(pupil.getPupil().getPupilGroup())', '@escapeEcmaScript(pupil.getPupil().getName())')">
+                    <tr v-show="matchesFilter('@escapeEcmaScript(pupil.getPupil().getPupilGroup())', '@escapeEcmaScript(pupil.getPupil().getName())')">
                         <td>@pupil.getPupil().getPupilGroup()</td>
                         <td><a href="/admin/pupil/@pupil.getPupil().getId()/">@pupil.getPupil().getName()</a></td>
                         <td>
