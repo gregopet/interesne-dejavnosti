@@ -189,7 +189,11 @@
                 </div>
 
                 <div class="col-md-4 offset-md-1">
-                    <p v-if="pupilGroups.length == 0">Trenutno nimate izbrane nobene dejavnosti.</p>
+                    <div v-if="pupilGroups.length == 0" class="alert alert-danger" role="alert">
+                        <strong>Pozor!</strong> Trenutno niste izbrali še nobene dejavnosti!
+                        <hr>
+                        Poiščite željeno dejavnost in jo izberite s pritiskom na modri gumb!
+                    </div>
                     <div v-else>
                         <p>Izbrali ste naslednje dejavnosti:</p>
                         <ul class="list-unstyled" v-for="act in pupilGroups">
@@ -214,7 +218,7 @@
             @if (isAdminRequest) {
                 <button class="btn btn-block" @@click.prevent="save()" :disabled="formIsSending" v-bind:class="{ 'btn-warning': adminNotifyViaEmail, 'btn-danger': !adminNotifyViaEmail }">Shrani in {{sendAdminEmailAsText}}</button>
             } else {
-                <button class="btn btn-success btn-block" @@click.prevent="save()" :disabled="formIsSending">Zaključujem in potrjujem izbor</button>
+                <button class="btn btn-success btn-block" @@click.prevent="save()" :disabled="formIsSending">Zaključujem in potrjujem izbor {{ pupilGroups.length }} dejavnosti</button>
             }
         </div>
         <div class="col-6">
