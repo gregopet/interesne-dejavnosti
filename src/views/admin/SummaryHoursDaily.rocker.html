@@ -38,7 +38,7 @@
                 <td>@join(row.getLeave(), ", ") <strong>(@row.getLeave().length)</strong></td>
                 <td>
                     @for(int i = 0; i < row.getAtActivities().length; i++) {
-                        <strong>@row.getAtActivities()[i].getName():</strong>
+                        <strong>@row.getAtActivities()[i].getName() (@row.getAtActivities()[i].getStrings().length):</strong>
                         @join(row.getAtActivities()[i].getStrings(), ", ")
                         <br>
                     }
