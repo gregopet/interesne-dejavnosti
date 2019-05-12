@@ -10,6 +10,8 @@ package si.francebevk.dto
  * @property wednesday The pupil leave time on wednesday or null if pupil will not be in the school's jurisdiction at all
  * @property thursday The pupil leave time on thursday or null if pupil will not be in the school's jurisdiction at all
  * @property friday The pupil leave time on friday or null if pupil will not be in the school's jurisdiction at all
+ * @property twoPhaseLimit The maximum amount of activities during the first phase of the process
+ * @property twoPhaseEndMs The epoch milliseconds during which the two-phase process ends
  */
 class PupilState(
     var activities: List<Activity>,
@@ -18,5 +20,7 @@ class PupilState(
     var tuesday: Short?,
     var wednesday: Short?,
     var thursday: Short?,
-    var friday: Short?
+    var friday: Short?,
+    var twoPhaseLimit: Int,
+    var twoPhaseEndMs: Long
 )

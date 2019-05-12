@@ -1,4 +1,4 @@
-@args(String pupilName, String pupilClass, Boolean pupilHasExtendedStay, String closeDate, String closeHour, Boolean isAdminRequest)
+@args(String pupilName, String pupilClass, Boolean pupilHasExtendedStay, String closeDate, String closeHour, Boolean isInFirstPhase, Integer firstPhaseLimit, String firstPhaseEndDate, String firstPhaseEndTime, Boolean isAdminRequest)
 <!doctype html>
 
 <html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
@@ -52,6 +52,23 @@
             Pozor: stran ne bo delovala pravilno, dokler v brskalniku ne boste omogočili skriptnega jezika Javascript!
         </div>
     </noscript>
+
+    @if(isInFirstPhase) {
+    <div class="alert alert-primary" role="alert" id="firstPhaseAlert">
+        <h4>Dragi starši!</h4>
+        <p>
+            Število učencev na posameznih krožkih je žal omejeno.
+        </p>
+        <p>
+            Da bi čim več otrok imelo možnost izbrati svojo najljubšo dejavnost, je število prijav za vsakega otroka najprej
+            omejeno na @firstPhaseLimit! Ta omejitev bo nehala veljati <strong>dne @firstPhaseEndDate
+            ob @firstPhaseEndTime uri</strong>. Prosimo vas, da si pred tem datumom najprej izberete le tiste dejavnosti, ki si jih vaš otrok najbolj želi!
+        </p>
+        <p>
+            Hvala za razumevanje!
+        </p>
+    </div>
+    }
 
     <div class="alert alert-warning" role="alert">
         Vnešene podatke lahko naknadno še spremenite, prosimo pa vas, da s popravki zaključite do <strong>@closeDate ob @closeHour</strong>!
@@ -151,7 +168,10 @@
                                         Ne morete izbrati aktivnosti, ker se časovni termini pokrivajo z dejavnostjo {{hasConflictWithActivity(currentGroup)}}!
                                     </div>
                                     <div v-else>
-                                        <button class="btn btn-primary btn-block" @@click.prevent="select(currentGroup)">Izberi dejavnost {{ currentGroup.name }}</button>
+                                        <button class="btn btn-primary btn-block" @@click.prevent="select(currentGroup)" v-if="!atMaximumActivities()">Izberi dejavnost {{ currentGroup.name }}</button>
+                                        <a href="#firstPhaseAlert" class="btn btn-link" v-if="atMaximumActivities()">
+                                            Zaenkrat si ne morete izbrati več dejavnosti!
+                                        </a>
                                     </div>
                                 </span>
 
@@ -195,7 +215,8 @@
                         Poiščite željeno dejavnost in jo izberite s pritiskom na modri gumb!
                     </div>
                     <div v-else>
-                        <p>Izbrali ste naslednje dejavnosti:</p>
+                        <p v-if="!beforeActivityDeadline()">Izbrali ste naslednje dejavnosti:</p>
+                        <p v-if="beforeActivityDeadline()">Izbrali ste si {{ pupilGroups.length }} od @firstPhaseLimit dejavnosti:</p>
                         <ul class="list-unstyled" v-for="act in pupilGroups">
                             <li>
                                 {{act.name}}

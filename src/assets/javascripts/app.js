@@ -69,7 +69,16 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                     formIsSending: false,
 
                     // Admins can override email notification to parents
-                    adminNotifyViaEmail: true
+                    adminNotifyViaEmail: true,
+
+                    // How many activities are we limited to in the first phase of the process?
+                    twoPhaseProcessLimit: state.twoPhaseLimit,
+
+                    // When will the two-phase process end?
+                    twoPhaseProcessDeadline: new Date(state.twoPhaseEndMs),
+
+                    // The current date that must be updated periodically (so the property becomes reactive)
+                    currentDate: new Date()
                 },
                 computed: {
                     sendAdminEmailAsText: function() {
@@ -188,7 +197,7 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                                     window.location.href = "/finish"
                                 }
                             }
-                            else if (response.status = 409) {
+                            else if (response.status == 409) {
                                 response.json().then(function(offending) {
                                     var taken = offending.join(", ")
                                     window.alert(
@@ -197,10 +206,25 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                                     )
                                 })
                             }
+                            else if (response.status == 400) {
+                                response.text().then(function(description) {
+                                    window.alert(description);
+                                });
+                            }
                         })
+                    },
+                    beforeActivityDeadline: function() {
+                        return this.twoPhaseProcessDeadline > this.currentDate;
+                    },
+                    atMaximumActivities: function() {
+                        return this.beforeActivityDeadline() && this.twoPhaseProcessLimit <= this.pupilGroups.length
                     }
                 }
             });
+
+            // Make time reactive
+            setInterval(function() { app.currentDate = new Date() }, 1000);
+
 
             // Vacancy checks
             function checkVacancy() {

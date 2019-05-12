@@ -10,6 +10,7 @@ import si.francebevk.db.tables.records.ActivityRecord
 import si.francebevk.db.withTransaction
 import si.francebevk.dto.*
 import si.francebevk.ratpack.*
+import java.time.Instant;
 
 /**
  * The main activity setting page.
@@ -40,7 +41,19 @@ object MainPage : Action<Chain> {
         val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }!!
         val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
         val deadline = ctx.get(Deadlines::class.java)
-        ctx.render(Main.template(pupil.name, translatePupilClass(pupil.pupilGroup, klass.year), leaveTimesRelevant(klass.year), deadline.endDateString, deadline.endTimeString, isAdminRequest(ctx)))
+        val twoPhaseProcess = ctx.get(TwoPhaseProcess::class.java)
+        ctx.render(Main.template(
+            pupil.name,
+            translatePupilClass(pupil.pupilGroup, klass.year),
+            leaveTimesRelevant(klass.year),
+            deadline.endDateString,
+            deadline.endTimeString,
+            twoPhaseProcess.isInEffect,
+            twoPhaseProcess.limit,
+            twoPhaseProcess.endDateString,
+            twoPhaseProcess.endTimeString,
+            isAdminRequest(ctx))
+        )
     }
 
     private fun endHtml(ctx: Context) {
@@ -56,6 +69,7 @@ object MainPage : Action<Chain> {
         val selected = await { ActivityDAO.getSelectedActivityIds(ctx.user.id.toLong(), ctx.jooq) }
         val activities = await { ActivityDAO.getActivitiesForClass(klassRecord.year, ctx.jooq) }
         val activitiesPayload = activities.map { it.toDTO(selected.contains(it.id)) }
+        val twoPhaseProcess = ctx.get(TwoPhaseProcess::class.java)
 
         val payload = PupilState(
             activitiesPayload,
@@ -64,7 +78,9 @@ object MainPage : Action<Chain> {
             pupil.leaveTue,
             pupil.leaveWed,
             pupil.leaveThu,
-            pupil.leaveFri
+            pupil.leaveFri,
+            twoPhaseProcess.limit,
+            twoPhaseProcess.end.toEpochMilli()
         )
 
         ctx.renderJson(payload)
@@ -76,6 +92,12 @@ object MainPage : Action<Chain> {
         val pupilId = ctx.user.id.toLong()
         val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
         val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }!!
+
+        val twoPhaseProcess = ctx.get(TwoPhaseProcess::class.java)
+        if (twoPhaseProcess.isInEffect && payload.selectedActivities.size > twoPhaseProcess.limit) {
+            ctx.response.status(400).send("Ne morete še izbirati poljubnega števila aktivnosti - preverite, če imate na vašem računalniku pravilno nastavljeno uro!")
+            return@async null
+        }
 
         if (isAdminRequest(ctx)) {
             LOG.info("Administrator storing activities for pupil ${pupil.id}")

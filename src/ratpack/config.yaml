@@ -26,6 +26,6 @@ admin:
     password: "šola"
 
 twoPhaseProcess:
-    limit: 2
+    limit: 1
     timezone: Europe/Ljubljana
-    endAt: 2019-06-10T12:00
+    endAt: 2019-05-12T21:08
