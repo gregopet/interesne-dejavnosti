@@ -149,7 +149,7 @@ class Admin(config: AdminConfig) : Action<Chain> {
         val emailsToSend = await {
             ctx.jooq.selectCount().from(PUPIL).where(PUPIL.WELCOME_EMAIL_SENT.eq(false)).fetchOne().value1()
         }
-        ctx.render(WelcomeEmails.template(emailsToSend, "/admin/welcome-emails"))
+        ctx.render(WelcomeEmails.template("vabilo v sistem", emailsToSend, "/admin/welcome-emails"))
     }
 
     fun sendEmails(ctx: Context) = ctx.async {
@@ -194,7 +194,7 @@ class Admin(config: AdminConfig) : Action<Chain> {
         val emailsToSend = await {
             ctx.jooq.selectCount().from(PUPIL).where(PUPIL.WELCOME_EMAIL_SENT.eq(false)).fetchOne().value1()
         }
-        ctx.render(WelcomeEmails.template(emailsToSend, "/admin/reopening-emails"))
+        ctx.render(WelcomeEmails.template("ponovna otvoritev prijav", emailsToSend, "/admin/reopening-emails"))
     }
 
     fun sendReopeningEmails(ctx: Context) = ctx.async {
