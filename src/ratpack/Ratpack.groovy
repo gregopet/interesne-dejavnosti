@@ -31,6 +31,7 @@ import si.francebevk.interesnedejavnosti.EmailDispatch
 import si.francebevk.interesnedejavnosti.FileConfig
 import si.francebevk.interesnedejavnosti.LoginPage
 import si.francebevk.interesnedejavnosti.MainPage
+import si.francebevk.interesnedejavnosti.TwoPhaseProcess
 import si.francebevk.ratpack.error.UncaughtErrorHandler
 import si.francebevk.ratpack.RockerRenderer
 
@@ -62,6 +63,7 @@ ratpack {
             bindInstance FileConfig, config.get("/files", FileConfig)
             bindInstance Deadlines, config.get("/deadlines", Deadlines)
             bindInstance AdminConfig, config.get("/admin", AdminConfig)
+            bindInstance TwoPhaseProcess, config.get("/twoPhaseProcess", TwoPhaseProcess)
             module HikariDataSourceFactory
             add HikariShutdownService.INSTANCE
 
