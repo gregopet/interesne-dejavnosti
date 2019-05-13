@@ -22,7 +22,8 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
     function(response) {
         response.json().then(function(state) {
             var sortedActivities = _.sortBy(state.activities, function(a) { return a.name.toLowerCase() })
-            _.each(sortedActivities, function(act) { 
+            _.each(sortedActivities, function(act) {
+                // display something until the vacancy comes through
                 act.freePlaces = 3
                 act.currentlyMine = null
             })
@@ -52,11 +53,11 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
 
                     // What leave times did the student have pre-selected?
                     leaveTimes: {
-                        monday: state.monday || leaveTimeRange[0],
-                        tuesday: state.tuesday || leaveTimeRange[0],
-                        wednesday: state.wednesday || leaveTimeRange[0],
-                        thursday: state.thursday || leaveTimeRange[0],
-                        friday: state.friday || leaveTimeRange[0]
+                        monday: state.monday,
+                        tuesday: state.tuesday,
+                        wednesday: state.wednesday,
+                        thursday: state.thursday,
+                        friday: state.friday
                     },
 
                     // Are we currently displaying a conflict?

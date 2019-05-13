@@ -46,11 +46,11 @@
                             </a>
                         </td>
                         @if(pupil.getPupil().getExtendedStay()) {
-                            <td>@if(pupil.getPupil().getLeaveMon() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveMon()) }</td>
-                            <td>@if(pupil.getPupil().getLeaveTue() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveTue()) }</td>
-                            <td>@if(pupil.getPupil().getLeaveWed() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveWed()) }</td>
-                            <td>@if(pupil.getPupil().getLeaveThu() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveThu()) }</td>
-                            <td>@if(pupil.getPupil().getLeaveFri() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveFri()) }</td>
+                            <td>@if(pupil.getPupil().getLeaveMon() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveMon()) } else { Po pouku }</td>
+                            <td>@if(pupil.getPupil().getLeaveTue() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveTue()) } else { Po pouku }</td>
+                            <td>@if(pupil.getPupil().getLeaveWed() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveWed()) } else { Po pouku }</td>
+                            <td>@if(pupil.getPupil().getLeaveThu() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveThu()) } else { Po pouku }</td>
+                            <td>@if(pupil.getPupil().getLeaveFri() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveFri()) } else { Po pouku }</td>
                         } else {
                             <td colspan="5" class="text-center"><i>Ni v podaljšanem bivanju</i></td>
                         }
