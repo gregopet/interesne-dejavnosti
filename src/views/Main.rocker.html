@@ -11,7 +11,7 @@
     <style type="text/css">
 		body { margin-bottom: 1.5em }
 		.leave-form input { max-width: 5em; }
-
+        [v-cloak] {display: none}
 	</style>
 
 </head>
@@ -83,7 +83,7 @@
             <h4 class="card-title">Odhodi iz šole</h4>
             <div class="form-group">
                 <label for="extended_stay_select">Prosimo, izberite, ali bo vaš otrok vključen v podaljšano bivanje:</label>
-                <select class="form-control" v-model="extendedStay" id="extended_stay_select">
+                <select class="form-control" v-model="extendedStay" id="extended_stay_select" v-cloak>
                     <option v-bind:value="false">Ne, moj otrok ne bo udeležen v podaljšanem bivanju</option>
                     <option v-bind:value="true">Da, moj otrok bo udeležen v podaljšanem bivanju</option>
                 </select>
@@ -94,7 +94,7 @@
                 v podaljšano bivanje.
             </p>
 
-            <form class="leave-form" v-if="extendedStay">
+            <form class="leave-form" v-if="extendedStay" v-cloak>
                 <div class="form-group row">
                     <label for="pon" class="col-sm-2 col-form-label col-form-label-sm">Ponedeljek</label>
                     <div class="col-sm-10">
@@ -152,7 +152,7 @@
 
             <div class="row">
                 <div class="col-md-7">
-                    <div class="form">
+                    <div class="form" v-cloak>
                         <div class="form-group">
                             <select class="form-control" id="izbirnik-opisov" v-model="currentGroup">
                                 <option v-for="group in groups" v-bind:value="group"> {{ group.name }}</option>
@@ -208,7 +208,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4 offset-md-1">
+                <div class="col-md-4 offset-md-1" v-cloak>
                     <div v-if="pupilGroups.length == 0" class="alert alert-danger" role="alert">
                         <strong>Pozor!</strong> Trenutno niste izbrali še nobene dejavnosti!
                         <hr>
@@ -234,7 +234,7 @@
         </div>
     </div>
 
-    <div class="row mt-4">
+    <div class="row mt-4" v-cloak>
         <div class="col-6">
             @if (isAdminRequest) {
                 <button class="btn btn-block" @@click.prevent="save()" :disabled="formIsSending" v-bind:class="{ 'btn-warning': adminNotifyViaEmail, 'btn-danger': !adminNotifyViaEmail }">Shrani in {{sendAdminEmailAsText}}</button>
