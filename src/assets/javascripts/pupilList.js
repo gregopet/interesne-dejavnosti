@@ -33,7 +33,10 @@ new Vue({
     data: {
         search: '',
         pupilEvents: [],
-        pupilEventsForPupil: ""
+        pupilEventsForPupil: "",
+        editedPupil: null,
+        errorLoadingPupil: false,
+        savingPupil: true
     },
     methods: {
         matchesFilter: function(klass, name) {
@@ -83,6 +86,48 @@ new Vue({
                 case 'submit': return adminType + 'table-success';
                 case 'failed_submit': return adminType + 'table-danger';
             }
+        },
+
+        /** Closes the pupil editing dialog */
+        closeDialog: function() {
+            // TODO
+        },
+
+        /** Opens the pupil editing dialog */
+        editPupil: function(pupilId) {
+            var vue = this;
+            vue.editedPupil = null;
+            vue.loadingPupil = true;
+            vue.savingPupil = false;
+            fetch('/admin/pupil-editor/' + pupilId, { cache: 'no-cache', credentials: 'include' }).then(function(response) {
+                if (response.ok) {
+                    response.json().then( function(pupil) {
+                        while(pupil.emails.length < 2) {
+                            pupil.emails.push("");
+                        }
+                        vue.editedPupil = pupil;
+                    });
+                }
+            });
+            $(vue.$refs.pupilEditDialog).modal()
+        },
+        savePupil: function(editedPupil) {
+            var vue = this;
+            vue.savingPupil = true;
+            fetch('/admin/pupil-editor/' + editedPupil.id, {
+                cache: 'no-cache',
+                credentials: 'include',
+                method: 'POST',
+                headers: new Headers({'content-type': 'application/json'}),
+                body: JSON.stringify(editedPupil),
+            }).then(function(response) {
+                if (response.ok) {
+                    $(vue.$refs.pupilEditDialog).modal('hide');
+                    window.location.reload(false);
+                } else {
+                    vue.errorLoadingPupil = true;
+                }
+            })
         }
     }
 });

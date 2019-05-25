@@ -9,12 +9,17 @@ import org.pac4j.core.authorization.Authorizer
 import org.pac4j.http.client.indirect.IndirectBasicAuthClient
 import org.pac4j.http.profile.HttpProfile
 import org.slf4j.LoggerFactory
+import ratpack.exec.Blocking
 import ratpack.func.Action
+import ratpack.func.Block
 import ratpack.handling.Chain
 import ratpack.handling.Context
+import ratpack.jackson.Jackson.fromJson
+import ratpack.jackson.Jackson.jsonNode
 import ratpack.pac4j.RatpackPac4j
 import si.francebevk.db.Tables.*
 import si.francebevk.db.tables.records.ActivityRecord
+import si.francebevk.db.tables.records.PupilRecord
 import si.francebevk.ratpack.async
 import si.francebevk.ratpack.await
 import si.francebevk.ratpack.jooq
@@ -55,6 +60,10 @@ class Admin(config: AdminConfig) : Action<Chain> {
         get("stats", ::stats)
         get("planner", ::planningYaml)
         get("activity/:pupilId:\\d+") { ctx -> activity(ctx.allPathTokens.get("pupilId")!!.toLong(), ctx) }
+        path("pupil-editor/:pupilId:\\d+") { it.byMethod { m ->
+            m.get { ctx -> getPupil(ctx.allPathTokens.get("pupilId")!!.toLong(), ctx) }
+            m.post { ctx -> savePupil(ctx.allPathTokens.get("pupilId")!!.toLong(), ctx) }
+        } }
         path("welcome-emails") { it.byMethod { m ->
             m.get(::showEmails)
             m.post(::sendEmails)
@@ -77,6 +86,29 @@ class Admin(config: AdminConfig) : Action<Chain> {
                 }
             }
             chain.insert(MainPage)
+        }
+    }
+
+    fun getPupil(pupilId: Long, ctx: Context) = ctx.async {
+        val record = await { ctx.jooq.select(PUPIL.ID, PUPIL.ACCESS_CODE, PUPIL.NAME, PUPIL.PUPIL_GROUP, PUPIL.EMAILS).from(PUPIL).where(PUPIL.ID.eq(pupilId)).fetchOne() }
+        if (record == null) {
+            ctx.response.status(404).send()
+        } else {
+            ctx.response.contentType("application/json").send(record.formatJSON(JSONFormat.DEFAULT_FOR_RECORDS.recordFormat(JSONFormat.RecordFormat.OBJECT)))
+        }
+    }
+    fun savePupil(pupilId: Long, ctx: Context) {
+        ctx.parse(jsonNode()).then { pupil ->
+            Blocking.exec {
+                ctx.jooq.update(PUPIL)
+                .set(PUPIL.NAME, pupil.get("name").asText())
+                .set(PUPIL.PUPIL_GROUP, pupil.get("pupil_group").asText())
+                .set(PUPIL.EMAILS, pupil.get("emails").elements().asSequence().map { it.asText().trim() }.filter { !it.isBlank() }.asIterable().toList().toTypedArray())
+                .where(PUPIL.ID.eq(pupilId))
+                .execute()
+
+                ctx.response.send()
+            }
         }
     }
 
@@ -104,7 +136,11 @@ class Admin(config: AdminConfig) : Action<Chain> {
             ctx.jooq.selectFrom(ACTIVITY).fetch().intoMap(ActivityRecord::getId)
         }
 
-        ctx.render(PupilList.template(pupils, activities))
+        val klasses = await {
+            ctx.jooq.select(PUPIL_GROUP.NAME).from(PUPIL_GROUP).orderBy(PUPIL_GROUP.NAME).fetch(PUPIL_GROUP.NAME)
+        }
+
+        ctx.render(PupilList.template(pupils, activities, klasses))
     }
 
     fun summaryByActivity(ctx: Context) = ctx.async {
