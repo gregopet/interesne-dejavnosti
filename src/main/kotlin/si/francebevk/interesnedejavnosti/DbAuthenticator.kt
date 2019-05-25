@@ -43,7 +43,7 @@ class DbAuthenticator(private val jooq: DSLContext) : UsernamePasswordAuthentica
 
 fun createUserProfile(user: PupilRecord) = HttpProfile().also {
     it.setId(user.id.toString())
-    it.addAttribute(DbAuthenticator.PUPIL_NAME, user.name)
+    it.addAttribute(DbAuthenticator.PUPIL_NAME, "${user.firstName} ${user.lastName}")
     it.addAttribute(DbAuthenticator.PUPIL_CLASS, user.pupilGroup)
 }
 

@@ -23,7 +23,7 @@
                 @for(pupil: pupils.get(activity.getId())) {
                     <tr>
                         <td>@pupil.getPupilGroup()</td>
-                        <td>@pupil.getName()</td>
+                        <td>@pupil.getFirstName() @pupil.getLastName()</td>
                     </tr>
                 }
             </tbody>

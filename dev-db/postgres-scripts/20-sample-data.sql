@@ -2,12 +2,12 @@ begin;
 
 INSERT INTO pupil_group(name, year) values ('1A', 1), ('2A', 2), ('3A', 3), ('4A', 4), ('5A', 5);
 
-INSERT INTO pupil(name, pupil_group, access_code, extended_stay) values
-	('Leon Uršič', '1A', '1', true),
-	('Jana Jazbec', '2A', '2', true),
-	('Branka Potočnik', '3A', '3', true),
-	('Vid Bogataj', '4A', '4', true),
-	('Albina Sušnik', '5A', '5', true);
+INSERT INTO pupil(first_name, last_name, pupil_group, access_code, extended_stay) values
+	('Leon','Uršič', '1A', '1', true),
+	('Jana','Jazbec', '2A', '2', true),
+	('Branka','Potočnik', '3A', '3', true),
+	('Vid','Bogataj', '4A', '4', true),
+	('Albina','Sušnik', '5A', '5', true);
 
 INSERT INTO activity(id, name, leader, available_to_years, max_pupils, slots, description) VALUES
 (1, 'Judo', 'Jožef Kokolj', ARRAY[1, 2, 3], 20, ARRAY[
@@ -33,23 +33,23 @@ INSERT INTO activity(id, name, leader, available_to_years, max_pupils, slots, de
 
 INSERT INTO pupil_group(name, year) values ('6A', 6), ('7A', 7), ('8A', 8), ('9A', 9);
 
-INSERT INTO pupil(name, pupil_group, access_code, extended_stay) values
-	('Franc Hribar', '6A', '6', false),
-	('Marija Fras', '7A', '7', false),
-	('Ana Vidmar', '8A', '8', false),
-	('Anton Turk', '9A', '9', false);
+INSERT INTO pupil(first_name, last_name, pupil_group, access_code, extended_stay) values
+	('Franc','Hribar', '6A', '6', false),
+	('Marija','Fras', '7A', '7', false),
+	('Ana','Vidmar', '8A', '8', false),
+	('Anton','Turk', '9A', '9', false);
 
 
 -- More data for testing reports
-INSERT INTO pupil(id, name, pupil_group, extended_stay, leave_mon, leave_tue, leave_wed) values 
-(100, 'Maja Vidmar', '1A', true, 1200, 1200, 1200),
-(101, 'Kaja Ignac', '1A', true, 1020, 1020, 1020),
-(102, 'Borut Košir', '1A', true, 900, 1020, 1200),
-(103, 'Jaka Glaznik', '1A', true, 960, 900, 840),
-(200, 'Jože Kurešnik', '2A', true, 960, 960, 960),
-(201, 'Matija Korvin', '2A', true, 900, 960, 900),
-(202, 'Mimi Blaznik', '2A', true, 840, 900, 960),
-(203, 'Mateja Močnik', '2A', true, 960, 900, 840);
+INSERT INTO pupil(id, first_name, last_name, pupil_group, extended_stay, leave_mon, leave_tue, leave_wed) values
+(100, 'Maja','Vidmar', '1A', true, 1200, 1200, 1200),
+(101, 'Kaja','Ignac', '1A', true, 1020, 1020, 1020),
+(102, 'Borut','Košir', '1A', true, 900, 1020, 1200),
+(103, 'Jaka','Glaznik', '1A', true, 960, 900, 840),
+(200, 'Jože','Kurešnik', '2A', true, 960, 960, 960),
+(201, 'Matija','Korvin', '2A', true, 900, 960, 900),
+(202, 'Mimi','Blaznik', '2A', true, 840, 900, 960),
+(203, 'Mateja','Močnik', '2A', true, 960, 900, 840);
 
 INSERT INTO pupil_activity(pupil_id, activity_id) VALUES
 (100, 1),

@@ -39,7 +39,7 @@ import si.francebevk.db.tables.records.PupilRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Pupil extends TableImpl<PupilRecord> {
 
-    private static final long serialVersionUID = -1794617746;
+    private static final long serialVersionUID = 2016198846;
 
     /**
      * The reference instance of <code>public.pupil</code>
@@ -58,11 +58,6 @@ public class Pupil extends TableImpl<PupilRecord> {
      * The column <code>public.pupil.id</code>. The pupil's unique ID
      */
     public final TableField<PupilRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('pupil_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "The pupil's unique ID");
-
-    /**
-     * The column <code>public.pupil.name</code>. The pupil's name
-     */
-    public final TableField<PupilRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "The pupil's name");
 
     /**
      * The column <code>public.pupil.pupil_group</code>. The pupil's class
@@ -118,6 +113,16 @@ public class Pupil extends TableImpl<PupilRecord> {
      * The column <code>public.pupil.welcome_email_sent</code>. Set to true once an email was successfuly sent to this pupil
      */
     public final TableField<PupilRecord, Boolean> WELCOME_EMAIL_SENT = createField("welcome_email_sent", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "Set to true once an email was successfuly sent to this pupil");
+
+    /**
+     * The column <code>public.pupil.first_name</code>. First name of the pupil
+     */
+    public final TableField<PupilRecord, String> FIRST_NAME = createField("first_name", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "First name of the pupil");
+
+    /**
+     * The column <code>public.pupil.last_name</code>. Last name of the pupil
+     */
+    public final TableField<PupilRecord, String> LAST_NAME = createField("last_name", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "Last name of the pupil");
 
     /**
      * Create a <code>public.pupil</code> table reference

@@ -39,7 +39,7 @@ new Vue({
         savingPupil: true
     },
     methods: {
-        matchesFilter: function(klass, name) {
+        matchesFilter: function(klass, firstName, lastName) {
             if (this.search == null || this.search.length == 0 || isWhitespace.test(this.search)) {
                 // no filter
                 return true;
@@ -58,7 +58,10 @@ new Vue({
                             return true;
                         }
                     } else {
-                        if (name.toLowerCase().indexOf(term) >= 0) {
+                        if (firstName.toLowerCase().indexOf(term) >= 0) {
+                            return true;
+                        }
+                        if (lastName.toLowerCase().indexOf(term) >= 0) {
                             return true;
                         }
                     }

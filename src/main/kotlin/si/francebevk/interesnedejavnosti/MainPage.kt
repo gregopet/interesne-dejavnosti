@@ -43,7 +43,7 @@ object MainPage : Action<Chain> {
         val deadline = ctx.get(Deadlines::class.java)
         val twoPhaseProcess = ctx.get(TwoPhaseProcess::class.java)
         ctx.render(Main.template(
-            pupil.name,
+            "${pupil.firstName} ${pupil.lastName}",
             translatePupilClass(pupil.pupilGroup, klass.year),
             leaveTimesRelevant(klass.year),
             deadline.endDateString,

@@ -90,7 +90,7 @@ class Admin(config: AdminConfig) : Action<Chain> {
     }
 
     fun getPupil(pupilId: Long, ctx: Context) = ctx.async {
-        val record = await { ctx.jooq.select(PUPIL.ID, PUPIL.ACCESS_CODE, PUPIL.NAME, PUPIL.PUPIL_GROUP, PUPIL.EMAILS).from(PUPIL).where(PUPIL.ID.eq(pupilId)).fetchOne() }
+        val record = await { ctx.jooq.select(PUPIL.ID, PUPIL.ACCESS_CODE, PUPIL.FIRST_NAME, PUPIL.LAST_NAME, PUPIL.PUPIL_GROUP, PUPIL.EMAILS).from(PUPIL).where(PUPIL.ID.eq(pupilId)).fetchOne() }
         if (record == null) {
             ctx.response.status(404).send()
         } else {
@@ -101,7 +101,8 @@ class Admin(config: AdminConfig) : Action<Chain> {
         ctx.parse(jsonNode()).then { pupil ->
             Blocking.exec {
                 ctx.jooq.update(PUPIL)
-                .set(PUPIL.NAME, pupil.get("name").asText())
+                .set(PUPIL.FIRST_NAME, pupil.get("first_name").asText())
+                .set(PUPIL.LAST_NAME, pupil.get("last_name").asText())
                 .set(PUPIL.PUPIL_GROUP, pupil.get("pupil_group").asText())
                 .set(PUPIL.EMAILS, pupil.get("emails").elements().asSequence().map { it.asText().trim() }.filter { !it.isBlank() }.asIterable().toList().toTypedArray())
                 .where(PUPIL.ID.eq(pupilId))
@@ -126,7 +127,7 @@ class Admin(config: AdminConfig) : Action<Chain> {
             ctx.jooq
             .select(subselect, *PUPIL.fields())
             .from(PUPIL)
-            .orderBy(PUPIL.PUPIL_GROUP, PUPIL.NAME)
+            .orderBy(PUPIL.PUPIL_GROUP, PUPIL.LAST_NAME, PUPIL.FIRST_NAME)
             .fetch {
                 PupilWithActivities(it.into(PUPIL), it.getValue(0) as Array<Long>)
             }
@@ -150,7 +151,7 @@ class Admin(config: AdminConfig) : Action<Chain> {
             .select()
             .from(PUPIL_ACTIVITY)
             .join(PUPIL).on(PUPIL_ACTIVITY.PUPIL_ID.eq(PUPIL.ID))
-            .orderBy(PUPIL.PUPIL_GROUP, PUPIL.NAME)
+            .orderBy(PUPIL.PUPIL_GROUP, PUPIL.LAST_NAME, PUPIL.FIRST_NAME)
             .fetchGroups(PUPIL_ACTIVITY.ACTIVITY_ID) {
                 it.into(PUPIL)
             }
@@ -192,19 +193,19 @@ class Admin(config: AdminConfig) : Action<Chain> {
         val emailConfig = ctx.get(EmailConfig::class.java)
         val fileConfig = ctx.get(FileConfig::class.java)
         val sentTo = await {
-            ctx.jooq.select(PUPIL.ID, PUPIL.EMAILS, PUPIL.ACCESS_CODE, PUPIL.NAME, PUPIL.PUPIL_GROUP, PUPIL_GROUP.YEAR)
+            ctx.jooq.select(PUPIL.ID, PUPIL.EMAILS, PUPIL.ACCESS_CODE, PUPIL.FIRST_NAME, PUPIL.LAST_NAME, PUPIL.PUPIL_GROUP, PUPIL_GROUP.YEAR)
             .from(PUPIL)
             .join(PUPIL_GROUP).on(PUPIL.PUPIL_GROUP.eq(PUPIL_GROUP.NAME))
             .where(PUPIL.WELCOME_EMAIL_SENT.eq(false))
             .orderBy(PUPIL.ID)
             .fetch { pupil ->
                 if (pupil.getValue(PUPIL.EMAILS).isNotEmpty()) {
-                    LOG.info("Sending welcome email to pupil ${pupil.getValue(PUPIL.ID)} ${pupil.getValue(PUPIL.NAME)} at emails ${pupil.getValue(PUPIL.EMAILS).joinToString()}")
+                    LOG.info("Sending welcome email to pupil ${pupil.getValue(PUPIL.ID)} ${pupil.getValue(PUPIL.FIRST_NAME)} ${pupil.getValue(PUPIL.FIRST_NAME)} at emails ${pupil.getValue(PUPIL.EMAILS).joinToString()}")
                     if (EmailDispatch.sendWelcomeEmail(
                         to = pupil.getValue(PUPIL.EMAILS),
                         pupilId = pupil.getValue(PUPIL.ID),
-                        pupilName = pupil.getValue(PUPIL.NAME),
-                        accessCode = pupil.getValue(PUPIL.ACCESS_CODE),
+                        pupilName = pupil.getValue(PUPIL.FIRST_NAME) + " " + pupil.getValue(PUPIL.LAST_NAME),
+                        accessCode = pupil.getValue(PUPIL.ACCESS_CODE) ?: "<ni kode - kontaktirajte šolo>",
                         pupilClass = MainPage.translatePupilClass(pupil.getValue(PUPIL.PUPIL_GROUP), pupil.getValue(PUPIL_GROUP.YEAR)),
                         leaveTimesRelevant = MainPage.leaveTimesRelevant(pupil.getValue(PUPIL_GROUP.YEAR)),
                         config = emailConfig,
@@ -212,7 +213,7 @@ class Admin(config: AdminConfig) : Action<Chain> {
                         deadlines = ctx.get(Deadlines::class.java),
                         jooq = ctx.jooq
                     )) {
-                        "${pupil.getValue(PUPIL.NAME)}: ${pupil.getValue(PUPIL.EMAILS).joinToString()}"
+                        "${pupil.getValue(PUPIL.FIRST_NAME)} ${pupil.getValue(PUPIL.LAST_NAME)}: ${pupil.getValue(PUPIL.EMAILS).joinToString()}"
                     } else {
                         null
                     }
@@ -237,18 +238,18 @@ class Admin(config: AdminConfig) : Action<Chain> {
         val emailConfig = ctx.get(EmailConfig::class.java)
         val fileConfig = ctx.get(FileConfig::class.java)
         val sentTo = await {
-            ctx.jooq.select(PUPIL.ID, PUPIL.EMAILS, PUPIL.ACCESS_CODE, PUPIL.NAME, PUPIL.PUPIL_GROUP, PUPIL_GROUP.YEAR)
+            ctx.jooq.select(PUPIL.ID, PUPIL.EMAILS, PUPIL.ACCESS_CODE, PUPIL.FIRST_NAME, PUPIL.LAST_NAME, PUPIL.PUPIL_GROUP, PUPIL_GROUP.YEAR)
             .from(PUPIL)
             .join(PUPIL_GROUP).on(PUPIL.PUPIL_GROUP.eq(PUPIL_GROUP.NAME))
             .where(PUPIL.WELCOME_EMAIL_SENT.eq(false))
             .orderBy(PUPIL.ID)
             .fetch { pupil ->
                 if (pupil.getValue(PUPIL.EMAILS).isNotEmpty()) {
-                    LOG.info("Sending reopening email to pupil ${pupil.getValue(PUPIL.ID)} ${pupil.getValue(PUPIL.NAME)} at emails ${pupil.getValue(PUPIL.EMAILS).joinToString()}")
+                    LOG.info("Sending reopening email to pupil ${pupil.getValue(PUPIL.ID)} ${pupil.getValue(PUPIL.FIRST_NAME)} ${pupil.getValue(PUPIL.LAST_NAME)} at emails ${pupil.getValue(PUPIL.EMAILS).joinToString()}")
                     if (EmailDispatch.sendReopeningEmail(
                         to = pupil.getValue(PUPIL.EMAILS),
                         pupilId = pupil.getValue(PUPIL.ID),
-                        pupilName = pupil.getValue(PUPIL.NAME),
+                        pupilName = pupil.getValue(PUPIL.FIRST_NAME) + " " + pupil.getValue(PUPIL.LAST_NAME),
                         accessCode = pupil.getValue(PUPIL.ACCESS_CODE),
                         pupilClass = MainPage.translatePupilClass(pupil.getValue(PUPIL.PUPIL_GROUP), pupil.getValue(PUPIL_GROUP.YEAR)),
                         leaveTimesRelevant = MainPage.leaveTimesRelevant(pupil.getValue(PUPIL_GROUP.YEAR)),
@@ -256,7 +257,7 @@ class Admin(config: AdminConfig) : Action<Chain> {
                         fileConfig = fileConfig,
                         jooq = ctx.jooq
                     )) {
-                        "${pupil.getValue(PUPIL.NAME)}: ${pupil.getValue(PUPIL.EMAILS).joinToString()}"
+                        "${pupil.getValue(PUPIL.FIRST_NAME)} ${pupil.getValue(PUPIL.LAST_NAME)}: ${pupil.getValue(PUPIL.EMAILS).joinToString()}"
                     } else {
                         null
                     }
@@ -321,11 +322,11 @@ class Admin(config: AdminConfig) : Action<Chain> {
         }
 
         output.appendln("pupils:")
-        val pupils = await { ctx.jooq.selectFrom(PUPIL).orderBy(PUPIL.NAME).fetch() }
+        val pupils = await { ctx.jooq.selectFrom(PUPIL).orderBy(PUPIL.LAST_NAME, PUPIL.FIRST_NAME).fetch() }
         val pupilActivities = await { ctx.jooq.selectFrom(PUPIL_ACTIVITY).fetch() }.groupBy { it.pupilId }
         val activityById = activities.associateBy { it.id }
         pupils.forEach { pupil ->
-            output.appendln("- name: ${pupil.name}")
+            output.appendln("- name: ${pupil.firstName} ${pupil.lastName}")
             output.appendln("  klass: ${pupil.pupilGroup}")
 
             val selectedActivities = pupilActivities.get(pupil.id)

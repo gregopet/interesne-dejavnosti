@@ -37,18 +37,18 @@
             </thead>
             <tbody>
                 @for(pupil : pupils) {
-                    <tr v-show="matchesFilter('@escapeEcmaScript(pupil.getPupil().getPupilGroup())', '@escapeEcmaScript(pupil.getPupil().getName())')">
+                    <tr v-show="matchesFilter('@escapeEcmaScript(pupil.getPupil().getPupilGroup())', '@escapeEcmaScript(pupil.getPupil().getFirstName())', '@escapeEcmaScript(pupil.getPupil().getLastName())')">
                         <td>@pupil.getPupil().getPupilGroup()</td>
                         <td>
                             <div style="display: flex; justify-content: space-between">
-                                <a href="/admin/pupil/@pupil.getPupil().getId()/">@pupil.getPupil().getName()</a>
+                                <a href="/admin/pupil/@pupil.getPupil().getId()/">@pupil.getPupil().getFirstName() @pupil.getPupil().getLastName()</a>
                                 <a href="#" @@click.prevent="editPupil(@pupil.getPupil().getId())">
                                     <i class="fas fa-edit"></i>
                                 </a>
                             </div>
                         </td>
                         <td>
-                            <a href="#" @@click.prevent="showEvents(@pupil.getPupil().getId(), '@escapeEcmaScript(pupil.getPupil().getName())')">
+                            <a href="#" @@click.prevent="showEvents(@pupil.getPupil().getId(), '@escapeEcmaScript(pupil.getPupil().getFirstName()) @escapeEcmaScript(pupil.getPupil().getLastName())')">
                                 @if(pupil.getPupil().getLastLogin() != null) { Da } else { <span class="text-danger">Ne</span> }
                             </a>
                         </td>
@@ -117,7 +117,7 @@
                 <div class="modal-content">
                     <div v-if="editedPupil">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">{{ editedPupil.name }}</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">{{ editedPupil.firstName }} {{ editedPupil.lastName }}</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close" @@click.prevent="closeDialog()" v-if="!savingPupil">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -125,7 +125,12 @@
                         <div class="modal-body">
                             <div class="form-group">
                                 <label for="name">Ime</label>
-                                <input class="form-control" id="name" v-model="editedPupil.name">
+                                <input class="form-control" id="name" v-model="editedPupil.first_name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="surname">Priimek</label>
+                                <input class="form-control" id="surname" v-model="editedPupil.last_name">
                             </div>
 
                             <div class="form-group">
