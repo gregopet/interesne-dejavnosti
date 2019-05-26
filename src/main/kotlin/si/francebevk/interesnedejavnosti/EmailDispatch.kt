@@ -108,7 +108,7 @@ object EmailDispatch {
      * Sends the confirmation mail once people have finished editing the page.
      */
     fun sendConfirmationMail(to: Array<String>, pupilId: Long, jooq: DSLContext, pupilName: String, pupilClass: String, leaveTimes: PupilSettings, activities: List<Activity>, leaveTimesRelevant: Boolean, config: EmailConfig) {
-        if (!skipEmails) {
+        if (!skipEmails && to.isNotEmpty()) {
             try {
                 LOG.info("Sending confirmation email to ${to.joinToString()}")
                 val message = config.startNewMessage()
