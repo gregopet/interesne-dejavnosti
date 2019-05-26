@@ -28,6 +28,9 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                 act.currentlyMine = null
             })
             var leaveTimeRange = [775, 825, 875, 930, 980, 1020]
+            if (!state.authorizedPersons || state.authorizedPersons.length == 0) {
+                state.authorizedPersons = [{}]; // ensure one blank row ready for input
+            }
 
             var app = new Vue({
                 el: '#app',
@@ -78,7 +81,10 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                     twoPhaseProcessDeadline: new Date(state.twoPhaseEndMs),
 
                     // The current date that must be updated periodically (so the property becomes reactive)
-                    currentDate: new Date()
+                    currentDate: new Date(),
+
+                    // Persons authorized to take children from school
+                    authorizedPersons: state.authorizedPersons
                 },
                 computed: {
                     sendAdminEmailAsText: function() {
@@ -94,6 +100,15 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                     'leaveTimes.friday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
                 },
                 methods: {
+                    addPerson: function() {
+                        this.authorizedPersons.push({});
+                    },
+                    removePerson: function(idx) {
+                        this.authorizedPersons.splice(idx, 1);
+                        if (this.authorizedPersons.length == 0) {
+                            this.authorizedPersons.push({});
+                        }
+                    },
                     logout: function() {
                         if (confirm("Ste prepričani da želite zapreti stran, ne da bi shranili spremembe?")) {
                             window.location.href = "/logout"
@@ -174,7 +189,8 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                             wednesday: this.leaveTimes.wednesday,
                             thursday: this.leaveTimes.thursday,
                             friday: this.leaveTimes.friday,
-                            notifyViaEmail: this.adminNotifyViaEmail
+                            notifyViaEmail: this.adminNotifyViaEmail,
+                            authorizedPersons: this.authorizedPersons
                          }
                         this.formIsSending = true
                         var that = this

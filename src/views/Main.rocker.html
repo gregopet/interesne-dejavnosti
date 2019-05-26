@@ -143,22 +143,28 @@
             </form>
 
             <h5>Želite pooblastiti dodatne osebe, ki smejo pospremiti otroka iz šole?</h5>
-            <form>
-                <div class="form-row">
+            <div class="form" v-cloak>
+                <div class="form-row mb-2" v-for="(person, index) in authorizedPersons">
                     <div class="col">
-                        <input type="text" class="form-control" placeholder="Ime">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Ime in priimek" v-model="person.name">
+                        </div>
                     </div>
-                    <div class="col">
-                        <select class="form-control">
-                            <option selected disabled>Sorodstveno razmerje</option>
-                            <option>Sestra / brat</option>
-                            <option>Babica / dedek</option>
-                            <option>Teta / stric</option>
-                            <option>Druga pooblaščena oseba</option>
+                    <div class="col-sm-auto">
+                        <select class="form-control" v-model="person.type">
+                            <option :value="undefined" disabled>Sorodstveno razmerje</option>
+                            <option value="sibling">Sestra / brat</option>
+                            <option value="grandparent">Babica / dedek</option>
+                            <option value="aunt_uncle">Teta / stric</option>
+                            <option value="other">Druga pooblaščena oseba</option>
                         </select>
                     </div>
+                    <div class="col">
+                        <button class="btn btn-outline-danger" type="button" @@click="removePerson(index)">Odstrani</button>
+                    </div>
                 </div>
-            </form>
+                <button class="btn btn-link" @@click.prevent="addPerson()">Dodaj osebo</button>
+            </div>
         </div>
     </div>
     }

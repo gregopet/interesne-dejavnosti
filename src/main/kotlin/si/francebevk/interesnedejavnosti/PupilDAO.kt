@@ -1,8 +1,13 @@
 package si.francebevk.interesnedejavnosti
 
 import org.jooq.DSLContext
+import si.francebevk.db.Tables.AUTHORIZED_COMPANION
 import si.francebevk.db.Tables.PUPIL
+import si.francebevk.db.enums.AuthorizedPersonType
+import si.francebevk.db.tables.AuthorizedCompanion
+import si.francebevk.db.tables.records.AuthorizedCompanionRecord
 import si.francebevk.db.tables.records.PupilRecord
+import si.francebevk.dto.AuthorizedPerson
 import java.time.OffsetDateTime
 
 object PupilDAO {
@@ -58,5 +63,27 @@ object PupilDAO {
     /** Updates the pupil with the [pupilId], marking that the email was sent */
     fun updateEmailSent(pupilId: Long, jooq: DSLContext) {
         jooq.update(PUPIL).set(PUPIL.WELCOME_EMAIL_SENT, true).where(PUPIL.ID.eq(pupilId)).execute()
+    }
+
+    /** Fetch all the persons authorized to pick this pupil up from school */
+    fun fetchAuthorizedPersons(pupilId: Long, jooq: DSLContext): List<AuthorizedPerson> = with(AUTHORIZED_COMPANION) {
+        jooq.select(NAME, TYPE).from(AUTHORIZED_COMPANION).where(PUPIL_ID.eq(pupilId)).orderBy(ID).fetch {
+            AuthorizedPerson(it.value1(), it.value2())
+        }
+    }
+
+    /** Store who can pick up the pupil */
+    fun storeAuthorizedPersons(authorizedPersons: List<AuthorizedPerson>?, pupilId: Long, jooq: DSLContext) = with(AUTHORIZED_COMPANION) {
+        jooq.deleteFrom(AUTHORIZED_COMPANION).where(PUPIL_ID.eq(pupilId)).execute()
+        val nonBlankPersons = authorizedPersons?.filter { !it.name.isNullOrBlank() } ?: emptyList()
+        if (nonBlankPersons.isNotEmpty()) {
+            jooq.insertInto(AUTHORIZED_COMPANION, PUPIL_ID, NAME, TYPE)
+            .apply {
+                nonBlankPersons.forEach { person ->
+                    values(pupilId, person.name ?: "", person.type ?: AuthorizedPersonType.other)
+                }
+            }
+            .execute()
+        }
     }
 }

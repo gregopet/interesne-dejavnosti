@@ -21,7 +21,8 @@ class PupilSettings(
     var wednesday: Short?,
     var thursday: Short?,
     var friday: Short?,
-    var notifyViaEmail: Boolean
+    var notifyViaEmail: Boolean,
+    var authorizedPersons: List<AuthorizedPerson>?
 ) {
     val monNice get() = format(monday)
     val tueNice get() = format(tuesday)

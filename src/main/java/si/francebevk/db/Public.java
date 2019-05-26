@@ -19,6 +19,7 @@ import org.jooq.impl.SchemaImpl;
 import si.francebevk.db.tables.Activity;
 import si.francebevk.db.tables.ActivityLog;
 import si.francebevk.db.tables.ActivitySlots;
+import si.francebevk.db.tables.AuthorizedCompanion;
 import si.francebevk.db.tables.DeparturesHourlyReport;
 import si.francebevk.db.tables.ErrorLog;
 import si.francebevk.db.tables.FlywaySchemaHistory;
@@ -43,7 +44,7 @@ import si.francebevk.db.udt.TimeSlot;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 349892006;
+    private static final long serialVersionUID = -72243996;
 
     /**
      * The reference instance of <code>public</code>
@@ -64,6 +65,11 @@ public class Public extends SchemaImpl {
      * All the various slots belonging to activities
      */
     public final ActivitySlots ACTIVITY_SLOTS = si.francebevk.db.tables.ActivitySlots.ACTIVITY_SLOTS;
+
+    /**
+     * The table <code>public.authorized_companion</code>.
+     */
+    public final AuthorizedCompanion AUTHORIZED_COMPANION = si.francebevk.db.tables.AuthorizedCompanion.AUTHORIZED_COMPANION;
 
     /**
      * A review of hourly activity per-class
@@ -127,6 +133,7 @@ public class Public extends SchemaImpl {
         return Arrays.<Sequence<?>>asList(
             Sequences.ACTIVITY_ID_SEQ,
             Sequences.ACTIVITY_LOG_ID_SEQ,
+            Sequences.AUTHORIZED_COMPANION_ID_SEQ,
             Sequences.ERROR_LOG_ID_SEQ,
             Sequences.PUPIL_ID_SEQ);
     }
@@ -143,6 +150,7 @@ public class Public extends SchemaImpl {
             Activity.ACTIVITY,
             ActivityLog.ACTIVITY_LOG,
             ActivitySlots.ACTIVITY_SLOTS,
+            AuthorizedCompanion.AUTHORIZED_COMPANION,
             DeparturesHourlyReport.DEPARTURES_HOURLY_REPORT,
             ErrorLog.ERROR_LOG,
             FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,

@@ -70,6 +70,7 @@ object MainPage : Action<Chain> {
         val activities = await { ActivityDAO.getActivitiesForClass(klassRecord.year, ctx.jooq) }
         val activitiesPayload = activities.map { it.toDTO(selected.contains(it.id)) }
         val twoPhaseProcess = ctx.get(TwoPhaseProcess::class.java)
+        val authorizedPersons = await { PupilDAO.fetchAuthorizedPersons(ctx.user.id.toLong(), ctx.jooq) }
 
         val payload = PupilState(
             activitiesPayload,
@@ -80,7 +81,8 @@ object MainPage : Action<Chain> {
             pupil.leaveThu,
             pupil.leaveFri,
             twoPhaseProcess.limit,
-            twoPhaseProcess.end.toEpochMilli()
+            twoPhaseProcess.end.toEpochMilli(),
+            authorizedPersons
         )
 
         ctx.renderJson(payload)
@@ -115,10 +117,11 @@ object MainPage : Action<Chain> {
                 ctx.jooq.withTransaction { t ->
                     ActivityDAO.storeSelectedActivityIds(pupilId, payload.selectedActivities, t)
                     if (payload.extendedStay) {
-                        PupilDAO.storeLeaveTimes(payload.monday, payload.tuesday, payload.wednesday, payload.thursday, payload.friday, pupilId, ctx.jooq)
+                        PupilDAO.storeLeaveTimes(payload.monday, payload.tuesday, payload.wednesday, payload.thursday, payload.friday, pupilId, t)
                     } else {
-                        PupilDAO.storeNonParticipation(pupilId, ctx.jooq)
+                        PupilDAO.storeNonParticipation(pupilId, t)
                     }
+                    PupilDAO.storeAuthorizedPersons(payload.authorizedPersons, pupilId, t)
                 }
             }
 

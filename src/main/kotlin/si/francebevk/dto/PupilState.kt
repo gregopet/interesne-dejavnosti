@@ -22,5 +22,6 @@ class PupilState(
     var thursday: Short?,
     var friday: Short?,
     var twoPhaseLimit: Int,
-    var twoPhaseEndMs: Long
+    var twoPhaseEndMs: Long,
+    var authorizedPersons: List<AuthorizedPerson>?
 )

@@ -9,6 +9,7 @@ import javax.annotation.Generated;
 import si.francebevk.db.tables.Activity;
 import si.francebevk.db.tables.ActivityLog;
 import si.francebevk.db.tables.ActivitySlots;
+import si.francebevk.db.tables.AuthorizedCompanion;
 import si.francebevk.db.tables.DeparturesHourlyReport;
 import si.francebevk.db.tables.ErrorLog;
 import si.francebevk.db.tables.FlywaySchemaHistory;
@@ -45,6 +46,11 @@ public class Tables {
      * All the various slots belonging to activities
      */
     public static final ActivitySlots ACTIVITY_SLOTS = si.francebevk.db.tables.ActivitySlots.ACTIVITY_SLOTS;
+
+    /**
+     * The table <code>public.authorized_companion</code>.
+     */
+    public static final AuthorizedCompanion AUTHORIZED_COMPANION = si.francebevk.db.tables.AuthorizedCompanion.AUTHORIZED_COMPANION;
 
     /**
      * A review of hourly activity per-class
