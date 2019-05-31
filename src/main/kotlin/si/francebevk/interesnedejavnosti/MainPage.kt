@@ -97,7 +97,7 @@ object MainPage : Action<Chain> {
 
         val twoPhaseProcess = ctx.get(TwoPhaseProcess::class.java)
         if (twoPhaseProcess.isInEffect && payload.selectedActivities.size > twoPhaseProcess.limit) {
-            ctx.response.status(400).send("Ne morete še izbirati poljubnega števila aktivnosti - preverite, če imate na vašem računalniku pravilno nastavljeno uro!")
+            ctx.response.status(400).send("Izbrali ste preveč aktivnosti - prosimo vas, da se omejite samo na ${twoPhaseProcess.limit}!")
             return@async null
         }
 
