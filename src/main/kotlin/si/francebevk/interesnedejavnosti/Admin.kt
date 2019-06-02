@@ -2,8 +2,7 @@ package si.francebevk.interesnedejavnosti
 
 import admin.*
 import org.jooq.JSONFormat
-import org.jooq.impl.DSL.select
-import org.jooq.impl.DSL.selectCount
+import org.jooq.impl.DSL.*
 import org.jooq.util.postgres.PostgresDSL
 import org.pac4j.core.authorization.Authorizer
 import org.pac4j.http.client.indirect.IndirectBasicAuthClient
@@ -64,13 +63,13 @@ class Admin(config: AdminConfig) : Action<Chain> {
             m.get { ctx -> getPupil(ctx.allPathTokens.get("pupilId")!!.toLong(), ctx) }
             m.post { ctx -> savePupil(ctx.allPathTokens.get("pupilId")!!.toLong(), ctx) }
         } }
-        path("welcome-emails") { it.byMethod { m ->
-            m.get(::showEmails)
-            m.post(::sendEmails)
+        path("welcome-emails/:vsi?") { it.byMethod { m ->
+            m.get { ctx -> showEmails(ctx.allPathTokens.get("vsi").isNullOrBlank(), ctx) }
+            m.post { ctx -> sendEmails(ctx.allPathTokens.get("vsi").isNullOrBlank(), ctx) }
         } }
-        path("reopening-emails") { it.byMethod { m ->
-            m.get(::showReopeningEmails)
-            m.post(::sendReopeningEmails)
+        path("reopening-emails/:vsi?") { it.byMethod { m ->
+            m.get { ctx -> showReopeningEmails(ctx.allPathTokens.get("vsi").isNullOrBlank(), ctx) }
+            m.post { ctx -> sendReopeningEmails(ctx.allPathTokens.get("vsi").isNullOrBlank(), ctx) }
         } }
 
         // Admins can emulate parents
@@ -182,21 +181,23 @@ class Admin(config: AdminConfig) : Action<Chain> {
         ctx.render(Stats.template(activities))
     }
 
-    fun showEmails(ctx: Context) = ctx.async {
+    fun showEmails(sendToAll: Boolean, ctx: Context) = ctx.async {
+        val condition = if (sendToAll) trueCondition() else PUPIL.WELCOME_EMAIL_SENT.eq(false)
         val emailsToSend = await {
-            ctx.jooq.selectCount().from(PUPIL).where(PUPIL.WELCOME_EMAIL_SENT.eq(false)).fetchOne().value1()
+            ctx.jooq.selectCount().from(PUPIL).where(condition).fetchOne().value1()
         }
-        ctx.render(WelcomeEmails.template("vabilo v sistem", emailsToSend, "/admin/welcome-emails"))
+        ctx.render(WelcomeEmails.template("vabilo v sistem", emailsToSend, "/" + ctx.request.path, sendToAll))
     }
 
-    fun sendEmails(ctx: Context) = ctx.async {
+    fun sendEmails(sendToAll: Boolean, ctx: Context) = ctx.async {
+        val condition = if (sendToAll) trueCondition() else PUPIL.WELCOME_EMAIL_SENT.eq(false)
         val emailConfig = ctx.get(EmailConfig::class.java)
         val fileConfig = ctx.get(FileConfig::class.java)
         val sentTo = await {
             ctx.jooq.select(PUPIL.ID, PUPIL.EMAILS, PUPIL.ACCESS_CODE, PUPIL.FIRST_NAME, PUPIL.LAST_NAME, PUPIL.PUPIL_GROUP, PUPIL_GROUP.YEAR)
             .from(PUPIL)
             .join(PUPIL_GROUP).on(PUPIL.PUPIL_GROUP.eq(PUPIL_GROUP.NAME))
-            .where(PUPIL.WELCOME_EMAIL_SENT.eq(false))
+            .where(condition)
             .orderBy(PUPIL.ID)
             .fetch { pupil ->
                 if (pupil.getValue(PUPIL.EMAILS).isNotEmpty()) {
@@ -227,21 +228,23 @@ class Admin(config: AdminConfig) : Action<Chain> {
         ctx.render(WelcomeEmailsResult.template(sentTo))
     }
 
-    fun showReopeningEmails(ctx: Context) = ctx.async {
+    fun showReopeningEmails(sendToAll: Boolean, ctx: Context) = ctx.async {
+        val condition = if (sendToAll) trueCondition() else PUPIL.WELCOME_EMAIL_SENT.eq(false)
         val emailsToSend = await {
-            ctx.jooq.selectCount().from(PUPIL).where(PUPIL.WELCOME_EMAIL_SENT.eq(false)).fetchOne().value1()
+            ctx.jooq.selectCount().from(PUPIL).where(condition).fetchOne().value1()
         }
-        ctx.render(WelcomeEmails.template("ponovna otvoritev prijav", emailsToSend, "/admin/reopening-emails"))
+        ctx.render(WelcomeEmails.template("ponovna otvoritev prijav", emailsToSend, "/" + ctx.request.path, sendToAll))
     }
 
-    fun sendReopeningEmails(ctx: Context) = ctx.async {
+    fun sendReopeningEmails(sendToAll: Boolean, ctx: Context) = ctx.async {
+        val condition = if (sendToAll) trueCondition() else PUPIL.WELCOME_EMAIL_SENT.eq(false)
         val emailConfig = ctx.get(EmailConfig::class.java)
         val fileConfig = ctx.get(FileConfig::class.java)
         val sentTo = await {
             ctx.jooq.select(PUPIL.ID, PUPIL.EMAILS, PUPIL.ACCESS_CODE, PUPIL.FIRST_NAME, PUPIL.LAST_NAME, PUPIL.PUPIL_GROUP, PUPIL_GROUP.YEAR)
             .from(PUPIL)
             .join(PUPIL_GROUP).on(PUPIL.PUPIL_GROUP.eq(PUPIL_GROUP.NAME))
-            .where(PUPIL.WELCOME_EMAIL_SENT.eq(false))
+            .where(condition)
             .orderBy(PUPIL.ID)
             .fetch { pupil ->
                 if (pupil.getValue(PUPIL.EMAILS).isNotEmpty()) {
