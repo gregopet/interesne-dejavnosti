@@ -193,6 +193,8 @@ class Admin(config: AdminConfig) : Action<Chain> {
         val condition = if (sendToAll) trueCondition() else PUPIL.WELCOME_EMAIL_SENT.eq(false)
         val emailConfig = ctx.get(EmailConfig::class.java)
         val fileConfig = ctx.get(FileConfig::class.java)
+        val failedPupils = ArrayList<String>()
+        val noEmailPupils = ArrayList<String>()
         val sentTo = await {
             ctx.jooq.select(PUPIL.ID, PUPIL.EMAILS, PUPIL.ACCESS_CODE, PUPIL.FIRST_NAME, PUPIL.LAST_NAME, PUPIL.PUPIL_GROUP, PUPIL_GROUP.YEAR)
             .from(PUPIL)
@@ -212,7 +214,8 @@ class Admin(config: AdminConfig) : Action<Chain> {
                         config = emailConfig,
                         fileConfig = fileConfig,
                         deadlines = ctx.get(Deadlines::class.java),
-                        jooq = ctx.jooq
+                        jooq = ctx.jooq,
+                        failedPupils = failedPupils
                     )) {
                         "${pupil.getValue(PUPIL.FIRST_NAME)} ${pupil.getValue(PUPIL.LAST_NAME)}: ${pupil.getValue(PUPIL.EMAILS).joinToString()}"
                     } else {
@@ -220,12 +223,13 @@ class Admin(config: AdminConfig) : Action<Chain> {
                     }
                 } else {
                     LOG.warn("Not sending email for pupil ${pupil.getValue(PUPIL.ID)} because they have no email defined!")
+                    noEmailPupils.add(pupil.getValue(PUPIL.FIRST_NAME) + " " + pupil.getValue(PUPIL.LAST_NAME))
                     null
                 }
             }
         }.filterNotNull()
         LOG.info("All emails sent!")
-        ctx.render(WelcomeEmailsResult.template(sentTo))
+        ctx.render(WelcomeEmailsResult.template(sentTo, failedPupils, noEmailPupils))
     }
 
     fun showReopeningEmails(sendToAll: Boolean, ctx: Context) = ctx.async {
@@ -240,6 +244,8 @@ class Admin(config: AdminConfig) : Action<Chain> {
         val condition = if (sendToAll) trueCondition() else PUPIL.WELCOME_EMAIL_SENT.eq(false)
         val emailConfig = ctx.get(EmailConfig::class.java)
         val fileConfig = ctx.get(FileConfig::class.java)
+        val failedPupils = ArrayList<String>()
+        val noEmailPupils = ArrayList<String>()
         val sentTo = await {
             ctx.jooq.select(PUPIL.ID, PUPIL.EMAILS, PUPIL.ACCESS_CODE, PUPIL.FIRST_NAME, PUPIL.LAST_NAME, PUPIL.PUPIL_GROUP, PUPIL_GROUP.YEAR)
             .from(PUPIL)
@@ -258,7 +264,8 @@ class Admin(config: AdminConfig) : Action<Chain> {
                         leaveTimesRelevant = MainPage.leaveTimesRelevant(pupil.getValue(PUPIL_GROUP.YEAR)),
                         config = emailConfig,
                         fileConfig = fileConfig,
-                        jooq = ctx.jooq
+                        jooq = ctx.jooq,
+                        failedPupils = failedPupils
                     )) {
                         "${pupil.getValue(PUPIL.FIRST_NAME)} ${pupil.getValue(PUPIL.LAST_NAME)}: ${pupil.getValue(PUPIL.EMAILS).joinToString()}"
                     } else {
@@ -266,12 +273,13 @@ class Admin(config: AdminConfig) : Action<Chain> {
                     }
                 } else {
                     LOG.warn("Not sending email for pupil ${pupil.getValue(PUPIL.ID)} because they have no email defined!")
+                    noEmailPupils.add(pupil.getValue(PUPIL.FIRST_NAME) + " " + pupil.getValue(PUPIL.LAST_NAME))
                     null
                 }
             }
         }.filterNotNull()
         LOG.info("All emails sent!")
-        ctx.render(WelcomeEmailsResult.template(sentTo))
+        ctx.render(WelcomeEmailsResult.template(sentTo, failedPupils, noEmailPupils))
     }
 
     /**

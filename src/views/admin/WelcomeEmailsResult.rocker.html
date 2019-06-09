@@ -1,14 +1,30 @@
 @import java.util.List
-@args(List<String> sentTo)
+@args(List<String> sentTo, List<String> failedPupils, List<String> noEmailPupils)
 @admin.Layout.template(null) -> {
     <h1>Pošiljanje vabil</h1>
-    <p>
-        Maili so bili poslani staršem naslednjih učencev:
-    </p>
-    <p>
+
+    @if(failedPupils.size() > 0) {
+        <h2>Učenci, za katere ne poznamo email naslova:</h2>
+        <ul class="list-unstyled">
+            @for(pupil: noEmailPupils) {
+                <li>@pupil</li>
+            }
+        </ul>
+    }
+
+    @if(failedPupils.size() > 0) {
+        <h2>Pri naslednjih učencih je prišlo do napake pri pošiljanju:</h2>
+        <ul class="list-unstyled">
+            @for(pupil: failedPupils) {
+                <li>@pupil</li>
+            }
+        </ul>
+    }
+
+    <h2>Uspešno poslano:</h2>
+    <ul class="list-unstyled">
         @for(pupil: sentTo) {
-            @pupil
-            <br>
+            <li>@pupil</li>
         }
-    </p>
+    </ul>
 }

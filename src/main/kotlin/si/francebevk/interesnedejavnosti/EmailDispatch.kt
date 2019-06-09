@@ -28,7 +28,7 @@ object EmailDispatch {
      *
      * @return true if sending was successful, false otherwise
      */
-    fun sendWelcomeEmail(to: Array<String>,  pupilId: Long, jooq: DSLContext, pupilName: String, pupilClass: String, accessCode: String, leaveTimesRelevant: Boolean, config: EmailConfig, fileConfig: FileConfig, deadlines: Deadlines): Boolean {
+    fun sendWelcomeEmail(to: Array<String>,  pupilId: Long, jooq: DSLContext, pupilName: String, pupilClass: String, accessCode: String, leaveTimesRelevant: Boolean, config: EmailConfig, fileConfig: FileConfig, deadlines: Deadlines, failedPupils: MutableList<String>): Boolean {
         return if (!skipEmails) {
             try {
                 val message = config.startNewMessage()
@@ -58,6 +58,7 @@ object EmailDispatch {
             } catch (ex: Exception) {
                 LOG.error("Error sending welcome email for pupil $pupilId to ${to.joinToString()}", ex)
                 logError(pupilId, jooq, ex)
+                failedPupils.add(pupilName)
                 false
             }
         } else {
@@ -72,7 +73,7 @@ object EmailDispatch {
      *
      * @return true if sending was successful, false otherwise
      */
-    fun sendReopeningEmail(to: Array<String>, pupilId: Long, jooq: DSLContext, pupilName: String, pupilClass: String, accessCode: String, leaveTimesRelevant: Boolean, config: EmailConfig, fileConfig: FileConfig): Boolean {
+    fun sendReopeningEmail(to: Array<String>, pupilId: Long, jooq: DSLContext, pupilName: String, pupilClass: String, accessCode: String, leaveTimesRelevant: Boolean, config: EmailConfig, fileConfig: FileConfig, failedPupils: MutableList<String>): Boolean {
         return if (!skipEmails) {
             try {
                 val message = config.startNewMessage()
@@ -94,6 +95,7 @@ object EmailDispatch {
                 true
             } catch (ex: Exception) {
                 LOG.error("Error sending reopneing email for pupil $pupilId to ${to.joinToString()}", ex)
+                failedPupils.add(pupilName)
                 logError(pupilId, jooq, ex)
                 false
             }
