@@ -43,6 +43,9 @@
                             <div style="display: flex; justify-content: space-between">
                                 <a href="/admin/pupil/@pupil.getPupil().getId()/">@pupil.getPupil().getFirstName() @pupil.getPupil().getLastName()</a>
                                 <a href="#" @@click.prevent="editPupil(@pupil.getPupil().getId())">
+                                    @if(pupil.getPupil().getEmails() == null || pupil.getPupil().getEmails().length == 0) {
+                                        <i class="fas fa-envelope text-danger" title="Nimamo email naslova!"></i>
+                                    }
                                     <i class="fas fa-edit"></i>
                                 </a>
                             </div>
