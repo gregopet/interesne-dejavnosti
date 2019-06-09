@@ -1,7 +1,9 @@
 @args(String pupilName, String pupilClass, String securityCode, String openDate, String openHour, String closeDate, String closeHour)
 Spoštovani,
 
-v šolskem letu 2019/2020 smo za vas pripravili nov sistem elektronske prijave popoldanskih aktivnosti za vaše otroke. Prijave so bodo začele @openDate ob @openHour in trajale do @closeDate ob @closeHour.
+tudi v šolskem letu 2019/2020 smo za vas pripravili sistem elektronske prijave popoldanskih aktivnosti za vaše otroke. Prijave so bodo začele @openDate ob @openHour in trajale do @closeDate ob @closeHour.
+
+V tem času boste lahko otroka prijavili na dve interesni dejavnosti, na tretjo pa po pregledu podatkov, ko vas bomo povabili k vpisu še v tiste interesne dejavnosti, v katerih bodo prosta mesta. Aplikacijo bomo tako ponovno odprli v torek, 18. 6., ob 16.00 uri in jo zaprli v četrtek, 20. 6., ob polnoči.
 
 Do prijave v podaljšano bivanje in na interesne dejavnosti dostopate tako, da v brskalniku odprete spletno stran https://ind.francebevk.si - za vstop potrebujete samo osebno varnostno kodo:
 
