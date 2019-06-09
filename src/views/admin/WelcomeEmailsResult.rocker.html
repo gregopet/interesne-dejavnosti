@@ -3,7 +3,7 @@
 @admin.Layout.template(null) -> {
     <h1>Pošiljanje vabil</h1>
 
-    @if(failedPupils.size() > 0) {
+    @if(noEmailPupils.size() > 0) {
         <h2>Učenci, za katere ne poznamo email naslova:</h2>
         <ul class="list-unstyled">
             @for(pupil: noEmailPupils) {
