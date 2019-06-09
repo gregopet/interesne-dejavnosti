@@ -1,19 +1,5 @@
 //= require time
 
-Vue.component('paragraphs', {
-	render: function(createElement) {
-		return createElement('div', _.map(this.text.split('\n'), function(txt) {
-			return createElement('p', txt);
-		}));
-	},
-	props: {
-		text: {
-			type: String,
-			required: true
-		}
-	}
-});
-
 Vue.filter('minuteTime', formatMinutes)
 Vue.filter('day', formatDay)
 
