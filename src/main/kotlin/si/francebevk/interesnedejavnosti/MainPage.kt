@@ -96,9 +96,12 @@ object MainPage : Action<Chain> {
         val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }!!
 
         val twoPhaseProcess = ctx.get(TwoPhaseProcess::class.java)
-        if (twoPhaseProcess.isInEffect && payload.selectedActivities.size > twoPhaseProcess.limit) {
-            ctx.response.status(400).send("Izbrali ste preveč aktivnosti - prosimo vas, da se omejite samo na ${twoPhaseProcess.limit}!")
-            return@async null
+        if (twoPhaseProcess.isInEffect) {
+            val selectedLimitedActivities = await { ActivityDAO.limitedActivityCount(payload.selectedActivities, ctx.jooq) }
+            if (selectedLimitedActivities > twoPhaseProcess.limit) {
+                ctx.response.status(400).send("Izbrali ste preveč aktivnosti z omejitvijo prijav - prosimo vas, da se omejite samo na ${twoPhaseProcess.limit} aktivnosti take vrste!")
+                return@async null
+            }
         }
 
         if (isAdminRequest(ctx)) {

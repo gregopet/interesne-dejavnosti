@@ -46,6 +46,14 @@ object ActivityDAO {
         .fetch()
         .into(ACTIVITY)
 
+    /** Counts how many activites (of those passed in) have limited membership */
+    fun limitedActivityCount(activities: List<Long>, trans: DSLContext): Int = with(ACTIVITY) {
+        trans.select(count()).from(ACTIVITY).where(
+            ID.`in`(activities),
+            MAX_PUPILS.lt(100)
+        ).fetchOne().value1()
+    }
+
     /**
      * Stores selected activities for the pupil and returns any activities that may have too many pupils registered
      * already. Rolls back the transaction in case the registration could not be made and throws an exception.

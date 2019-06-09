@@ -75,7 +75,16 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                 computed: {
                     sendAdminEmailAsText: function() {
                         return this.adminNotifyViaEmail ? "obvesti starše preko e-pošte" : "NE obvesti staršev preko e-pošte"
-                    }
+                    },
+                    selectedGroupsWithLimit: function() {
+                        var limited = 0;
+                        for (var a = 0; a < this.pupilGroups.length; a++) {
+                            if (this.isGroupMembershipLimited(this.pupilGroups[a])) {
+                                limited += 1;
+                            }
+                        }
+                        return limited;
+                    },
                 },
                 watch: {
                     // Check for conflicts when users change leave times
@@ -115,6 +124,10 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                             return timeSlotGroupsOverlap(selectedGroup.times, activity.times)
                         })
                         return conflicting ? conflicting.name : null
+                    },
+                    /** Returns true if this group really does have a limited membership count (we're just sending a large number otherwise as a legacy hack) */
+                    isGroupMembershipLimited: function(group) {
+                        return group.freePlaces < 100;
                     },
                     // returns true if there were no conflicts
                     confirmNoLeaveTimesActivityConflicts: function() {
@@ -219,7 +232,7 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                         return this.twoPhaseProcessDeadline > this.currentDate;
                     },
                     atMaximumActivities: function() {
-                        return this.beforeActivityDeadline() && this.twoPhaseProcessLimit <= this.pupilGroups.length
+                        return this.beforeActivityDeadline() && this.twoPhaseProcessLimit <= this.selectedGroupsWithLimit
                     }
                 }
             });
