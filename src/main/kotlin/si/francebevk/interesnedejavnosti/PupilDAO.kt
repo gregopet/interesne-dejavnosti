@@ -73,13 +73,12 @@ object PupilDAO {
     }
 
     /** Store who can pick up the pupil */
-    fun storeAuthorizedPersons(authorizedPersons: List<AuthorizedPerson>?, pupilId: Long, jooq: DSLContext) = with(AUTHORIZED_COMPANION) {
+    fun storeAuthorizedPersons(authorizedPersons: List<AuthorizedPerson>, pupilId: Long, jooq: DSLContext) = with(AUTHORIZED_COMPANION) {
         jooq.deleteFrom(AUTHORIZED_COMPANION).where(PUPIL_ID.eq(pupilId)).execute()
-        val nonBlankPersons = authorizedPersons?.filter { !it.name.isNullOrBlank() } ?: emptyList()
-        if (nonBlankPersons.isNotEmpty()) {
+        if (authorizedPersons.isNotEmpty()) {
             jooq.insertInto(AUTHORIZED_COMPANION, PUPIL_ID, NAME, TYPE)
             .apply {
-                nonBlankPersons.forEach { person ->
+                authorizedPersons.forEach { person ->
                     values(pupilId, person.name ?: "", person.type ?: AuthorizedPersonType.other)
                 }
             }

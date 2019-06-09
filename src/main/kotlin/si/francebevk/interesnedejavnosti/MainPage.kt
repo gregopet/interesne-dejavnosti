@@ -94,6 +94,7 @@ object MainPage : Action<Chain> {
         val pupilId = ctx.user.id.toLong()
         val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
         val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }!!
+        val authorizedPersons = payload.authorizedPersons?.filter { !it.name.isNullOrBlank() } ?: emptyList()
 
         val twoPhaseProcess = ctx.get(TwoPhaseProcess::class.java)
         if (twoPhaseProcess.isInEffect) {
@@ -124,7 +125,7 @@ object MainPage : Action<Chain> {
                     } else {
                         PupilDAO.storeNonParticipation(pupilId, t)
                     }
-                    PupilDAO.storeAuthorizedPersons(payload.authorizedPersons, pupilId, t)
+                    PupilDAO.storeAuthorizedPersons(authorizedPersons, pupilId, t)
                 }
             }
 
@@ -147,7 +148,8 @@ object MainPage : Action<Chain> {
                         payload,
                         pupilActivities,
                         leaveTimesRelevant(klass.year),
-                        ctx.get(EmailConfig::class.java)
+                        ctx.get(EmailConfig::class.java),
+                        authorizedPersons
                     )
                 }
             } else {

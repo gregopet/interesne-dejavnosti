@@ -9,6 +9,7 @@ import org.jooq.DSLContext
 import org.slf4j.LoggerFactory
 import si.francebevk.db.Tables.ERROR_LOG
 import si.francebevk.dto.Activity
+import si.francebevk.dto.AuthorizedPerson
 import si.francebevk.dto.PupilSettings
 import javax.mail.internet.InternetAddress
 
@@ -109,7 +110,7 @@ object EmailDispatch {
     /**
      * Sends the confirmation mail once people have finished editing the page.
      */
-    fun sendConfirmationMail(to: Array<String>, pupilId: Long, jooq: DSLContext, pupilName: String, pupilClass: String, leaveTimes: PupilSettings, activities: List<Activity>, leaveTimesRelevant: Boolean, config: EmailConfig) {
+    fun sendConfirmationMail(to: Array<String>, pupilId: Long, jooq: DSLContext, pupilName: String, pupilClass: String, leaveTimes: PupilSettings, activities: List<Activity>, leaveTimesRelevant: Boolean, config: EmailConfig, authorizedPersons: List<AuthorizedPerson>) {
         if (!skipEmails && to.isNotEmpty()) {
             try {
                 LOG.info("Sending confirmation email to ${to.joinToString()}")
@@ -123,7 +124,7 @@ object EmailDispatch {
                 message.setFrom(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)
                 message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)))
                 message.setTextMsg(
-                    ConfirmationMailPlain.template(pupilName, pupilClass, leaveTimes, leaveTimesRelevant, activities).render().toString()
+                    ConfirmationMailPlain.template(pupilName, pupilClass, leaveTimes, leaveTimesRelevant, activities, authorizedPersons).render().toString()
                 )
                 rateLimit.acquire()
                 message.send()

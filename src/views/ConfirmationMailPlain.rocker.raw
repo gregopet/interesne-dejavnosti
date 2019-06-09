@@ -1,30 +1,36 @@
 @import si.francebevk.dto.*
 @import java.util.List
-@args(String pupilName, String pupilClass, PupilSettings leaveTimes, Boolean leaveTimesRelevant, List<Activity> activities)
+@import si.francebevk.dto.AuthorizedPerson
+@import static si.francebevk.db.enums.AuthorizedPersonType.*
+@args(String pupilName, String pupilClass, PupilSettings leaveTimes, Boolean leaveTimesRelevant, List<Activity> activities, List<AuthorizedPerson> authPersons)
 Spoštovani,
 
 vaša prijava v podaljšano bivanje in na interesne dejavnosti za učenca/učenko @pupilName je bila sprejeta. Za vašo evidenco vam pošiljamo kopijo vnešenega.
-
 @if (leaveTimesRelevant) { @if (leaveTimes.getExtendedStay())
 {
-Odločili ste se, da vaš otrok bo vključen v podaljšano bivanje.
-
-Izbrali ste naslednje čase odhodov domov:
+Odločili ste se, da vaš otrok bo vključen v podaljšano bivanje. Izbrali ste naslednje čase odhodov domov:
 
 Ponedeljek: @leaveTimes.getMonNice()
 Torek: @leaveTimes.getTueNice()
 Sreda: @leaveTimes.getWedNice()
 Četrtek: @leaveTimes.getThuNice()
-Petek: @leaveTimes.getFriNice()} else {
-Odločili ste se, da vaš otrok ne bo vključen v podaljšano bivanje.}}
-
+Petek: @leaveTimes.getFriNice()} else
+{
+Odločili ste se, da vaš otrok ne bo vključen v podaljšano bivanje.
+}}
+@if (leaveTimesRelevant && authPersons != null && authPersons.size() > 0) {
+Pooblastili ste naslednje osebe, da lahko vašega otroka prevzamejo iz šole:
+@for(person: authPersons)
+{ - @person.getName() @if (person.getType() == sibling)     { (sestra / brat) }
+             else if (person.getType() == grandparent) { (babica / dedek) }
+             else if (person.getType() == aunt_uncle)  { (teta / stric) }
+}}
 Izbrali ste naslednje interesne dejavnosti:
 
 @for (activity: activities) { @activity.getName()
     @for(time: activity.getTimes()) {  @time
     }
 }
-
 Zahvaljujemo se vam za sodelovanje in vam želimo lepe počitnice!
 
 Lep pozdrav
