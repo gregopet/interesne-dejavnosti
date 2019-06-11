@@ -19,6 +19,19 @@
 		}
 	</style>
 
+
+    <style type="text/css">#ie8-warn { display: none }</style>
+    <style type="text/css">#ie9-warn { display: none }</style>
+    <!--[if lte IE 8]>
+    <style type="text/css">
+        body main { display: none }
+        #ie8-warn {
+            display: block;
+            margin-top: 30px;
+        }
+    </style>
+    <![endif]-->
+
 </head>
 
 <body>
@@ -58,6 +71,12 @@
 				<p class="text-center">
 					<input type="text" class="form-control" placeholder="Vaša varnostna koda, npr. kilad-dorod-haluf-tidoz" id="code" name="password"></input>
 				</p>
+                <div id="ie9-warn" class="container">
+                    <div class="alert alert-danger">
+                        Pozor! Imate zelo star brskalnik - stran morda ne bo tako pregledna, kot smo si želeli.
+                        Razmislite o tem, da bi za prijavo interesnih dejavnosti uporabili novejši brskalnik!
+                    </div>
+                </div>
 				<p class="text-center">
 					<button class="btn btn-primary">Vstop</button>
 				</p>
@@ -75,6 +94,11 @@
 		</div>
 	</footer>
 </main>
+<div id="ie8-warn" class="container">
+    <div class="alert alert-danger">
+        Pozor! Imate prestar brskalnik, da bi lahko uporabljali to spletno stran!
+    </div>
+</div>
 <script type="text/javascript" src="/assets/app.js" />
 </body>
 </html>
