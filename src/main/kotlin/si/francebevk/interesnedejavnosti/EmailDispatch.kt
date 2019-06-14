@@ -16,6 +16,7 @@ import javax.mail.internet.InternetAddress
 object EmailDispatch {
 
     val LOG = LoggerFactory.getLogger(EmailDispatch::class.java)
+    val EMAIL_CONTENT_LOG = LoggerFactory.getLogger("email.content")
 
     const val skipEmails = false
     const val skipCC = false
@@ -43,8 +44,10 @@ object EmailDispatch {
                 if (!skipCC) {
                     message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)))
                 }
-                message.setHtmlMsg(WelcomeMailHtml.template(pupilName, pupilClass, accessCode, deadlines.startDateString, deadlines.startTimeString, deadlines.endDateString, deadlines.endTimeString).render().toString())
-                message.setTextMsg(WelcomeMailPlain.template(pupilName, pupilClass, accessCode, deadlines.startDateString, deadlines.startTimeString, deadlines.endDateString, deadlines.endTimeString).render().toString())
+                val htmlMsg = WelcomeMailHtml.template(pupilName, pupilClass, accessCode, deadlines.startDateString, deadlines.startTimeString, deadlines.endDateString, deadlines.endTimeString).render().toString()
+                val plainMsg = WelcomeMailPlain.template(pupilName, pupilClass, accessCode, deadlines.startDateString, deadlines.startTimeString, deadlines.endDateString, deadlines.endTimeString).render().toString()
+                message.setHtmlMsg(htmlMsg)
+                message.setTextMsg(plainMsg)
                 message.attach(EmailAttachment().apply {
                     disposition = EmailAttachment.ATTACHMENT
                     description = "Katalog interesnih dejavnosti"
@@ -55,6 +58,9 @@ object EmailDispatch {
                 message.send()
                 PupilDAO.updateEmailSent(pupilId, jooq)
                 LOG.info("Email was sent!")
+                if (EMAIL_CONTENT_LOG.isTraceEnabled) {
+                    EMAIL_CONTENT_LOG.trace(message.prettyPrint(plainMsg, htmlMsg))
+                }
                 true
             } catch (ex: Exception) {
                 LOG.error("Error sending welcome email for pupil $pupilId to ${to.joinToString()}", ex)
@@ -88,11 +94,15 @@ object EmailDispatch {
                 if (!skipCC) {
                     message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)))
                 }
-                message.setTextMsg(ReopeningMailPlain.template(pupilName, pupilClass, accessCode).render().toString())
+                val plain = ReopeningMailPlain.template(pupilName, pupilClass, accessCode).render().toString()
+                message.setTextMsg(plain)
                 rateLimit.acquire()
                 message.send()
                 PupilDAO.updateEmailSent(pupilId, jooq)
                 LOG.info("Email was sent!")
+                if (EMAIL_CONTENT_LOG.isTraceEnabled) {
+                    EMAIL_CONTENT_LOG.trace(message.prettyPrint(plain))
+                }
                 true
             } catch (ex: Exception) {
                 LOG.error("Error sending reopneing email for pupil $pupilId to ${to.joinToString()}", ex)
@@ -123,11 +133,13 @@ object EmailDispatch {
                 message.addTo(*to)
                 message.setFrom(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)
                 message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)))
-                message.setTextMsg(
-                    ConfirmationMailPlain.template(pupilName, pupilClass, leaveTimes, leaveTimesRelevant, activities, authorizedPersons).render().toString()
-                )
+                val plain = ConfirmationMailPlain.template(pupilName, pupilClass, leaveTimes, leaveTimesRelevant, activities, authorizedPersons).render().toString()
+                message.setTextMsg(plain)
                 rateLimit.acquire()
                 message.send()
+                if (EMAIL_CONTENT_LOG.isTraceEnabled) {
+                    EMAIL_CONTENT_LOG.trace(message.prettyPrint(plain))
+                }
             } catch (ex: Exception) {
                 LOG.error("Error sending confirmation mail for pupil $pupilId to ${to.joinToString()}", ex)
                 logError(pupilId, jooq, ex)
@@ -153,4 +165,12 @@ object EmailDispatch {
         it.setFrom(from)
         it.setCharset(EmailConstants.UTF_8)
     }
+
+    private fun HtmlEmail.prettyPrint(plain: String = "", html: String = ""): String =
+"""
+  To: ${toAddresses.map { it.address }.joinToString()}
+  Subject: ${subject}
+
+${plain.prependIndent("  ")}
+"""
 }

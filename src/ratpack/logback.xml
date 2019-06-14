@@ -27,7 +27,7 @@
 	<!-- Enable the jOOQ logger for debugging -->
 	<logger name="org.jooq.tools" level="INFO" />
 	<logger name="org.jooq.impl" level="INFO" />
-
+    <logger name="email.content" level="TRACE" />
 
 	<logger name="si.francebevk" level="TRACE" additivity="false">
 		<appender-ref ref="STDOUT" />
