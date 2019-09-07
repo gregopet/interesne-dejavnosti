@@ -10,26 +10,33 @@
     
 
     @for(activity: activities) {
-        <h3>@shortActivityName(activity)</h3>
-        @if (pupils.get(activity.getId()) != null) {
-        <table class="table table-sm table-bordered">
-            <thead>
-                <tr>
-                    <th>Razred</th>
-                    <th>Učenec</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for(pupil: pupils.get(activity.getId())) {
-                    <tr>
-                        <td>@pupil.getPupilGroup()</td>
-                        <td>@pupil.getFirstName() @pupil.getLastName()</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-        } else {
-            <p>Na krožek ni prijavljenih.</p>
+        @with(activityPupils = pupils.get(activity.getId())) {
+            <h3>@shortActivityName(activity)</h3>
+            @if (activityPupils != null) {
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Razred</th>
+                            <th>Učenec</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(pupil: activityPupils) {
+                            <tr>
+                                <td>@pupil.getPupilGroup()</td>
+                                <td>@pupil.getFirstName() @pupil.getLastName()</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-active">
+                            <td colspan="2"><strong>Skupaj prijavljenih: @activityPupils.size()</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            } else {
+                <p>Na krožek ni prijavljenih.</p>
+            }
         }
         <br>
     }
