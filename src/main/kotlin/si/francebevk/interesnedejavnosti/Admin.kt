@@ -203,7 +203,7 @@ class Admin(config: AdminConfig) : Action<Chain> {
             .orderBy(PUPIL.ID)
             .fetch { pupil ->
                 if (pupil.getValue(PUPIL.EMAILS).isNotEmpty()) {
-                    LOG.info("Sending welcome email to pupil ${pupil.getValue(PUPIL.ID)} ${pupil.getValue(PUPIL.FIRST_NAME)} ${pupil.getValue(PUPIL.FIRST_NAME)} at emails ${pupil.getValue(PUPIL.EMAILS).joinToString()}")
+                    LOG.info("Sending welcome email to pupil ${pupil.getValue(PUPIL.ID)} ${pupil.getValue(PUPIL.FIRST_NAME)} ${pupil.getValue(PUPIL.LAST_NAME)} at emails ${pupil.getValue(PUPIL.EMAILS).joinToString()}")
                     if (EmailDispatch.sendWelcomeEmail(
                         to = pupil.getValue(PUPIL.EMAILS),
                         pupilId = pupil.getValue(PUPIL.ID),
