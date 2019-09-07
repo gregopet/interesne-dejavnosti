@@ -31,19 +31,33 @@
                         </tr>
                     </thead>
                     <tbody>
+                    <tr>
+                        <td>@getMinuteTimeFormat(row.getLeaveMinutes())</td>
+                        <td>@join(row.getStillHere(), ", ") <strong>(@row.getStillHere().length))</strong></td>
+                        <td>@join(row.getLeave(), ", ") <em>@join(row.getNotIncludedToday(), ", ")</em> <strong>(@(row.getLeave().length + row.getNotIncludedToday().length))</strong></td>
+                        <td>
+                            @for(int i = 0; i < row.getAtActivities().length; i++) {
+                                <strong>@row.getAtActivities()[i].getName() (@row.getAtActivities()[i].getStrings().length):</strong>
+                                @join(row.getAtActivities()[i].getStrings(), ", ")
+                                <br>
+                            }
+                        </td>
+                    </tr>
+            } else {
+                <tr>
+                    <td>@getMinuteTimeFormat(row.getLeaveMinutes())</td>
+                    <td>@join(row.getStillHere(), ", ") <strong>(@row.getStillHere().length))</strong></td>
+                    <td>@join(row.getLeave(), ", ") <strong>(@row.getLeave().length)</strong></td>
+                    <td>
+                        @for(int i = 0; i < row.getAtActivities().length; i++) {
+                            <strong>@row.getAtActivities()[i].getName() (@row.getAtActivities()[i].getStrings().length):</strong>
+                            @join(row.getAtActivities()[i].getStrings(), ", ")
+                            <br>
+                        }
+                    </td>
+                </tr>
             }
-            <tr>
-                <td>@getMinuteTimeFormat(row.getLeaveMinutes())</td>
-                <td>@join(row.getStillHere(), ", ") <strong>(@row.getStillHere().length)</strong></td>
-                <td>@join(row.getLeave(), ", ") <strong>(@row.getLeave().length)</strong></td>
-                <td>
-                    @for(int i = 0; i < row.getAtActivities().length; i++) {
-                        <strong>@row.getAtActivities()[i].getName() (@row.getAtActivities()[i].getStrings().length):</strong>
-                        @join(row.getAtActivities()[i].getStrings(), ", ")
-                        <br>
-                    }
-                </td>
-            </tr>
+
         }
         </tbody></table>
     }

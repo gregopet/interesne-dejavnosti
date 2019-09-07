@@ -33,7 +33,7 @@ import si.francebevk.db.udt.records.NamedStringsRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DeparturesHourlyReport extends TableImpl<DeparturesHourlyReportRecord> {
 
-    private static final long serialVersionUID = 924037056;
+    private static final long serialVersionUID = 312446118;
 
     /**
      * The reference instance of <code>public.departures_hourly_report</code>
@@ -77,6 +77,11 @@ public class DeparturesHourlyReport extends TableImpl<DeparturesHourlyReportReco
      * The column <code>public.departures_hourly_report.at_activities</code>.
      */
     public final TableField<DeparturesHourlyReportRecord, NamedStringsRecord[]> AT_ACTIVITIES = createField("at_activities", si.francebevk.db.udt.NamedStrings.NAMED_STRINGS.getDataType().getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.departures_hourly_report.not_included_today</code>.
+     */
+    public final TableField<DeparturesHourlyReportRecord, String[]> NOT_INCLUDED_TODAY = createField("not_included_today", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.departures_hourly_report</code> table reference
