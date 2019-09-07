@@ -48,12 +48,14 @@ object EmailDispatch {
                 val plainMsg = WelcomeMailPlain.template(pupilName, pupilClass, accessCode, deadlines.startDateString, deadlines.startTimeString, deadlines.endDateString, deadlines.endTimeString).render().toString()
                 message.setHtmlMsg(htmlMsg)
                 message.setTextMsg(plainMsg)
-                message.attach(EmailAttachment().apply {
-                    disposition = EmailAttachment.ATTACHMENT
-                    description = "Katalog interesnih dejavnosti"
-                    name = "Katalog-interesnih-dejavnosti_2019-2020.pdf"
-                    path = fileConfig.cataloguePath
-                })
+                if (fileConfig.cataloguePath.isNotBlank()) {
+                    message.attach(EmailAttachment().apply {
+                        disposition = EmailAttachment.ATTACHMENT
+                        description = "Katalog interesnih dejavnosti"
+                        name = "Katalog-interesnih-dejavnosti_2019-2020.pdf"
+                        path = fileConfig.cataloguePath
+                    })
+                }
                 rateLimit.acquire()
                 message.send()
                 PupilDAO.updateEmailSent(pupilId, jooq)
