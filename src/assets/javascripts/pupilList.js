@@ -36,7 +36,8 @@ new Vue({
         pupilEventsForPupil: "",
         editedPupil: null,
         errorLoadingPupil: false,
-        savingPupil: true
+        savingPupil: true,
+        extendedView: false
     },
     methods: {
         matchesFilter: function(klass, firstName, lastName) {

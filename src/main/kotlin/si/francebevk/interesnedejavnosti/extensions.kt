@@ -1,8 +1,10 @@
 package si.francebevk.interesnedejavnosti
 
 import ratpack.handling.Context
+import si.francebevk.db.enums.AuthorizedPersonType
 import si.francebevk.db.enums.DayOfWeek
 import si.francebevk.db.tables.records.ActivityRecord
+import si.francebevk.db.tables.records.AuthorizedCompanionRecord
 
 /** Formats a minutes spec into a human readable time */
 val Short.minuteTimeFormat get() = "${Math.floor(this / 60.0).toInt()}:${(this % 60).toString().padStart(2, '0')}"
@@ -35,3 +37,13 @@ val DayOfWeek.fullSlo get() = when(this) {
 
 fun shortActivityName(rec: ActivityRecord) =
     "${rec.name} (${rec.slots.map { "${it.day.shortSlo} ${it.startMinutes.minuteTimeFormat}" }.joinToString()})"
+
+fun longActivityPeriods(rec: ActivityRecord) =
+    "${rec.slots.map { "${it.day.fullSlo} ${it.startMinutes.minuteTimeFormat}" }.joinToString()}"
+
+val AuthorizedCompanionRecord.sloType get() = when(this.type) {
+    AuthorizedPersonType.aunt_uncle -> "teta/stric"
+    AuthorizedPersonType.grandparent -> "babica/dedek"
+    AuthorizedPersonType.sibling -> "sestra/brat"
+    AuthorizedPersonType.other -> ""
+}

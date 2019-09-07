@@ -5,12 +5,15 @@
 @import static org.apache.commons.lang3.StringUtils.join
 @import static si.francebevk.interesnedejavnosti.ExtensionsKt.getMinuteTimeFormat
 @import static si.francebevk.interesnedejavnosti.ExtensionsKt.shortActivityName
+@import static si.francebevk.interesnedejavnosti.ExtensionsKt.longActivityPeriods
+@import static si.francebevk.interesnedejavnosti.ExtensionsKt.getSloType
 @import static org.apache.commons.lang3.StringEscapeUtils.escapeEcmaScript
-@args(List<PupilWithActivities> pupils, Map<Long, ActivityRecord> activities, List<String> klasses)
+@args(List<PupilWithActivities> pupils, Map<Long, ActivityRecord> activities, List<String> klasses, Map<Long, List<AuthorizedCompanionRecord>> escorts)
 @admin.Layout.template("pupilList.js") -> {
-    <h1 class="mb-5 mt-3">Prijavljene aktivnosti učencev</h1>
 
     <div id="app">
+        <h1 class="mb-5 mt-3" v-if="!extendedView">Prijavljene aktivnosti učencev</h1>
+
         <div class="d-print-none">
             <input id="filter" class="form-control" type="search" :autofocus="'autofocus'" v-model="search" placeholder="Iskanje po učencih in razredih">
             <small class="form-text text-muted">
@@ -18,10 +21,16 @@
                 lahko naenkrat uporabite več iskanih terminov.
             </small>
         </div>
+        <div class="d-print-none form-check" v-cloak>
+            <input class="form-check-input" type="checkbox" value="" id="verbose-print-check" v-model="extendedView">
+            <label class="form-check-label" for="verbose-print-check">
+                Individualni izpisi
+            </label>
+        </div>
 
-        <hr>
+        <hr v-if="!extendedView">
 
-        <table class="table table-sm table-bordered">
+        <table class="table table-sm table-bordered" v-if="!extendedView">
             <thead>
                 <tr>
                     <th>Razred</th>
@@ -73,6 +82,69 @@
                 }
             </tbody>
         </table>
+
+        <!-- detailed views, mainly for printing -->
+        <div v-cloak v-if="extendedView">
+        @for(pupil : pupils) {
+            <div style="page-break-after: always" v-show="matchesFilter('@escapeEcmaScript(pupil.getPupil().getPupilGroup())', '@escapeEcmaScript(pupil.getPupil().getFirstName())', '@escapeEcmaScript(pupil.getPupil().getLastName())')">
+                <h1 class="text-center">@pupil.getPupil().getFirstName() @pupil.getPupil().getLastName()<br></h1>
+                <h3 class="text-center" style="margin-bottom: 60px;"><small>@pupil.getPupil().getPupilGroup()</small></h3>
+
+                <h6 class="border-bottom border-gray pb-2">Popoldanske aktivnosti</h6>
+                <div class="media">
+                    @with(selectedActivities = pupil.getActivities()) {
+                        @if (selectedActivities == null || selectedActivities.length == 0) {
+                            <p><strong class="d-block text-gray-dark text-muted">Ni prijavljen v nobeno aktivnost.</strong></p>
+                        } else {
+                            @for((i, activityId): selectedActivities) {
+                                <p class="media-body pb-3 mb-0 small lh-125">
+                                    <strong class="d-block text-gray-dark">@activities.get(activityId).getName()</strong>
+                                    @longActivityPeriods(activities.get(activityId))
+                                </p>
+                            }
+                        }
+                    }
+                </div>
+
+                <h6 class="border-bottom border-gray pb-2" style="margin-top: 30px;">Odhod iz podaljšanega bivanja</h6>
+                @if(pupil.getPupil().getExtendedStay()) {
+                    <dl class="row">
+                        <dt class="col-sm-2">Ponedeljek</dt>
+                        <dd class="col-sm-10">@if(pupil.getPupil().getLeaveMon() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveMon()) } else { Ni v podaljšanem bivanju. }</dd>
+
+                        <dt class="col-sm-2">Torek</dt>
+                        <dd class="col-sm-10">@if(pupil.getPupil().getLeaveTue() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveTue()) } else { Ni v podaljšanem bivanju. }</dd>
+
+                        <dt class="col-sm-2">Sreda</dt>
+                        <dd class="col-sm-10">@if(pupil.getPupil().getLeaveWed() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveWed()) } else { Ni v podaljšanem bivanju. }</dd>
+
+                        <dt class="col-sm-2">Četrtek</dt>
+                        <dd class="col-sm-10">@if(pupil.getPupil().getLeaveThu() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveThu()) } else { Ni v podaljšanem bivanju. }</dd>
+
+                        <dt class="col-sm-2">Petek</dt>
+                        <dd class="col-sm-10">@if(pupil.getPupil().getLeaveFri() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveFri()) } else { Ni v podaljšanem bivanju. }</dd>
+                    </dl>
+                } else {
+                    <p><strong class="d-block text-gray-dark text-muted">Ni v podaljšanem bivanju.</strong></p>
+                }
+
+                <h6 class="border-bottom border-gray pb-2" style="margin-top: 30px;">Dodatno pooblaščene osebe, ki smejo otroka pospremiti domov iz šole</h6>
+                @with(pupilEscorts = escorts.get(pupil.getPupil().getId())) {
+                    @if (pupilEscorts == null || pupilEscorts.isEmpty()) {
+                        <p><strong class="d-block text-gray-dark text-muted">Nobenih dodatno pooblaščenih oseb.</strong></p>
+                    } else {
+                        <dl class="row">
+                            @for(pupilEscort : pupilEscorts) {
+                                <dt class="col-sm-2">@pupilEscort.getName()</dt>
+                                <dd class="col-sm-10">@getSloType(pupilEscort)</dd>
+                            }
+                        </dl>
+                    }
+                }
+            </div>
+        }
+        </div>
+
 
         <div class="modal" tabindex="-1" role="dialog" ref="activityDialog">
             <div class="modal-dialog modal-lg" role="document">

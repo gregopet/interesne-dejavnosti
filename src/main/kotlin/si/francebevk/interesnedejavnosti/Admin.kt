@@ -18,6 +18,7 @@ import ratpack.jackson.Jackson.jsonNode
 import ratpack.pac4j.RatpackPac4j
 import si.francebevk.db.Tables.*
 import si.francebevk.db.tables.records.ActivityRecord
+import si.francebevk.db.tables.records.AuthorizedCompanionRecord
 import si.francebevk.db.tables.records.PupilRecord
 import si.francebevk.ratpack.async
 import si.francebevk.ratpack.await
@@ -140,7 +141,11 @@ class Admin(config: AdminConfig) : Action<Chain> {
             ctx.jooq.select(PUPIL_GROUP.NAME).from(PUPIL_GROUP).orderBy(PUPIL_GROUP.NAME).fetch(PUPIL_GROUP.NAME)
         }
 
-        ctx.render(PupilList.template(pupils, activities, klasses))
+        val escorts: Map<Long, List<AuthorizedCompanionRecord>> = await {
+            ctx.jooq.select().from(AUTHORIZED_COMPANION).orderBy(AUTHORIZED_COMPANION.NAME).fetch().intoGroups(AUTHORIZED_COMPANION.PUPIL_ID, AuthorizedCompanionRecord::class.java)
+        }
+
+        ctx.render(PupilList.template(pupils, activities, klasses, escorts))
     }
 
     fun summaryByActivity(ctx: Context) = ctx.async {
