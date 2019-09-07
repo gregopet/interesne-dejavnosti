@@ -42,6 +42,7 @@
                     <th>Čet</th>
                     <th>Pet</th>
                     <th>Aktivnosti</th>
+                    <th>Pooblaščene osebe</th>
                 </tr>
             </thead>
             <tbody>
@@ -76,6 +77,15 @@
                         <td>
                             @for((i, activityId): pupil.getActivities()) {
                                 @shortActivityName(activities.get(activityId))@if(!i.last()) {,}
+                            }
+                        </td>
+                        <td>
+                            @with(pupilEscorts = escorts.get(pupil.getPupil().getId())) {
+                                @if(pupilEscorts != null) {
+                                    @for((i, pupilEscort) : pupilEscorts) {
+                                        @pupilEscort.getName() (@getSloType(pupilEscort))@if(!i.last()) {,}
+                                    }
+                                }
                             }
                         </td>
                     </tr>
