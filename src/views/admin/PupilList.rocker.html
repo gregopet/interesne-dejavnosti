@@ -46,8 +46,10 @@
                 </tr>
             </thead>
             <tbody>
+            <tr>
+                <td colspan="10" class="text-center" v-if="false">...nalagam, prosim počakajte...</td></tr>
                 @for(pupil : pupils) {
-                    <tr v-show="matchesFilter('@escapeEcmaScript(pupil.getPupil().getPupilGroup())', '@escapeEcmaScript(pupil.getPupil().getFirstName())', '@escapeEcmaScript(pupil.getPupil().getLastName())')">
+                    <tr style="display:none" v-show="matchesFilter('@escapeEcmaScript(pupil.getPupil().getPupilGroup())', '@escapeEcmaScript(pupil.getPupil().getFirstName())', '@escapeEcmaScript(pupil.getPupil().getLastName())')">
                         <td>@pupil.getPupil().getPupilGroup()</td>
                         <td>
                             <div style="display: flex; justify-content: space-between">
@@ -96,7 +98,7 @@
         <!-- detailed views, mainly for printing -->
         <div v-cloak v-if="extendedView">
         @for(pupil : pupils) {
-            <div style="page-break-after: always" v-show="matchesFilter('@escapeEcmaScript(pupil.getPupil().getPupilGroup())', '@escapeEcmaScript(pupil.getPupil().getFirstName())', '@escapeEcmaScript(pupil.getPupil().getLastName())')">
+            <div style="page-break-after: always; display:none" v-show="matchesFilter('@escapeEcmaScript(pupil.getPupil().getPupilGroup())', '@escapeEcmaScript(pupil.getPupil().getFirstName())', '@escapeEcmaScript(pupil.getPupil().getLastName())')">
                 <h1 class="text-center">@pupil.getPupil().getFirstName() @pupil.getPupil().getLastName()<br></h1>
                 <h3 class="text-center" style="margin-bottom: 60px;"><small>@pupil.getPupil().getPupilGroup()</small></h3>
 
