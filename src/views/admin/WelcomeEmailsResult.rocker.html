@@ -1,6 +1,6 @@
 @import java.util.List
 @args(List<String> sentTo, List<String> failedPupils, List<String> noEmailPupils)
-@admin.Layout.template(null) -> {
+@admin.Layout.template() -> {
     <h1>Pošiljanje vabil</h1>
 
     @if(noEmailPupils.size() > 0) {

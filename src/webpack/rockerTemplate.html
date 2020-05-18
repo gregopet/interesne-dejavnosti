@@ -1,0 +1,8 @@
+@args ()
+
+<% _.forEach(htmlWebpackPlugin.files.js, function(js) { %>
+    <script src="<%= js %>" defer></script>
+<% }) %>
+<% _.forEach(htmlWebpackPlugin.files.css, function(css) { %>
+    <link rel="stylesheet" href="<%= css %>">
+<% }) %>

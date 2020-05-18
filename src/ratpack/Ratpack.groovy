@@ -8,13 +8,12 @@ import ratpack.error.ServerErrorHandler
 import org.jooq.DSLContext
 import org.pac4j.http.client.indirect.FormClient
 import ratpack.groovy.handling.GroovyChain
+import ratpack.handling.Chain
 import ratpack.pac4j.RatpackPac4j
 import ratpack.server.BaseDir
 import ratpack.server.internal.DefaultServerConfig
 import ratpack.session.SessionModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import asset.pipeline.ratpack.AssetPipelineModule
-import asset.pipeline.ratpack.AssetPipelineHandler
 import si.francebevk.db.Config
 import si.francebevk.db.HikariDataSourceFactory
 import si.francebevk.db.HikariShutdownService
@@ -74,9 +73,6 @@ ratpack {
 
             // Sessions
             module SessionModule
-
-            // Assets
-            moduleConfig(new AssetPipelineModule(), new AssetPipelineModule.Config(sourcePath: "../../../src/assets"))
         } catch (Exception x) {
             LOG.error("Error bootstrapping application", x)
             throw x
@@ -90,9 +86,12 @@ ratpack {
         get("favicon.ico") { ctx -> ctx.response.status(404).send() }
         get("jasmine-tests") { ctx -> ctx.render(Tests.template())}
 
-        prefix("assets") { chain ->
-            chain.all(AssetPipelineHandler)
-            chain.all { it.response.status(404).send("Asset not found") }
+
+        // static resources, prepared by Webpack
+        prefix("static") { c ->
+            c.files { x ->
+                x.dir("static")
+            }
         }
 
         // All admin requests "peel off" here, avoiding the usual handler tree

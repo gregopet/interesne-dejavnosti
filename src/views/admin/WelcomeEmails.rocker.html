@@ -1,5 +1,5 @@
 @args(String emailType, Integer mailsToSend, String postTo, Boolean sendToAll)
-@admin.Layout.template(null) -> {
+@admin.Layout.template() -> {
     @if(sendToAll) {
     <h1>Pošiljanje vabil vsem - @emailType</h1>
     } else {

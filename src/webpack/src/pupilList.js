@@ -1,3 +1,10 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Vue from 'vue';
+import { formatMinutes, formatDay, timeSlotGroupsOverlap, timeSlotsOverlap } from './time';
+import _ from 'lodash';
+import * as $ from 'jquery';
+import 'bootstrap/js/dist/modal.js';
+
 var isKlass = /[1-9][A-Za-z]/
 var isYear = /[1-9]/
 var isWhitespace = /^\W*$/
@@ -29,7 +36,7 @@ Vue.filter('event_type', function(type) {
 });
 
 new Vue({
-    el: '#app',
+    el: '#pupilList',
     data: {
         search: '',
         pupilEvents: [],

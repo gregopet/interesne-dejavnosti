@@ -299,8 +299,12 @@ predlog [Rocker Templates](https://github.com/fizzed/rocker). Predloge se
 nahajajo v direktoriju `src/views`.
 
 JavaScript in CSS datoteke se predprocesirajo s pomočjo orodja 
-[Asset Pipeline](https://github.com/bertramdev/asset-pipeline), viri pa se
-nahajajo v direktoriju `src/assets/`.
+[Webpack](https://webpack.js.org/), viri pa se nahajajo v direktoriju `src/webpack/`.
+Webpack se bo zagnal v produkcijskem načinu takoj za vse Gradle taske, ki gradijo
+polno aplikacijo z vključenimi vsemi odvisnimi paketi (task `shadowJar`), kar 
+vključuje `deployProd`, ki namesti aplikacijo na produkcijski strežnik. Za razvoj
+frontenda pa je najbolj enostavno kar v direktoriju `src/webpack` pognati ukaz
+`npm watch`.
 
 Za grajenje se uporablja orodje [Gradle](https://gradle.org/).
 

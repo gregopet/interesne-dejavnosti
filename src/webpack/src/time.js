@@ -1,4 +1,4 @@
-function timeSlotGroupsOverlap(group1, group2) {
+export function timeSlotGroupsOverlap(group1, group2) {
     return _.find(group1, function(takenTime) {
         return _.find(group2, function(wantedTime) {
             return timeSlotsOverlap(takenTime, wantedTime);
@@ -6,12 +6,12 @@ function timeSlotGroupsOverlap(group1, group2) {
     })
 }
 
-function timeSlotsOverlap(slot1, slot2) {
+export function timeSlotsOverlap(slot1, slot2) {
     if (slot1.day != slot2.day) return false;
     return slot1.from < slot2.to && slot1.to > slot2.from
 }
 
-function formatMinutes(value) {
+export function formatMinutes(value) {
     if (!value) return '';
     var hours = Math.floor(value / 60);
     var minutes = value % 60;
@@ -19,7 +19,7 @@ function formatMinutes(value) {
     return "" + hours + ":" + padding + minutes	
 }
 
-function formatDay(day) {
+export function formatDay(day) {
     if (day == 'monday') return 'ponedeljek'
     if (day == 'tuesday') return 'torek'
     if (day == 'wednesday') return 'sreda'

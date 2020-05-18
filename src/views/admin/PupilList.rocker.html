@@ -9,9 +9,9 @@
 @import static si.francebevk.interesnedejavnosti.ExtensionsKt.getSloType
 @import static org.apache.commons.lang3.StringEscapeUtils.escapeEcmaScript
 @args(List<PupilWithActivities> pupils, Map<Long, ActivityRecord> activities, List<String> klasses, Map<Long, List<AuthorizedCompanionRecord>> escorts)
-@admin.Layout.template("pupilList.js") -> {
+@admin.Layout.template() -> {
 
-    <div id="app">
+    <div id="pupilList">
         <h1 class="mb-5 mt-3" v-if="!extendedView">Prijavljene aktivnosti učencev</h1>
 
         <div class="d-print-none">

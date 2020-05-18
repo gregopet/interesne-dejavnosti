@@ -1,4 +1,9 @@
-//= require time
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Vue from 'vue';
+import { formatMinutes, formatDay, timeSlotGroupsOverlap, timeSlotsOverlap } from './time';
+import _ from 'lodash';
+import * as $ from 'jquery';
+import 'bootstrap/js/dist/modal.js';
 
 Vue.filter('minuteTime', formatMinutes)
 Vue.filter('day', formatDay)

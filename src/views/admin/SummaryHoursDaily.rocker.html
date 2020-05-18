@@ -7,7 +7,7 @@
 @import si.francebevk.viewmodel.Crate;
 @import static org.apache.commons.lang3.StringUtils.join;
 @args(Result<DeparturesHourlyReportRecord> reportLines)
-@admin.Layout.template(null) -> {
+@admin.Layout.template() -> {
     <h1 class="d-print-none">Odhodi po urah</h1>
     @with(
         currentDay = new Crate<DayOfWeek>(),

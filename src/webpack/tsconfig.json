@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+      "rootDir": "src",
+      "noImplicitAny": true,
+      "strictNullChecks": true,
+      "module": "commonjs",
+      "target": "es5",
+      "jsx": "react",
+      "allowJs": true,
+      "experimentalDecorators": true,
+    }
+  }

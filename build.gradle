@@ -21,20 +21,21 @@ buildscript {
 		// Kotlin
 		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 
-		// Asset pipeline
-		classpath 'com.bertramlabs.plugins:coffee-asset-pipeline:2.0.6'
-
 		// Flyway
 		classpath "org.flywaydb:flyway-gradle-plugin:$flywayVersion"
 
 		// SSH plugin
 		classpath 'org.hidetake:gradle-ssh-plugin:2.10.1'
+
+        // Node for webpack
+        classpath 'com.moowork.gradle:gradle-node-plugin:1.3.1'
+
 	}
 }
 
 plugins {
 	id 'nu.studer.rocker' version '0.4'
-	id "com.bertramlabs.asset-pipeline" version "3.0.6"
+    id "com.moowork.node" version "1.3.1"
 }
 
 version "1.0"
@@ -87,41 +88,19 @@ rocker {
 	}
 }
 
+node {
+    version = '13.12.0'
+    download = false
+    npmWorkDir = file("$projectDir/src/webpack")
+    nodeModulesDir = file("$projectDir/src/webpack")
+}
+
 // Kotlin cannot compile without the template sources!
 tasks.compileKotlin.dependsOn compileRocker
 
 // Use externalized logging config
 run.doFirst {
 	systemProperty 'logback.configurationFile', "$projectDir/src/ratpack/logback.xml"
-}
-
-assets {
-	minifyJs = false
-	minifyCss = true
-	enableSourceMaps = true
-	configOptions = [:]
-
-	minifyOptions = [
-			languageMode: 'ES5',
-			targetLanguage: 'ES5', //Can go from ES6 to ES5 for those bleeding edgers
-			optimizationLevel: 'SIMPLE',
-			angularPass: false // Can use @ngInject annotation for Angular Apps
-	]
-
-	includes = ["fonts/*"]
-	excludes = ['**/*.less'] //Example Exclude GLOB pattern
-
-	//for plugin packaging
-	packagePlugin=false //set to true if this is a library
-
-	//developmentRuntime can be turned off
-	developmentRuntime=true
-
-	//if you want to customize the jar task this task runs on you can specify a jarTaskName
-	jarTaskName=null
-
-	// Can add custom asset locations (directories or individual jar files)
-	from '/vendor/lib'
 }
 
 // deploy
@@ -135,6 +114,20 @@ remotes {
 	 }
 	 
 }
+
+task webpack(type: NpmTask) {}
+
+webpack.doFirst {
+	// Do a prod NPM build whenever we're packaging the whole app together
+	if (gradle.taskGraph.hasTask(":shadowJar")) {
+		it.args = ['run', 'build']
+	} else {
+		it.args = ['run', 'build:dev']
+	}
+}
+
+tasks.compileRocker.dependsOn(webpack)
+
 task deployProd(dependsOn: ['shadowJar']) {
 	group "Deploy"
 	description "Builds & copies JAR files to prod server"
@@ -183,10 +176,6 @@ dependencies {
 	// templates
 	compile group: 'com.fizzed', name: 'rocker-runtime', version: rockerTemplatesVersion
 	compile group: 'com.fizzed', name: 'rocker-compiler', version: rockerTemplatesVersion
-
-	// assets
-	compile 'com.bertramlabs.plugins:ratpack-asset-pipeline:2.6.7'
-	compile group: 'com.bertramlabs.plugins', name: 'coffee-asset-pipeline', version: '2.14.7'
 
 	// Commons email
 	compile group: 'org.apache.commons', name: 'commons-email', version: '1.3.1'
