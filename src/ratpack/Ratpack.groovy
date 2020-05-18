@@ -1,8 +1,6 @@
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.pac4j.core.authorization.Authorizer
 import org.pac4j.core.profile.UserProfile
 import org.pac4j.http.client.direct.DirectBasicAuthClient
-import org.pac4j.http.profile.HttpProfile
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import ratpack.error.ClientErrorHandler
@@ -104,6 +102,7 @@ ratpack {
         all { ctx ->
             RatpackPac4j.userProfile(ctx).then {
                 if (it.isPresent() && it.get().id == null) {
+                    LOG.debug("Logging out admin")
                     RatpackPac4j.logout(ctx).then { ctx.next() }
                 } else {
                     ctx.next()

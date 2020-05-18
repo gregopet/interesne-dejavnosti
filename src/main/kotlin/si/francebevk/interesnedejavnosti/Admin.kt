@@ -4,9 +4,14 @@ import admin.*
 import org.jooq.JSONFormat
 import org.jooq.impl.DSL.*
 import org.jooq.util.postgres.PostgresDSL
-import org.pac4j.core.authorization.Authorizer
+import org.pac4j.core.authorization.authorizer.Authorizer
+import org.pac4j.core.context.WebContext
+import org.pac4j.core.credentials.UsernamePasswordCredentials
+import org.pac4j.core.profile.CommonProfile
+import org.pac4j.core.profile.creator.ProfileCreator
+import org.pac4j.http.client.direct.DirectBasicAuthClient
 import org.pac4j.http.client.indirect.IndirectBasicAuthClient
-import org.pac4j.http.profile.HttpProfile
+import ratpack.pac4j.RatpackPac4j
 import org.slf4j.LoggerFactory
 import ratpack.exec.Blocking
 import ratpack.func.Action
@@ -15,7 +20,6 @@ import ratpack.handling.Chain
 import ratpack.handling.Context
 import ratpack.jackson.Jackson.fromJson
 import ratpack.jackson.Jackson.jsonNode
-import ratpack.pac4j.RatpackPac4j
 import si.francebevk.db.Tables.*
 import si.francebevk.db.tables.records.ActivityRecord
 import si.francebevk.db.tables.records.AuthorizedCompanionRecord
@@ -33,8 +37,15 @@ import si.francebevk.viewmodel.PupilWithActivities
 class Admin(config: AdminConfig) : Action<Chain> {
 
     private val LOG = LoggerFactory.getLogger(Admin::class.java)
-    private val basicClient = IndirectBasicAuthClient(ConfigAuthenticator(config.username, config.password)).apply {
+    private val basicClient = DirectBasicAuthClient(ConfigAuthenticator(config.username, config.password), AdminProfileCreator).apply {
         realmName = "Osnovna šola Franceta Bevka"
+    }
+
+    /** Creates a synthetic profile for the admin */
+    object AdminProfileCreator: ProfileCreator<UsernamePasswordCredentials, CommonProfile> {
+        override fun create(credentials: UsernamePasswordCredentials?, context: WebContext?): CommonProfile {
+            return CommonProfile()
+        }
     }
 
     override fun execute(t: Chain) = t.route {
@@ -52,7 +63,7 @@ class Admin(config: AdminConfig) : Action<Chain> {
 
         // Authentication required from here on, and make sure _again_ no database users (parents) can come here!
         all(RatpackPac4j.authenticator(basicClient))
-        all(RatpackPac4j.requireAuth(IndirectBasicAuthClient::class.java, Authorizer<HttpProfile> { _, profile -> profile.id == null }))
+        all(RatpackPac4j.requireAuth<UsernamePasswordCredentials, CommonProfile>(DirectBasicAuthClient::class.java/*, Authorizer<CommonProfile> { _, profile -> profile.id == null }*/))
 
         get(::summary)
         get("by-activity", ::summaryByActivity)

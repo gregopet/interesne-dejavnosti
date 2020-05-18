@@ -171,9 +171,10 @@ dependencies {
 	// Ratpack sessions
 	compile group: 'io.ratpack', name: 'ratpack-session', version: '1.5.0-rc-2' // note: the version is subject to change
 	// Ratpack auth
-	compile group: 'io.ratpack', name: 'ratpack-pac4j', version: ratpackVersion
-	compile group: 'org.pac4j', name: 'pac4j', version: '1.8.8'
-	compile group: 'org.pac4j', name: 'pac4j-http', version: '1.8.8'
+	compile group: 'org.pac4j', name: 'ratpack-pac4j', version: ratpackPac4jVersion
+	compile group: 'org.pac4j', name: 'pac4j-core', version: pac4jVersion
+	compile group: 'org.pac4j', name: 'pac4j-http', version: pac4jVersion
+
 
 	// logging
 	runtime("ch.qos.logback:logback-core:$logbackVersion")
