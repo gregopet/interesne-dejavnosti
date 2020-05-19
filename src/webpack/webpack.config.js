@@ -9,7 +9,7 @@ module.exports = (env, argv) => {
   const devMode = argv.mode !== 'production';
   return {
     entry: {
-      pupil: ['whatwg-fetch', './src/app.js'],
+      pupil: ['whatwg-fetch', './src/app.ts'],
       admin: './src/pupilList.js',
     },
     plugins: [

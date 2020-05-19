@@ -1,26 +1,34 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Vue from 'vue';
 import { formatMinutes, formatDay, timeSlotGroupsOverlap, timeSlotsOverlap } from './time';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import * as $ from 'jquery';
 import 'bootstrap/js/dist/modal.js';
 
 Vue.filter('minuteTime', formatMinutes)
 Vue.filter('day', formatDay)
 
+// extra properties we need on server's REST types
+interface UIActivity extends Rest.Activity {
+    freePlaces: number;
+    currentlyMine: boolean | null;
+}
+
+type DayOfWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday';
+
 fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credentials: 'include', cache: 'no-cache' } )
 .then(
     function(response) {
-        response.json().then(function(state) {
+        response.json().then(function(state: Rest.PupilState) {
             var sortedActivities = _.sortBy(state.activities, function(a) { return a.name.toLowerCase() })
-            _.each(sortedActivities, function(act) {
+            _.each(sortedActivities, function(act: UIActivity) {
                 // display something until the vacancy comes through
                 act.freePlaces = 3
                 act.currentlyMine = null
             })
             var leaveTimeRange = [775, 825, 875, 930, 980, 1020]
             if (!state.authorizedPersons || state.authorizedPersons.length == 0) {
-                state.authorizedPersons = [{}]; // ensure one blank row ready for input
+                state.authorizedPersons = [{ name: null, type: null }]; // ensure one blank row ready for input
             }
 
             var app = new Vue({
@@ -103,7 +111,7 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                     addPerson: function() {
                         this.authorizedPersons.push({});
                     },
-                    removePerson: function(idx) {
+                    removePerson: function(idx: number) {
                         this.authorizedPersons.splice(idx, 1);
                         if (this.authorizedPersons.length == 0) {
                             this.authorizedPersons.push({});
@@ -114,24 +122,24 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                             window.location.href = "/logout"
                         }
                     },
-                    isSelected: function(group) {
+                    isSelected: function(group: UIActivity) {
                         return _.find(this.pupilGroups, group);
                     },
-                    select: function(group) {
+                    select: function(group: UIActivity) {
                         this.pupilGroups.push(group);
                         this.confirmNoLeaveTimesActivityConflicts()
                     },
-                    deselect: function(group) {
+                    deselect: function(group: UIActivity) {
                         this.pupilGroups = _.without(this.pupilGroups, group);
                     },
-                    hasConflictWithActivity: function(activity) {
+                    hasConflictWithActivity: function(activity: UIActivity) {
                         var conflicting = _.find(this.pupilGroups, function(selectedGroup) {
                             return timeSlotGroupsOverlap(selectedGroup.times, activity.times)
                         })
                         return conflicting ? conflicting.name : null
                     },
                     /** Returns true if this group really does have a limited membership count (we're just sending a large number otherwise as a legacy hack) */
-                    isGroupMembershipLimited: function(group) {
+                    isGroupMembershipLimited: function(group: UIActivity) {
                         return group.freePlaces < 100;
                     },
                     // returns true if there were no conflicts
@@ -165,14 +173,14 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                          $('#conflictModal').modal('hide') // no return? hide dialog, no conflicts
                     },
 
-                    resolveConflictRemoveActivity: function(activity) {
+                    resolveConflictRemoveActivity: function(activity: UIActivity) {
                         this.deselect(activity)
 
                         // check for further conflicts
 
                         this.confirmNoLeaveTimesActivityConflicts()
                     },
-                    resolveConflictUpdateLeaveTime: function(day, leaveTime) {
+                    resolveConflictUpdateLeaveTime: function(day: DayOfWeek, leaveTime: number) {
                         this.leaveTimes[day] = leaveTime
                         if (this.extendedStayPossible) {
                             this.extendedStay = true
@@ -261,7 +269,7 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                     }
                     else if (response.status == 200) {
                         response.json().then(function(payload) {
-                            _.each(app.groups, function(act) {
+                            _.each(app.groups, function(act: UIActivity) {
                                 var status = _.find(payload, function(p) { return p.id == act.id })
                                 if (status) {
                                     act.freePlaces = status.free
