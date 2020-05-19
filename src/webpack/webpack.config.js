@@ -10,7 +10,7 @@ module.exports = (env, argv) => {
   return {
     entry: {
       pupil: ['whatwg-fetch', './src/app.ts'],
-      admin: './src/pupilList.js',
+      admin: './src/pupilList.ts',
     },
     plugins: [
       new CleanWebpackPlugin(),

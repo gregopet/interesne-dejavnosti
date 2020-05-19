@@ -1,15 +1,35 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Vue from 'vue';
 import { formatMinutes, formatDay, timeSlotGroupsOverlap, timeSlotsOverlap } from './time';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import * as $ from 'jquery';
 import 'bootstrap/js/dist/modal.js';
+
+type EventType = 'login' |'abort' | 'submit' | 'failed_submit';
+
+interface EditablePupil {
+    id: number;
+    access_code?: string;
+    first_name: string;
+    last_name: string;
+    pupil_group: string;
+    emails: string[];
+}
+
+interface PupilInterfaceActivity {
+    id: number;
+    pupil_id: number;
+    time: string;
+    admin_user: boolean;
+    type: EventType;
+    details: string | null;
+}
 
 var isKlass = /[1-9][A-Za-z]/
 var isYear = /[1-9]/
 var isWhitespace = /^\W*$/
 
-function zPad(length, value) {
+function zPad(length: number, value: number): string {
     var strValue = '' + value;
     while (strValue.length < length) {
         strValue = "0" + strValue
@@ -17,16 +37,16 @@ function zPad(length, value) {
     return strValue;
 }
 
-Vue.filter('date', function(dateStr) {
+Vue.filter('date', function(dateStr: string): string {
     var date = new Date(dateStr);
     return '' +
-        zPad(2, date.getDate()) + "." + zPad(2, (date.getMonth() + 1)) + "." + zPad(4, date.getYear() + 1900)
+        zPad(2, date.getDate()) + "." + zPad(2, (date.getMonth() + 1)) + "." + zPad(4, date.getFullYear())
         + " " +
         zPad(2, date.getHours()) + ":" + zPad(2, date.getMinutes())
         ;
 });
 
-Vue.filter('event_type', function(type) {
+Vue.filter('event_type', function(type: EventType): string {
     switch(type) {
         case 'login': return 'Odprl'
         case 'abort': return 'Odnehal'
@@ -47,7 +67,7 @@ new Vue({
         extendedView: false
     },
     methods: {
-        matchesFilter: function(klass, firstName, lastName) {
+        matchesFilter: function(klass: string, firstName: string, lastName: string): boolean {
             if (this.search == null || this.search.length == 0 || isWhitespace.test(this.search)) {
                 // no filter
                 return true;
@@ -78,7 +98,7 @@ new Vue({
             }
         },
 
-        showEvents: function(pupilId, name) {
+        showEvents: function(pupilId: number, name: string) {
             var vue = this;
             fetch('/admin/activity/' + pupilId, { cache: 'no-cache', credentials: 'include' }).then(function(response) {
                 if (response.ok) return response.json();
@@ -89,7 +109,7 @@ new Vue({
             });
         },
 
-        eventClass: function(event) {
+        eventClass: function(event: PupilInterfaceActivity) {
             var adminType = event.admin_user ? "text-danger " : "";
             switch(event.type) {
                 case 'login': return adminType;
@@ -105,14 +125,14 @@ new Vue({
         },
 
         /** Opens the pupil editing dialog */
-        editPupil: function(pupilId) {
+        editPupil: function(pupilId: number) {
             var vue = this;
             vue.editedPupil = null;
             vue.loadingPupil = true;
             vue.savingPupil = false;
             fetch('/admin/pupil-editor/' + pupilId, { cache: 'no-cache', credentials: 'include' }).then(function(response) {
                 if (response.ok) {
-                    response.json().then( function(pupil) {
+                    response.json().then( function(pupil: EditablePupil) {
                         while(pupil.emails.length < 2) {
                             pupil.emails.push("");
                         }
@@ -122,7 +142,7 @@ new Vue({
             });
             $(vue.$refs.pupilEditDialog).modal()
         },
-        savePupil: function(editedPupil) {
+        savePupil: function(editedPupil: EditablePupil) {
             var vue = this;
             vue.savingPupil = true;
             fetch('/admin/pupil-editor/' + editedPupil.id, {
