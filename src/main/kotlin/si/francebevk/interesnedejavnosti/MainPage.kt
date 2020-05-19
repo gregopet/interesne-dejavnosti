@@ -1,5 +1,9 @@
 package si.francebevk.interesnedejavnosti
 
+import org.pac4j.core.credentials.UsernamePasswordCredentials
+import org.pac4j.core.profile.CommonProfile
+import org.pac4j.http.client.direct.DirectFormClient
+import org.pac4j.http.client.indirect.FormClient
 import org.slf4j.LoggerFactory
 import ratpack.func.Action
 import ratpack.handling.Chain
@@ -21,6 +25,33 @@ object MainPage : Action<Chain> {
     private val LOG = LoggerFactory.getLogger(MainPage::class.java)
 
     override fun execute(t: Chain) = t.route {
+        all { ctx ->
+            // Only use the client that redirects to login form when user requests one of the main pages;
+            // for Ajax requests, don't, because the endpoint might get stored by the auth framework and then
+            // some poor user will try logging in again and will get an AJAX blurb
+            val isMainPage = (ctx.request.path == "")
+            val isFinishPost = (ctx.request.path == "store")
+            if (isMainPage || isFinishPost) {
+                ctx.insert(RatpackPac4j.requireAuth<UsernamePasswordCredentials, CommonProfile>(FormClient::class.java))
+            } else {
+                RatpackPac4j.userProfile(ctx).then { profile ->
+                    if (profile.isPresent()) {
+                        ctx.next()
+                    } else {
+                        ctx.response.status(400).send("Not logged in!")
+                    }
+                }
+            }
+        }
+
+        all { ctx ->
+            // Pre-prepare a permissions object for downstream
+            RatpackPac4j.userProfile(ctx).then { profile ->
+                val profileObj = profile.get()
+                ctx.request.add(profileObj)
+                ctx.next()
+            }
+        }
         get { html(it) }
         get("state") { pupilState(it) }
         post("store") { store(it) }

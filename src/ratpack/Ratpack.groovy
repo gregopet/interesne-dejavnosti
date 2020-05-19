@@ -136,19 +136,6 @@ ratpack {
             }
         }
 
-        // ... authentication required from this point on
-        all(RatpackPac4j.requireAuth(FormClient))
-
-        all { ctx ->
-            // Pre-prepare a permissions object for downstream
-            RatpackPac4j.userProfile(ctx).then { profile ->
-                def profileObj = profile.get()
-                ctx.request.add(profileObj)
-                //ctx.request.add(new Permissions(profileObj.roles))
-                ctx.next()
-            }
-        }
-
         insert(MainPage.INSTANCE)
     }
 }
