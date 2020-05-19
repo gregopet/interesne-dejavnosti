@@ -30,7 +30,9 @@ buildscript {
         // Node for webpack
         classpath 'com.moowork.gradle:gradle-node-plugin:1.3.1'
 
-	}
+        // Typescript definitions
+        classpath group: 'cz.habarta.typescript-generator', name: 'typescript-generator-gradle-plugin', version: '2.23.603'
+    }
 }
 
 plugins {
@@ -46,6 +48,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'kotlin'
 apply plugin: "org.flywaydb.flyway"
 apply plugin: 'org.hidetake.ssh'
+apply plugin: 'cz.habarta.typescript-generator'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -97,6 +100,16 @@ node {
 
 // Kotlin cannot compile without the template sources!
 tasks.compileKotlin.dependsOn compileRocker
+
+generateTypeScript {
+    jsonLibrary = 'jackson2'
+    classPatterns = [
+        'si.francebevk.dto.**'
+    ]
+    outputFile = 'src/webpack/src/serverTypes.d.ts'
+    outputKind = 'global'
+    namespace = 'Rest';
+}
 
 // Use externalized logging config
 run.doFirst {
