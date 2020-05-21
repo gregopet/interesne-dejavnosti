@@ -277,13 +277,26 @@ verzija je brezplačna in popolnoma zadostuje za delo na projektu (da uvozite
 projekt, uporabite funkcijo _Project from existing sources_ ter izberite datoteko
 `build.gradle`).
 
+#### Zaledni del (backend)
+
 Strežniški del aplikacije je večinoma napisan v programskem jeziku 
 [Kotlin](https://kotlinlang.org/), deluje pa s pomočjo spletnega ogrodja
-[Ratpack](https://ratpack.io/).
+[Ratpack](https://ratpack.io/). Za grajenje se uporablja orodje 
+[Gradle](https://gradle.org/).
 
-Uporabniški vmesnik je spisan v JavaScript-u s pomočjo orodja 
-[Vue.js](https://vuejs.org/), za vizualni izgled pa skrbi knjižnjica 
-[Bootstrap 4](https://getbootstrap.com/).
+Podatki so shranjeni v Postgres bazi podatkov; če nimate postavljene nobene Postgres
+baze, si za potrebe razvoja lahko poženete razvojno verzijo v Docker containerju.
+S pomočjo [Docker Compose](https://docs.docker.com/compose/) orodja si lahko postavite
+Postgres instanco, dostopno za razvoj. Ko imate Docker Compose nameščen, lahko zaženete
+ukaz `docker-compose up`, pa bo baza dostopna na standardnem Postgres portu 5432 
+(port lahko spremenite tako, da popravite datoteko `docker-compose.yml`).
+
+Docker Compose bo bazo podatkov tudi avtomatsko zmigriral na zadnjo verzijo ter
+jo napolnil s testnimi podatki. Med razvojem vam sicer novih migracij ni treba
+zaganjati s pomočjo Docker Compose, saj aplikacija ob zagonu sama zažene 
+manjkajoče migracije.
+
+Če želite popolnoma počistiti bazo podatkov, lahko uporabite ukaz `docker compose up -V`.
 
 Za dostop do podatkov je uporabljena knjižnjica [jOOQ](https://www.jooq.org/),
 shema baze pa se posodablja s pomočjo orodja [Flyway](https://flywaydb.org/) (
@@ -293,6 +306,8 @@ pomočjo Postgres ukaza `COMMENT ON ...`, tako da si lahko podatkovni model
 razlagate s pomočjo teh podatkov (če za dostop do baze uporabljate orodje `psql`
 lahko v njemu recimo napišete `\dt+ pupil`, da dobite opis vseh stolpcev v 
 tabeli o učencih).
+
+#### Sprednji del (frontend)
 
 Tekstovni deli, tako HTML kot elektronska sporočila, se ustvarjajo s pomočjo
 predlog [Rocker Templates](https://github.com/fizzed/rocker). Predloge se 
@@ -305,7 +320,5 @@ polno aplikacijo z vključenimi vsemi odvisnimi paketi (task `shadowJar`), kar
 vključuje `deployProd`, ki namesti aplikacijo na produkcijski strežnik. Za razvoj
 frontenda pa je najbolj enostavno kar v direktoriju `src/webpack` pognati ukaz
 `npm watch`.
-
-Za grajenje se uporablja orodje [Gradle](https://gradle.org/).
 
 Seveda se priporočamo, da morebitne izboljšave pošljete nazaj tudi nam :)

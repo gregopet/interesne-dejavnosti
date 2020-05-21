@@ -5,9 +5,9 @@ services:
         ports: 
             - 5432:5432
         volumes:
-            - ./postgres-scripts:/docker-entrypoint-initdb.d
-            - ./flyway-5.2.4:/flyway
-            - ../src/migrations/flyway:/flyway/sql
+            - ./dev-db/postgres-scripts:/docker-entrypoint-initdb.d
+            - ./dev-db/flyway-5.2.4:/flyway
+            - ./src/migrations/flyway:/flyway/sql
         environment:
             POSTGRES_DB: interesne-dejavnosti
     maildev:
