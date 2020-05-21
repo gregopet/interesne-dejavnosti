@@ -4,15 +4,28 @@ import { formatMinutes, formatDay, timeSlotGroupsOverlap, timeSlotsOverlap } fro
 import * as _ from 'lodash';
 import * as $ from 'jquery';
 import 'bootstrap/js/dist/modal.js';
+import AuthorizedPersonComponent from './userInterface/AuthorizedPersonComponent';
 
 Vue.filter('minuteTime', formatMinutes)
 Vue.filter('day', formatDay)
+Vue.component('authorizedperson', AuthorizedPersonComponent);
 
 // extra properties we need on server's REST types
 interface UIActivity extends Rest.Activity {
     freePlaces: number;
     currentlyMine: boolean | null;
 }
+
+/*
+.then( (response) => {
+    response.json().then( (state: Rest.PupilState) => {
+        const mainInterface = new MainComponent({ 
+            propsData: { state } 
+        })
+        mainInterface.$mount('#app')
+    });
+});
+*/
 
 type DayOfWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday';
 
@@ -109,7 +122,7 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                 },
                 methods: {
                     addPerson: function() {
-                        this.authorizedPersons.push({});
+                        this.authorizedPersons.push({ name: null, type: null });
                     },
                     removePerson: function(idx: number) {
                         this.authorizedPersons.splice(idx, 1);
