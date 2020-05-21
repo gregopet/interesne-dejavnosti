@@ -1,33 +1,24 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Vue from 'vue';
-import { formatMinutes, formatDay, timeSlotGroupsOverlap, timeSlotsOverlap } from './time';
+import { formatMinutes, formatDay } from './time';
 import * as _ from 'lodash';
 import * as $ from 'jquery';
 import 'bootstrap/js/dist/modal.js';
 import AuthorizedPersonComponent from './userInterface/AuthorizedPersonComponent';
 import LeaveTimes from './userInterface/LeaveTimesComponent';
+import Activities from './userInterface/ActivitiesComponent';
 
 Vue.filter('minuteTime', formatMinutes)
 Vue.filter('day', formatDay)
 Vue.component('authorizedperson', AuthorizedPersonComponent);
 Vue.component('leavetimes', LeaveTimes);
+Vue.component('activities', Activities);
 
-// extra properties we need on server's REST types
+
 interface UIActivity extends Rest.Activity {
     freePlaces: number;
     currentlyMine: boolean | null;
 }
-
-/*
-.then( (response) => {
-    response.json().then( (state: Rest.PupilState) => {
-        const mainInterface = new MainComponent({ 
-            propsData: { state } 
-        })
-        mainInterface.$mount('#app')
-    });
-});
-*/
 
 type DayOfWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday';
 
@@ -35,12 +26,6 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
 .then(
     function(response) {
         response.json().then(function(state: Rest.PupilState) {
-            var sortedActivities = _.sortBy(state.activities, function(a) { return a.name.toLowerCase() })
-            _.each(sortedActivities, function(act: UIActivity) {
-                // display something until the vacancy comes through
-                act.freePlaces = 3
-                act.currentlyMine = null
-            })
             var leaveTimeRange = [775, 825, 875, 930, 980, 1020]
             if (!state.authorizedPersons || state.authorizedPersons.length == 0) {
                 state.authorizedPersons = [{ name: null, type: null }]; // ensure one blank row ready for input
@@ -56,15 +41,6 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                     // Times students can pick as leave times
                     leaveTimeRange: leaveTimeRange,
 
-                    // Total range of available activities
-                    groups: sortedActivities,
-
-                    // What activity is currently displayed in the UI?
-                    currentGroup: sortedActivities[0],
-
-                    // What activities did the pupil already select?
-                    pupilGroups: _.filter(state.activities, function(group) { return group.chosen }),
-
                     // Is pupil still young enough to be able to be in extended stay?
                     extendedStayPossible: !!document.getElementById('extended-stay-card'),
 
@@ -78,31 +54,13 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
 
                     // Admins can override email notification to parents
                     adminNotifyViaEmail: true,
-
-                    // How many activities are we limited to in the first phase of the process?
-                    twoPhaseProcessLimit: state.twoPhaseLimit,
-
-                    // When will the two-phase process end?
-                    twoPhaseProcessDeadline: new Date(state.twoPhaseEndMs),
-
-                    // The current date that must be updated periodically (so the property becomes reactive)
-                    currentDate: new Date(),
-
-                    // Persons authorized to take children from school
-                    authorizedPersons: state.authorizedPersons
                 },
                 computed: {
                     sendAdminEmailAsText: function() {
                         return this.adminNotifyViaEmail ? "obvesti starše preko e-pošte" : "NE obvesti staršev preko e-pošte"
                     },
-                    selectedGroupsWithLimit: function() {
-                        var limited = 0;
-                        for (var a = 0; a < this.pupilGroups.length; a++) {
-                            if (this.isGroupMembershipLimited(this.pupilGroups[a])) {
-                                limited += 1;
-                            }
-                        }
-                        return limited;
+                    numberOfSelectedGroups: function(): number {
+                        return this.state.activities.filter( (act: Rest.Activity) => act.chosen).length
                     },
                 },
                 watch: {
@@ -115,12 +73,12 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                 },
                 methods: {
                     addPerson: function() {
-                        this.authorizedPersons.push({ name: null, type: null });
+                        this.state.authorizedPersons.push({ name: null, type: null });
                     },
                     removePerson: function(idx: number) {
-                        this.authorizedPersons.splice(idx, 1);
-                        if (this.authorizedPersons.length == 0) {
-                            this.authorizedPersons.push({});
+                        this.state.authorizedPersons.splice(idx, 1);
+                        if (this.state.authorizedPersons.length == 0) {
+                            this.state.authorizedPersons.push({});
                         }
                     },
                     logout: function() {
@@ -128,36 +86,17 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                             window.location.href = "/logout"
                         }
                     },
-                    isSelected: function(group: UIActivity) {
-                        return _.find(this.pupilGroups, group);
-                    },
-                    select: function(group: UIActivity) {
-                        this.pupilGroups.push(group);
-                        this.confirmNoLeaveTimesActivityConflicts()
-                    },
-                    deselect: function(group: UIActivity) {
-                        this.pupilGroups = _.without(this.pupilGroups, group);
-                    },
-                    hasConflictWithActivity: function(activity: UIActivity) {
-                        var conflicting = _.find(this.pupilGroups, function(selectedGroup) {
-                            return timeSlotGroupsOverlap(selectedGroup.times, activity.times)
-                        })
-                        return conflicting ? conflicting.name : null
-                    },
-                    /** Returns true if this group really does have a limited membership count (we're just sending a large number otherwise as a legacy hack) */
-                    isGroupMembershipLimited: function(group: UIActivity) {
-                        return group.freePlaces < 100;
-                    },
+
                     // returns true if there were no conflicts
                     confirmNoLeaveTimesActivityConflicts: function() {
                         if (!this.extendedStayPossible) return true;
 
                          // go through all selected activities
-                         for (var a = 0; a < this.pupilGroups.length; a++) {
-                            var activity = this.pupilGroups[a]
+                         for (var a = 0; a < state.activities.length; a++) {
+                            var activity = state.activities[a]
 
                             // go through leave times
-                            if (activity.times) {
+                            if (activity.chosen && activity.times) {
                                 for (var s = 0; s < activity.times.length; s++) {
                                     var slot = activity.times[s];
                                     var leaveTime = this.state.extendedStay ? this.state[slot.day] : null;
@@ -180,7 +119,8 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                     },
 
                     resolveConflictRemoveActivity: function(activity: UIActivity) {
-                        this.deselect(activity)
+                        var activityComponent = this.$refs.activitySelector as Activities;
+                        activityComponent.deselectActivity(activity);
 
                         // check for further conflicts
 
@@ -198,7 +138,7 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
 
                     save: function() {
                         // selected activity IDs
-                        var selectedActivityIds = _.map(this.pupilGroups, function(group) { return group.id })
+                        var selectedActivityIds = state.activities.filter( (act) => act.chosen).map( (act) => act.id );
                         var payload = {
                             extendedStay: this.state.extendedStay,
                             selectedActivities: selectedActivityIds,
@@ -208,7 +148,7 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                             thursday: this.state.thursday,
                             friday: this.state.friday,
                             notifyViaEmail: this.adminNotifyViaEmail,
-                            authorizedPersons: this.authorizedPersons
+                            authorizedPersons: this.state.authorizedPersons
                          }
                         this.formIsSending = true
                         var that = this
@@ -246,19 +186,9 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                                 });
                             }
                         })
-                    },
-                    beforeActivityDeadline: function() {
-                        return this.twoPhaseProcessDeadline > this.currentDate;
-                    },
-                    atMaximumActivities: function() {
-                        return this.beforeActivityDeadline() && this.twoPhaseProcessLimit <= this.selectedGroupsWithLimit
                     }
                 }
             });
-
-            // Make time reactive
-            setInterval(function() { app.currentDate = new Date() }, 1000);
-
 
             // Vacancy checks
             function checkVacancy() {
@@ -275,7 +205,7 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                     }
                     else if (response.status == 200) {
                         response.json().then(function(payload) {
-                            _.each(app.groups, function(act: UIActivity) {
+                            app.state.activities.forEach( (act: UIActivity) => {
                                 var status = _.find(payload, function(p) { return p.id == act.id })
                                 if (status) {
                                     act.freePlaces = status.free
