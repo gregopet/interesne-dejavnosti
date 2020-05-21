@@ -5,10 +5,12 @@ import * as _ from 'lodash';
 import * as $ from 'jquery';
 import 'bootstrap/js/dist/modal.js';
 import AuthorizedPersonComponent from './userInterface/AuthorizedPersonComponent';
+import LeaveTimes from './userInterface/LeaveTimesComponent';
 
 Vue.filter('minuteTime', formatMinutes)
 Vue.filter('day', formatDay)
 Vue.component('authorizedperson', AuthorizedPersonComponent);
+Vue.component('leavetimes', LeaveTimes);
 
 // extra properties we need on server's REST types
 interface UIActivity extends Rest.Activity {
@@ -48,6 +50,9 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                 el: '#app',
                 data: {
 
+                    // The pupil state we got from the server
+                    state: state,
+
                     // Times students can pick as leave times
                     leaveTimeRange: leaveTimeRange,
 
@@ -60,20 +65,8 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                     // What activities did the pupil already select?
                     pupilGroups: _.filter(state.activities, function(group) { return group.chosen }),
 
-                    // Is pupil staying in extended stay (explicit consent..)
-                    extendedStay: state.extendedStay,
-
                     // Is pupil still young enough to be able to be in extended stay?
                     extendedStayPossible: !!document.getElementById('extended-stay-card'),
-
-                    // What leave times did the student have pre-selected?
-                    leaveTimes: {
-                        monday: state.monday,
-                        tuesday: state.tuesday,
-                        wednesday: state.wednesday,
-                        thursday: state.thursday,
-                        friday: state.friday
-                    },
 
                     // Are we currently displaying a conflict?
                     // Contains an array of time coflicts with following fields: activity, day, timeHome, leaveTime,
@@ -114,11 +107,11 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                 },
                 watch: {
                     // Check for conflicts when users change leave times
-                    'leaveTimes.monday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
-                    'leaveTimes.tuesday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
-                    'leaveTimes.wednesday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
-                    'leaveTimes.thursday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
-                    'leaveTimes.friday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
+                    'state.monday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
+                    'state.tuesday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
+                    'state.wednesday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
+                    'state.thursday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
+                    'state.friday': function(x, y) { this.confirmNoLeaveTimesActivityConflicts() },
                 },
                 methods: {
                     addPerson: function() {
@@ -167,7 +160,7 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                             if (activity.times) {
                                 for (var s = 0; s < activity.times.length; s++) {
                                     var slot = activity.times[s];
-                                    var leaveTime = this.extendedStay ? this.leaveTimes[slot.day] : null;
+                                    var leaveTime = this.state.extendedStay ? this.state[slot.day] : null;
 
                                     // fix discrepancy - last leave time is at 17:00 but activities last until 17:05! So we subtract 5 minutes - shouldn't harm with non-edge cases!
                                     if (leaveTime == null || leaveTime < slot.to - 5) {
@@ -194,9 +187,9 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                         this.confirmNoLeaveTimesActivityConflicts()
                     },
                     resolveConflictUpdateLeaveTime: function(day: DayOfWeek, leaveTime: number) {
-                        this.leaveTimes[day] = leaveTime
+                        this.state[day] = leaveTime
                         if (this.extendedStayPossible) {
-                            this.extendedStay = true
+                            this.state.extendedStay = true
                         }
 
                         // check for further conflicts
@@ -207,13 +200,13 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                         // selected activity IDs
                         var selectedActivityIds = _.map(this.pupilGroups, function(group) { return group.id })
                         var payload = {
-                            extendedStay: this.extendedStay,
+                            extendedStay: this.state.extendedStay,
                             selectedActivities: selectedActivityIds,
-                            monday: this.leaveTimes.monday,
-                            tuesday: this.leaveTimes.tuesday,
-                            wednesday: this.leaveTimes.wednesday,
-                            thursday: this.leaveTimes.thursday,
-                            friday: this.leaveTimes.friday,
+                            monday: this.state.monday,
+                            tuesday: this.state.tuesday,
+                            wednesday: this.state.wednesday,
+                            thursday: this.state.thursday,
+                            friday: this.state.friday,
                             notifyViaEmail: this.adminNotifyViaEmail,
                             authorizedPersons: this.authorizedPersons
                          }
