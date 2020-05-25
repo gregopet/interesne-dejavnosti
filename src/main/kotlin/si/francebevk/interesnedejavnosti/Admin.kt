@@ -16,6 +16,7 @@ import ratpack.func.Action
 import ratpack.handling.Chain
 import ratpack.handling.Context
 import ratpack.jackson.Jackson.jsonNode
+import si.francebevk.Proquint
 import si.francebevk.db.Tables.*
 import si.francebevk.db.tables.records.ActivityRecord
 import si.francebevk.db.tables.records.AuthorizedCompanionRecord
@@ -66,10 +67,12 @@ class Admin(config: AdminConfig) : Action<Chain> {
         get("by-hours", ::summaryHoursDaily)
         get("stats", ::stats)
         get("planner", ::planningYaml)
+        post("proquint", ::generateProquint)
         get("activity/:pupilId:\\d+") { ctx -> activity(ctx.allPathTokens.get("pupilId")!!.toLong(), ctx) }
+        post("pupil-editor", ::createPupil)
         path("pupil-editor/:pupilId:\\d+") { it.byMethod { m ->
             m.get { ctx -> getPupil(ctx.allPathTokens.get("pupilId")!!.toLong(), ctx) }
-            m.post { ctx -> savePupil(ctx.allPathTokens.get("pupilId")!!.toLong(), ctx) }
+            m.put { ctx -> savePupil(ctx.allPathTokens.get("pupilId")!!.toLong(), ctx) }
             m.delete { ctx -> deletePupil(ctx.allPathTokens.get("pupilId")!!.toLong(), ctx) }
         } }
         path("welcome-emails/:vsi?") { it.byMethod { m ->
@@ -121,6 +124,22 @@ class Admin(config: AdminConfig) : Action<Chain> {
         }
     }
 
+    fun createPupil(ctx: Context) {
+        ctx.parse(jsonNode()).then { pupil ->
+            Blocking.exec {
+                ctx.jooq.insertInto(PUPIL)
+                    .set(PUPIL.FIRST_NAME, pupil.get("first_name").asText())
+                    .set(PUPIL.LAST_NAME, pupil.get("last_name").asText())
+                    .set(PUPIL.PUPIL_GROUP, pupil.get("pupil_group").asText())
+                    .set(PUPIL.ACCESS_CODE, pupil.get("access_code").asText())
+                    .set(PUPIL.EXTENDED_STAY, false)
+                    .set(PUPIL.EMAILS, pupil.get("emails").elements().asSequence().map { it.asText().trim() }.filter { !it.isBlank() }.asIterable().toList().toTypedArray())
+                    .execute()
+                ctx.response.send()
+            }
+        }
+    }
+
     fun deletePupil(pupilId: Long, ctx: Context) {
         Blocking.exec {
             ctx.jooq.withTransaction { trans ->
@@ -132,6 +151,11 @@ class Admin(config: AdminConfig) : Action<Chain> {
             }
         }
         ctx.response.send()
+    }
+
+    /** Generates a random proquint for an inserted pupil */
+    fun generateProquint(ctx: Context) {
+        ctx.render(Proquint.long2quint4word(kotlin.random.Random.nextLong()))
     }
 
     /** Outputs a summary list of all the pupils and their chosen activities */

@@ -18,7 +18,7 @@ import * as $ from 'jquery';
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="name">Ime</label>
-                            <input class="form-control" id="name" v-model="editedPupil.first_name">
+                            <input class="form-control" id="name" v-model="editedPupil.first_name" ref="firstNameField">
                         </div>
 
                         <div class="form-group">
@@ -86,11 +86,18 @@ export default class EditPupilComponent extends Vue {
 
     mounted() {
         // Clean up this component once the dialog closes
-        $(this.$refs.pupilEditDialog).on('hidden.bs.modal', (e) => {
-            this.$el.parentNode?.removeChild(this.$el);
-            this.$destroy();
+        $(this.$refs.pupilEditDialog)
+            .on('hidden.bs.modal', (e) => {
+                this.$el.parentNode?.removeChild(this.$el);
+                this.$destroy();
+            })
+            .on('shown.bs.modal', (e) => {
+                (this.$refs.firstNameField as HTMLElement).focus();
+            });
+    }
 
-        });
+    private showDialog() {
+        $(this.$refs.pupilEditDialog).modal()
     }
 
     /** Opens the pupil editing dialog */
@@ -105,7 +112,27 @@ export default class EditPupilComponent extends Vue {
                 });
             }
         });
-        $(this.$refs.pupilEditDialog).modal()
+        this.showDialog();
+    }
+
+    /** Opens the pupil editing dialog for a new pupil */
+    async createPupil() {
+        this.showDialog();
+        const accessCodeResponse = await fetch('/admin/proquint', { cache: 'no-cache', method: 'POST', credentials: 'include' });
+        if (accessCodeResponse.ok) {
+            const accessCode = await accessCodeResponse.text();
+            this.editedPupil = {
+                id: null,
+                emails: [],
+                first_name: "",
+                last_name: "",
+                pupil_group: this.klasses[0],
+                access_code: accessCode
+            }
+            this.loadingPupil = false;
+        } else {
+            this.errorLoadingPupil = "Napaka :("
+        }
     }
 
     /** Deletes the pupil for whom we have opened the editing dialog */
@@ -129,10 +156,19 @@ export default class EditPupilComponent extends Vue {
     /** Saves the pupil on the server */
     savePupil(editedPupil: AdminRest.EditablePupil) {
         this.savingPupil = true;
-        fetch('/admin/pupil-editor/' + editedPupil.id, {
+        
+        let method = 'POST';
+        let url: string = '/admin/pupil-editor';
+        const editingExistingPupil = !!editedPupil.id
+        if (editedPupil.id) {
+            method = 'PUT';
+            url += '/' + editedPupil.id;
+        }
+
+        fetch(url, {
+            method,
             cache: 'no-cache',
             credentials: 'include',
-            method: 'POST',
             headers: new Headers({'content-type': 'application/json'}),
             body: JSON.stringify(editedPupil),
         }).then((response) => {
@@ -140,7 +176,7 @@ export default class EditPupilComponent extends Vue {
                 $(this.$refs.pupilEditDialog).modal('hide');
                 window.location.reload(false);
             } else {
-                this.errorLoadingPupil = "Napaka pri nalaganju učenca :(";
+                this.errorLoadingPupil = "Napaka pri shranjevanju učenca :(";
             }
         })
     }

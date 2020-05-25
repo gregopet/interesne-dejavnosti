@@ -15,7 +15,7 @@ declare namespace AdminRest {
 
     /** The interface for editing a pupil's data */
     interface EditablePupil {
-        id: number;
+        id: number | null;
         access_code?: string;
         first_name: string;
         last_name: string;

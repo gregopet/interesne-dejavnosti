@@ -108,6 +108,13 @@ new Vue({
             const editComponent = new EditPupilComponent({ propsData: { klasses } });
             editComponent.$mount(appContainer);
             editComponent.editPupil(pupilId);
+        },
+
+        /** Creates a pupil from scratch */
+        createPupil: function() {
+            const editComponent = new EditPupilComponent({ propsData: { klasses } });
+            editComponent.$mount(appContainer);
+            editComponent.createPupil();
         }
     }
 });

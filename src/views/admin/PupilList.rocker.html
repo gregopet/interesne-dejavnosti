@@ -35,6 +35,12 @@
             </label>
         </div>
 
+        <div class="d-print-none">
+            <button class="btn btn-success" @@click.prevent="createPupil">
+                Dodaj učenca
+            </button>
+        </div>
+
         <hr v-if="!extendedView">
 
         <table class="table table-sm table-bordered" v-if="!extendedView">
