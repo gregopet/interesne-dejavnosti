@@ -1,4 +1,4 @@
-@args(String pupilName, String pupilClass, Boolean pupilHasExtendedStay, String closeDate, String closeHour, Boolean isInFirstPhase, Integer firstPhaseLimit, String firstPhaseEndDate, String firstPhaseEndTime, Boolean isAdminRequest)
+@args(String pupilName, String pupilClass, Boolean pupilHasExtendedStay, String closeDate, String closeHour, Boolean isInFirstPhase, Integer firstPhaseLimit, String firstPhaseEndDate, String firstPhaseEndTime, Boolean isAdminRequest, Boolean askForSelfLeave)
 <!doctype html>
 
 <html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
@@ -79,10 +79,20 @@
 
 
     @if(pupilHasExtendedStay) {
-        <div class="card" id="extended-stay-card">
+        <div class="card" id="extended-stay-card" v-cloak>
             <div class="card-body">
                 <h4 class="card-title">Odhodi iz šole</h4>
                 <LeaveTimes v-model="state" :leave-time-range="leaveTimeRange"></LeaveTimes>
+
+                @if(askForSelfLeave) {
+                    <h5>Dovolite vašemu otroku, da zapusti šolo sam, brez spremstva?</h5>
+                    <div class="form-group">
+                        <select class="form-control" v-model="state.canLeaveAlone">
+                            <option :value="false">Ne, moj otrok šole ne sme zapustiti brez spremstva</option>
+                            <option :value="true">Da, moj otrok sme šolo zapustiti sam, brez spremstva</option>
+                        </select>
+                    </div>
+                }
 
                 <h5>Želite pooblastiti dodatne osebe, ki smejo pospremiti otroka iz šole?</h5>
                 <div class="form" v-cloak>

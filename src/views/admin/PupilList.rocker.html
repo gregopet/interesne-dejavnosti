@@ -102,6 +102,9 @@
                                     }
                                 }
                             }
+                            @if (pupil.getPupil().getCanLeaveAlone()) {
+                                <strong>šolo sme zapustiti brez spremstva!</strong>
+                            }
                         </td>
                     </tr>
                 }
@@ -151,6 +154,9 @@
                     </dl>
                 } else {
                     <p><strong class="d-block text-gray-dark text-muted">Ni v podaljšanem bivanju.</strong></p>
+                }
+                @if (pupil.getPupil().getCanLeaveAlone()) {
+                    <p><strong>Šolo sme zapustiti brez spremstva!</strong></p>
                 }
 
                 <h6 class="border-bottom border-gray pb-2" style="margin-top: 30px;">Dodatno pooblaščene osebe, ki smejo otroka pospremiti domov iz šole</h6>

@@ -12,6 +12,7 @@ import si.francebevk.interesnedejavnosti.minuteTimeFormat
  * @property thursday The pupil leave time on thursday or null if pupil will not be in the school's jurisdiction at all
  * @property friday The pupil leave time on friday or null if pupil will not be in the school's jurisdiction at all
  * @property notifyViaEmail When admins edit the pupil profiles they can specify the notification emails not to be sent out (for parents they are always sent out)
+ * @property canLeaveAlone Is this pupil allowed to leave without an acompanying person?
  */
 class PupilSettings(
     var extendedStay: Boolean,
@@ -22,7 +23,8 @@ class PupilSettings(
     var thursday: Short?,
     var friday: Short?,
     var notifyViaEmail: Boolean,
-    var authorizedPersons: List<AuthorizedPerson>?
+    var authorizedPersons: List<AuthorizedPerson>?,
+    var canLeaveAlone: Boolean
 ) {
     val monNice get() = format(monday)
     val tueNice get() = format(tuesday)
@@ -47,5 +49,8 @@ class PupilSettings(
             description.append(", pet ").append(friNice)
         }
         description.append("; ")
+        if (canLeaveAlone) {
+            description.append("SME sam odditi domov; ")
+        }
     }
 }

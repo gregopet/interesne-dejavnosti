@@ -54,6 +54,9 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
 
                     // Admins can override email notification to parents
                     adminNotifyViaEmail: true,
+
+                    // Can the child leave the school without an escorting person?
+                    canLeaveAlone: false
                 },
                 computed: {
                     sendAdminEmailAsText: function() {
@@ -103,7 +106,7 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
 
                                     // fix discrepancy - last leave time is at 17:00 but activities last until 17:05! So we subtract 5 minutes - shouldn't harm with non-edge cases!
                                     if (leaveTime == null || leaveTime < slot.to - 5) {
-                                        var fixedTimeHome = _.find(this.leaveTimeRange, function(t) { return t >= slot.to })
+                                        var fixedTimeHome = this.leaveTimeRange.find((t: number) => t >= slot.to)
 
                                         // other fix required for discrepancy (selector for leaving times doesn't know about 17:05!)
                                         if (fixedTimeHome == null && slot.to == 1025) fixedTimeHome = 1020
@@ -148,7 +151,8 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                             thursday: this.state.thursday,
                             friday: this.state.friday,
                             notifyViaEmail: this.adminNotifyViaEmail,
-                            authorizedPersons: this.state.authorizedPersons
+                            authorizedPersons: this.state.authorizedPersons,
+                            canLeaveAlone: this.state.canLeaveAlone
                          }
                         this.formIsSending = true
                         var that = this

@@ -62,6 +62,9 @@ object MainPage : Action<Chain> {
     /** Are the leave times relevant for children going to this year */
     fun leaveTimesRelevant(year: Short) = year < 6
 
+    /** Do we need to ask whether this child can leave school alone? */
+    fun askForLeaveAlonePermission(year: Short) = leaveTimesRelevant(year) && year > 1
+
     /** Translates the pupil's class if the proper name can't be used directly */
     fun translatePupilClass(name: String, year: Short) = if (year > 1) name else "prvi razred"
 
@@ -83,7 +86,8 @@ object MainPage : Action<Chain> {
             twoPhaseProcess.limit,
             twoPhaseProcess.endDateString,
             twoPhaseProcess.endTimeString,
-            isAdminRequest(ctx))
+            isAdminRequest(ctx),
+            askForLeaveAlonePermission(klass.year))
         )
     }
 
@@ -113,7 +117,8 @@ object MainPage : Action<Chain> {
             pupil.leaveFri,
             twoPhaseProcess.limit,
             twoPhaseProcess.end.toEpochMilli(),
-            authorizedPersons
+            authorizedPersons,
+            pupil.canLeaveAlone
         )
 
         ctx.renderJson(payload)
@@ -152,7 +157,7 @@ object MainPage : Action<Chain> {
                 ctx.jooq.withTransaction { t ->
                     ActivityDAO.storeSelectedActivityIds(pupilId, payload.selectedActivities, t)
                     if (payload.extendedStay) {
-                        PupilDAO.storeLeaveTimes(payload.monday, payload.tuesday, payload.wednesday, payload.thursday, payload.friday, pupilId, t)
+                        PupilDAO.storeLeaveTimes(payload.monday, payload.tuesday, payload.wednesday, payload.thursday, payload.friday, payload.canLeaveAlone, pupilId, t)
                     } else {
                         PupilDAO.storeNonParticipation(pupilId, t)
                     }

@@ -12,6 +12,7 @@ package si.francebevk.dto
  * @property friday The pupil leave time on friday or null if pupil will not be in the school's jurisdiction at all
  * @property twoPhaseLimit The maximum amount of activities during the first phase of the process
  * @property twoPhaseEndMs The epoch milliseconds during which the two-phase process ends
+ * @property canLeaveAlone Can the child leave the school alone, without a person accompanying them?
  */
 class PupilState(
     var activities: List<Activity>,
@@ -23,5 +24,6 @@ class PupilState(
     var friday: Short?,
     var twoPhaseLimit: Int,
     var twoPhaseEndMs: Long,
-    var authorizedPersons: List<AuthorizedPerson>?
+    var authorizedPersons: List<AuthorizedPerson>?,
+    var canLeaveAlone: Boolean
 )
