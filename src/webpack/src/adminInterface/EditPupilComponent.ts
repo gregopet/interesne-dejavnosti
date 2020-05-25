@@ -8,7 +8,7 @@ import * as $ from 'jquery';
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" ref="pupilEditDialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div v-if="editedPupil">
+                <div v-if="editedPupil && !errorLoadingPupil">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">{{ editedPupil.firstName }} {{ editedPupil.lastName }}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-if="!savingPupil">
@@ -51,12 +51,13 @@ import * as $ from 'jquery';
 
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" @click.prevent="deletePupil()" v-if="editedPupil.id">Izbriši</button>
                         <button type="button" class="btn btn-warning" data-dismiss="modal" :disabled="savingPupil">Prekini</button>
                         <button type="button" class="btn btn-primary" @click.prevent="savePupil(editedPupil)" :disabled="savingPupil">Shrani</button>
                     </div>
                 </div>
-                <div v-if="errorLoadingPupil">
-                    Napaka pri nalaganju učenca :(
+                <div v-if="errorLoadingPupil" class="modal-header">
+                    {{ errorLoadingPupil }}
                 </div>
                 <div v-if="!editedPupil && !errorLoadingPupil" style="padding: 1em;">
                     NALAGAM...
@@ -80,8 +81,17 @@ export default class EditPupilComponent extends Vue {
     /** True while we're trying to save the pupil's data on the server */
     savingPupil = false;
 
-    /** Had an error occured while we tried to get the pupil's information? */
-    errorLoadingPupil = false;
+    /** Had an error occured while we tried to get the pupil's information? What's the error message? */
+    errorLoadingPupil: string | null = null;
+
+    mounted() {
+        // Clean up this component once the dialog closes
+        $(this.$refs.pupilEditDialog).on('hidden.bs.modal', (e) => {
+            this.$el.parentNode?.removeChild(this.$el);
+            this.$destroy();
+
+        });
+    }
 
     /** Opens the pupil editing dialog */
     editPupil(pupilId: number) {
@@ -97,11 +107,28 @@ export default class EditPupilComponent extends Vue {
         });
         $(this.$refs.pupilEditDialog).modal()
     }
+
+    /** Deletes the pupil for whom we have opened the editing dialog */
+    private deletePupil() {
+        if (window.confirm(`Ste prepričani, da želite izbrisati učenca ${this.editedPupil!!.first_name} ${this.editedPupil!!.last_name}?`)) {
+            fetch('/admin/pupil-editor/' + this.editedPupil!!.id, {
+                cache: 'no-cache',
+                credentials: 'include',
+                method: 'DELETE',
+            }).then((response) => {
+                if (response.ok) {
+                    $(this.$refs.pupilEditDialog).modal('hide');
+                    window.location.reload(false);
+                } else {
+                    this.errorLoadingPupil = "Napaka pri brisanju učenca :(";
+                }
+            })
+        }
+    }
     
     /** Saves the pupil on the server */
     savePupil(editedPupil: AdminRest.EditablePupil) {
-        var vue = this;
-        vue.savingPupil = true;
+        this.savingPupil = true;
         fetch('/admin/pupil-editor/' + editedPupil.id, {
             cache: 'no-cache',
             credentials: 'include',
@@ -110,10 +137,10 @@ export default class EditPupilComponent extends Vue {
             body: JSON.stringify(editedPupil),
         }).then((response) => {
             if (response.ok) {
-                $(vue.$refs.pupilEditDialog).modal('hide');
+                $(this.$refs.pupilEditDialog).modal('hide');
                 window.location.reload(false);
             } else {
-                this.errorLoadingPupil = true;
+                this.errorLoadingPupil = "Napaka pri nalaganju učenca :(";
             }
         })
     }

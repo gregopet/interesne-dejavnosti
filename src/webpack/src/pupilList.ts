@@ -103,11 +103,6 @@ new Vue({
             }
         },
 
-        /** Closes the pupil editing dialog */
-        closeDialog: function() {
-            // TODO
-        },
-
         /** Initiate the pupil editor for the pupil with this ID */
         editPupil: function(pupilId: number) {
             const editComponent = new EditPupilComponent({ propsData: { klasses } });

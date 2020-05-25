@@ -4,26 +4,22 @@ import admin.*
 import org.jooq.JSONFormat
 import org.jooq.impl.DSL.*
 import org.jooq.util.postgres.PostgresDSL
-import org.pac4j.core.authorization.authorizer.Authorizer
 import org.pac4j.core.context.WebContext
 import org.pac4j.core.credentials.UsernamePasswordCredentials
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.core.profile.creator.ProfileCreator
 import org.pac4j.http.client.direct.DirectBasicAuthClient
-import org.pac4j.http.client.indirect.IndirectBasicAuthClient
 import ratpack.pac4j.RatpackPac4j
 import org.slf4j.LoggerFactory
 import ratpack.exec.Blocking
 import ratpack.func.Action
-import ratpack.func.Block
 import ratpack.handling.Chain
 import ratpack.handling.Context
-import ratpack.jackson.Jackson.fromJson
 import ratpack.jackson.Jackson.jsonNode
 import si.francebevk.db.Tables.*
 import si.francebevk.db.tables.records.ActivityRecord
 import si.francebevk.db.tables.records.AuthorizedCompanionRecord
-import si.francebevk.db.tables.records.PupilRecord
+import si.francebevk.db.withTransaction
 import si.francebevk.ratpack.async
 import si.francebevk.ratpack.await
 import si.francebevk.ratpack.jooq
@@ -74,6 +70,7 @@ class Admin(config: AdminConfig) : Action<Chain> {
         path("pupil-editor/:pupilId:\\d+") { it.byMethod { m ->
             m.get { ctx -> getPupil(ctx.allPathTokens.get("pupilId")!!.toLong(), ctx) }
             m.post { ctx -> savePupil(ctx.allPathTokens.get("pupilId")!!.toLong(), ctx) }
+            m.delete { ctx -> deletePupil(ctx.allPathTokens.get("pupilId")!!.toLong(), ctx) }
         } }
         path("welcome-emails/:vsi?") { it.byMethod { m ->
             m.get { ctx -> showEmails(ctx.allPathTokens.get("vsi").isNullOrBlank(), ctx) }
@@ -122,6 +119,19 @@ class Admin(config: AdminConfig) : Action<Chain> {
                 ctx.response.send()
             }
         }
+    }
+
+    fun deletePupil(pupilId: Long, ctx: Context) {
+        Blocking.exec {
+            ctx.jooq.withTransaction { trans ->
+                trans.deleteFrom(ACTIVITY_LOG).where(ACTIVITY_LOG.PUPIL_ID.eq(pupilId)).execute();
+                trans.deleteFrom(ERROR_LOG).where(ERROR_LOG.PUPIL_ID.eq(pupilId)).execute();
+                trans.deleteFrom(AUTHORIZED_COMPANION).where(AUTHORIZED_COMPANION.PUPIL_ID.eq(pupilId)).execute();
+                trans.deleteFrom(PUPIL_ACTIVITY).where(PUPIL_ACTIVITY.PUPIL_ID.eq(pupilId)).execute()
+                trans.deleteFrom(PUPIL).where(PUPIL.ID.eq(pupilId)).execute()
+            }
+        }
+        ctx.response.send()
     }
 
     /** Outputs a summary list of all the pupils and their chosen activities */
