@@ -4,30 +4,14 @@ import { formatMinutes, formatDay, timeSlotGroupsOverlap, timeSlotsOverlap } fro
 import * as _ from 'lodash';
 import * as $ from 'jquery';
 import 'bootstrap/js/dist/modal.js';
-
-type EventType = 'login' |'abort' | 'submit' | 'failed_submit';
-
-interface EditablePupil {
-    id: number;
-    access_code?: string;
-    first_name: string;
-    last_name: string;
-    pupil_group: string;
-    emails: string[];
-}
-
-interface PupilInterfaceActivity {
-    id: number;
-    pupil_id: number;
-    time: string;
-    admin_user: boolean;
-    type: EventType;
-    details: string | null;
-}
+import EditPupilComponent from './adminInterface/EditPupilComponent';
 
 var isKlass = /[1-9][A-Za-z]/
 var isYear = /[1-9]/
 var isWhitespace = /^\W*$/
+
+var appContainer = document.getElementById('pupilList') as Element;
+var klasses = (window as any).klasses;
 
 function zPad(length: number, value: number): string {
     var strValue = '' + value;
@@ -46,7 +30,7 @@ Vue.filter('date', function(dateStr: string): string {
         ;
 });
 
-Vue.filter('event_type', function(type: EventType): string {
+Vue.filter('event_type', function(type: AdminRest.EventType): string {
     switch(type) {
         case 'login': return 'Odprl'
         case 'abort': return 'Odnehal'
@@ -56,7 +40,7 @@ Vue.filter('event_type', function(type: EventType): string {
 });
 
 new Vue({
-    el: '#pupilList',
+    el: appContainer,
     data: {
         search: '',
         pupilEvents: [],
@@ -109,7 +93,7 @@ new Vue({
             });
         },
 
-        eventClass: function(event: PupilInterfaceActivity) {
+        eventClass: function(event: AdminRest.PupilInterfaceActivity) {
             var adminType = event.admin_user ? "text-danger " : "";
             switch(event.type) {
                 case 'login': return adminType;
@@ -124,41 +108,11 @@ new Vue({
             // TODO
         },
 
-        /** Opens the pupil editing dialog */
+        /** Initiate the pupil editor for the pupil with this ID */
         editPupil: function(pupilId: number) {
-            var vue = this;
-            vue.editedPupil = null;
-            vue.loadingPupil = true;
-            vue.savingPupil = false;
-            fetch('/admin/pupil-editor/' + pupilId, { cache: 'no-cache', credentials: 'include' }).then(function(response) {
-                if (response.ok) {
-                    response.json().then( function(pupil: EditablePupil) {
-                        while(pupil.emails.length < 2) {
-                            pupil.emails.push("");
-                        }
-                        vue.editedPupil = pupil;
-                    });
-                }
-            });
-            $(vue.$refs.pupilEditDialog).modal()
-        },
-        savePupil: function(editedPupil: EditablePupil) {
-            var vue = this;
-            vue.savingPupil = true;
-            fetch('/admin/pupil-editor/' + editedPupil.id, {
-                cache: 'no-cache',
-                credentials: 'include',
-                method: 'POST',
-                headers: new Headers({'content-type': 'application/json'}),
-                body: JSON.stringify(editedPupil),
-            }).then(function(response) {
-                if (response.ok) {
-                    $(vue.$refs.pupilEditDialog).modal('hide');
-                    window.location.reload(false);
-                } else {
-                    vue.errorLoadingPupil = true;
-                }
-            })
+            const editComponent = new EditPupilComponent({ propsData: { klasses } });
+            editComponent.$mount(appContainer);
+            editComponent.editPupil(pupilId);
         }
     }
 });
