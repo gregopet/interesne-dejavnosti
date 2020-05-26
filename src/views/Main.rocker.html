@@ -1,4 +1,19 @@
-@args(String pupilName, String pupilClass, Boolean pupilHasExtendedStay, String closeDate, String closeHour, Boolean isInFirstPhase, Integer firstPhaseLimit, String firstPhaseEndDate, String firstPhaseEndTime, Boolean isAdminRequest, Boolean askForSelfLeave)
+@import java.util.List
+@args(
+    String pupilName,
+    String pupilClass,
+    Boolean pupilHasExtendedStay,
+    String closeDate,
+    String closeHour,
+    List<Integer> morningWatchTimes,
+    Boolean isInFirstPhase,
+    Integer firstPhaseLimit,
+    String firstPhaseEndDate,
+    String firstPhaseEndTime,
+    Boolean isAdminRequest,
+    Boolean askForSelfLeave,
+    Boolean askForMorningWatch
+)
 <!doctype html>
 
 <html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
@@ -13,6 +28,13 @@
 		.leave-form input { max-width: 5em; }
         [v-cloak] {display: none}
 	</style>
+
+    <script type="text/javascript">
+        window.morningWatchTimes = [@for((i, time): morningWatchTimes) {
+            @time
+            @if (!i.last()) { , }
+        }];
+    </script>
 
 </head>
 
@@ -99,6 +121,22 @@
                     <AuthorizedPerson class="form-row mb-2" v-model="person" v-on:remove="removePerson(index)" v-for="(person, index) in state.authorizedPersons" :total-persons="state.authorizedPersons.length"></AuthorizedPerson>
 
                     <button class="btn btn-link" @@click.prevent="addPerson()">Dodaj osebo</button>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if(askForMorningWatch) {
+        <div class="card mt-3" id="morning-watch" v-cloak>
+            <div class="card-body">
+                <h4 class="card-title">Jutranje varstvo</h4>
+
+                <h5>Potrebujete za vašega otroka jutranje varstvo?</h5>
+                <div class="form-group">
+                    <select class="form-control" v-model="state.morningWatchArrival">
+                        <option :value="null">Ne, moj otrok ne bo v jutranjem varstvu</option>
+                        <option :value="time" v-for="time in morningWatchArrivalTimes">Da, moj otrok bo v jutranje varstvo prišel ob {{ time | minuteTime }}</option>
+                    </select>
                 </div>
             </div>
         </div>

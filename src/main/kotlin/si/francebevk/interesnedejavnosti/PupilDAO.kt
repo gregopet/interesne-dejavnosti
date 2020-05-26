@@ -31,7 +31,7 @@ object PupilDAO {
     /**
      * Indicates that the pupil will be involved in after school stay, at specified times.
      */
-    fun storeLeaveTimes(mon: Short?, tue: Short?, wed: Short?, thu: Short?, fri: Short?, canLeaveAlone: Boolean, pupilId: Long, jooq: DSLContext) = with(PUPIL) {
+    fun storeLeaveTimes(mon: Short?, tue: Short?, wed: Short?, thu: Short?, fri: Short?, canLeaveAlone: Boolean, morningWatchArrival: Short?, pupilId: Long, jooq: DSLContext) = with(PUPIL) {
         jooq
         .update(PUPIL)
         .set(LEAVE_MON, mon)
@@ -41,6 +41,7 @@ object PupilDAO {
         .set(LEAVE_FRI, fri)
         .set(EXTENDED_STAY, true)
         .set(CAN_LEAVE_ALONE, canLeaveAlone)
+        .set(MORNING_CARE_ARRIVAL, morningWatchArrival)
         .where(ID.eq(pupilId))
         .execute()
     }
@@ -48,7 +49,7 @@ object PupilDAO {
     /**
      * Indicates that the pupil will not be involved in after school stay.
      */
-    fun storeNonParticipation(pupilId: Long, jooq: DSLContext) = with(PUPIL) {
+    fun storeNonParticipation(canLeaveAlone: Boolean, morningWatchArrival: Short?, pupilId: Long, jooq: DSLContext) = with(PUPIL) {
         jooq
         .update(PUPIL)
         .set(LEAVE_MON, null as Short?)
@@ -57,6 +58,8 @@ object PupilDAO {
         .set(LEAVE_THU, null as Short?)
         .set(LEAVE_FRI, null as Short?)
         .set(EXTENDED_STAY, false)
+        .set(CAN_LEAVE_ALONE, canLeaveAlone)
+        .set(MORNING_CARE_ARRIVAL, morningWatchArrival)
         .where(ID.eq(pupilId))
         .execute()
     }

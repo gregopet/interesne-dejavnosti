@@ -22,6 +22,7 @@ interface UIActivity extends Rest.Activity {
 
 type DayOfWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday';
 
+
 fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credentials: 'include', cache: 'no-cache' } )
 .then(
     function(response) {
@@ -56,7 +57,10 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                     adminNotifyViaEmail: true,
 
                     // Can the child leave the school without an escorting person?
-                    canLeaveAlone: false
+                    canLeaveAlone: false,
+
+                    // times when pupils can come into morning care
+                    morningWatchArrivalTimes: (window as any).morningWatchTimes as number[]
                 },
                 computed: {
                     sendAdminEmailAsText: function() {
@@ -142,7 +146,7 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                     save: function() {
                         // selected activity IDs
                         var selectedActivityIds = state.activities.filter( (act) => act.chosen).map( (act) => act.id );
-                        var payload = {
+                        var payload: Rest.PupilSettings = {
                             extendedStay: this.state.extendedStay,
                             selectedActivities: selectedActivityIds,
                             monday: this.state.monday,
@@ -152,8 +156,9 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                             friday: this.state.friday,
                             notifyViaEmail: this.adminNotifyViaEmail,
                             authorizedPersons: this.state.authorizedPersons,
-                            canLeaveAlone: this.state.canLeaveAlone
-                         }
+                            canLeaveAlone: this.state.canLeaveAlone,
+                            morningWatchArrival: this.state.morningWatchArrival
+                        }
                         this.formIsSending = true
                         var that = this
 

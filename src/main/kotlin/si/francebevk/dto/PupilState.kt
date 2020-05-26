@@ -13,6 +13,7 @@ package si.francebevk.dto
  * @property twoPhaseLimit The maximum amount of activities during the first phase of the process
  * @property twoPhaseEndMs The epoch milliseconds during which the two-phase process ends
  * @property canLeaveAlone Can the child leave the school alone, without a person accompanying them?
+ * @property morningWatchArrival If not null, the child will be in morning care from that time onwards
  */
 class PupilState(
     var activities: List<Activity>,
@@ -25,5 +26,6 @@ class PupilState(
     var twoPhaseLimit: Int,
     var twoPhaseEndMs: Long,
     var authorizedPersons: List<AuthorizedPerson>?,
-    var canLeaveAlone: Boolean
+    var canLeaveAlone: Boolean,
+    var morningWatchArrival: Short?
 )

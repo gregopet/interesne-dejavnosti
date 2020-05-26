@@ -9,6 +9,12 @@ import si.francebevk.db.tables.records.AuthorizedCompanionRecord
 /** Formats a minutes spec into a human readable time */
 val Short.minuteTimeFormat get() = "${Math.floor(this / 60.0).toInt()}:${(this % 60).toString().padStart(2, '0')}"
 
+/** Parses a human-readable time string into number of minutes since midnight */
+val String.toMinutes: Int get() {
+    val (hours, minutes) = split(":", limit = 2).map(String::toInt)
+    return hours * 60 + minutes
+}
+
 /** Extracts the pupil's name from the context */
 val Context.pupilName get() = user.getAttribute(DbAuthenticator.PUPIL_NAME) as String
 

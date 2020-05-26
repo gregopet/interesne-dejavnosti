@@ -1,5 +1,6 @@
 package si.francebevk.dto
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import si.francebevk.interesnedejavnosti.minuteTimeFormat
 
 /**
@@ -13,6 +14,7 @@ import si.francebevk.interesnedejavnosti.minuteTimeFormat
  * @property friday The pupil leave time on friday or null if pupil will not be in the school's jurisdiction at all
  * @property notifyViaEmail When admins edit the pupil profiles they can specify the notification emails not to be sent out (for parents they are always sent out)
  * @property canLeaveAlone Is this pupil allowed to leave without an acompanying person?
+ * @property morningWatchArrival When will this kid arrive into morning watch? (null means no morning watch)
  */
 class PupilSettings(
     var extendedStay: Boolean,
@@ -24,12 +26,22 @@ class PupilSettings(
     var friday: Short?,
     var notifyViaEmail: Boolean,
     var authorizedPersons: List<AuthorizedPerson>?,
-    var canLeaveAlone: Boolean
+    var canLeaveAlone: Boolean,
+    var morningWatchArrival: Short?
 ) {
+    @get:JsonIgnore
     val monNice get() = format(monday)
+
+    @get:JsonIgnore
     val tueNice get() = format(tuesday)
+
+    @get:JsonIgnore
     val wedNice get() = format(wednesday)
+
+    @get:JsonIgnore
     val thuNice get() = format(thursday)
+
+    @get:JsonIgnore
     val friNice get() = format(friday)
 
 

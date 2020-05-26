@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 2.23.603 on 2020-05-19 11:42:34.
+// Generated using typescript-generator version 2.23.603 on 2020-05-26 14:15:09.
 
 declare namespace Rest {
 
@@ -38,11 +38,8 @@ declare namespace Rest {
         friday: number | null;
         notifyViaEmail: boolean;
         authorizedPersons: AuthorizedPerson[] | null;
-        tueNice: string;
-        thuNice: string;
-        friNice: string;
-        monNice: string;
-        wedNice: string;
+        canLeaveAlone: boolean;
+        morningWatchArrival: number | null;
     }
 
     interface PupilState {
@@ -56,6 +53,8 @@ declare namespace Rest {
         twoPhaseLimit: number;
         twoPhaseEndMs: number;
         authorizedPersons: AuthorizedPerson[] | null;
+        canLeaveAlone: boolean;
+        morningWatchArrival: number | null;
     }
 
     interface TimeSlot {

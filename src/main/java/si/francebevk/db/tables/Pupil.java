@@ -39,7 +39,7 @@ import si.francebevk.db.tables.records.PupilRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Pupil extends TableImpl<PupilRecord> {
 
-    private static final long serialVersionUID = 158291916;
+    private static final long serialVersionUID = -1703956615;
 
     /**
      * The reference instance of <code>public.pupil</code>
@@ -128,6 +128,11 @@ public class Pupil extends TableImpl<PupilRecord> {
      * The column <code>public.pupil.can_leave_alone</code>. If true, younger pupils can still leave school without an escort
      */
     public final TableField<PupilRecord, Boolean> CAN_LEAVE_ALONE = createField("can_leave_alone", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "If true, younger pupils can still leave school without an escort");
+
+    /**
+     * The column <code>public.pupil.morning_care_arrival</code>. If not null then the pupil will arrive into morning care at this time
+     */
+    public final TableField<PupilRecord, Short> MORNING_CARE_ARRIVAL = createField("morning_care_arrival", org.jooq.impl.SQLDataType.SMALLINT, this, "If not null then the pupil will arrive into morning care at this time");
 
     /**
      * Create a <code>public.pupil</code> table reference

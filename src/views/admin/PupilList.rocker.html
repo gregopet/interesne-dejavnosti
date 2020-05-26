@@ -54,6 +54,7 @@
                     <th>Sre</th>
                     <th>Čet</th>
                     <th>Pet</th>
+                    <th>Jutranje varstvo</th>
                     <th>Aktivnosti</th>
                     <th>Pooblaščene osebe</th>
                 </tr>
@@ -89,6 +90,11 @@
                         } else {
                             <td colspan="5" class="text-center"><i>Ni v podaljšanem bivanju</i></td>
                         }
+                        <td>
+                            @if(pupil.getPupil().getMorningCareArrival() != null) {
+                                @getMinuteTimeFormat(pupil.getPupil().getMorningCareArrival())
+                            }
+                        </td>
                         <td>
                             @for((i, activityId): pupil.getActivities()) {
                                 @shortActivityName(activities.get(activityId))@if(!i.last()) {,}
@@ -155,6 +161,13 @@
                 } else {
                     <p><strong class="d-block text-gray-dark text-muted">Ni v podaljšanem bivanju.</strong></p>
                 }
+
+
+                @if(pupil.getPupil().getMorningCareArrival() != null) {
+                    <h6 class="border-bottom border-gray pb-2" style="margin-top: 30px;">Jutranje varstvo</h6>
+                    <p>Ob @getMinuteTimeFormat(pupil.getPupil().getMorningCareArrival())</p>
+                }
+
                 @if (pupil.getPupil().getCanLeaveAlone()) {
                     <p><strong>Šolo sme zapustiti brez spremstva!</strong></p>
                 }
