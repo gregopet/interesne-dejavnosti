@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 2.23.603 on 2020-05-26 14:15:09.
+// Generated using typescript-generator version 2.23.603 on 2020-05-26 23:43:45.
 
 declare namespace Rest {
 
@@ -40,6 +40,7 @@ declare namespace Rest {
         authorizedPersons: AuthorizedPerson[] | null;
         canLeaveAlone: boolean;
         morningWatchArrival: number | null;
+        orderTextbooks: boolean;
     }
 
     interface PupilState {
@@ -55,6 +56,7 @@ declare namespace Rest {
         authorizedPersons: AuthorizedPerson[] | null;
         canLeaveAlone: boolean;
         morningWatchArrival: number | null;
+        orderTextbooks: boolean;
     }
 
     interface TimeSlot {

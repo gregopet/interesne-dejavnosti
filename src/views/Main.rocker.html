@@ -139,6 +139,20 @@
         </div>
     </div>
 
+    @if(vm.getAskForTextbooks()) {
+        <div class="card mt-3">
+            <div class="card-body">
+                <h4 class="card-title">Učbeniški sklad</h4>
+                <h5>Želite naročiti komplet učbenikov iz učbeniškega sklada?</h5>
+
+                    <select class="form-control" v-model="state.orderTextbooks">
+                    <option :value="false">Ne, ne želim naročiti kompleta učbenikov, ki ga je določila šola</option>
+                    <option :value="true">Da, za svojega otroka naročam komplet učbenikov, ki ga je določila šola</option>
+                </select>
+            </div>
+        </div>
+    }
+
     <div class="row mt-4" v-cloak>
         <div class="col-6">
             @if (vm.isAdminRequest()) {

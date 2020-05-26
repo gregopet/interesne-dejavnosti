@@ -27,5 +27,6 @@ class PupilState(
     var twoPhaseEndMs: Long,
     var authorizedPersons: List<AuthorizedPerson>?,
     var canLeaveAlone: Boolean,
-    var morningWatchArrival: Short?
+    var morningWatchArrival: Short?,
+    var orderTextbooks: Boolean
 )

@@ -157,7 +157,8 @@ fetch("state?rnd=" + Math.floor(Math.random() * Math.floor(1000000)), { credenti
                             notifyViaEmail: this.adminNotifyViaEmail,
                             authorizedPersons: this.state.authorizedPersons,
                             canLeaveAlone: this.state.canLeaveAlone,
-                            morningWatchArrival: this.state.morningWatchArrival
+                            morningWatchArrival: this.state.morningWatchArrival,
+                            orderTextbooks: !!this.state.orderTextbooks
                         }
                         this.formIsSending = true
                         var that = this

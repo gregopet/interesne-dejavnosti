@@ -15,6 +15,7 @@ package si.francebevk.viewmodel
  * @property isAdminRequest Is this form actually being rendered for an admin who will apply the pupil?
  * @property askForMorningWatch Should we ask if this pupil needs morning care or are they already too old?
  * @property askForSelfLeave Should we ask if this pupil is allowed to leave the school on their own?
+ * @property askForTextbooks Should we ask if this pupil wants to order school textbooks?
  */
 class MainPageForm(
     val pupilName: String,
@@ -29,7 +30,8 @@ class MainPageForm(
     val firstPhaseEndTime: String,
     val isAdminRequest: Boolean,
     val askForSelfLeave: Boolean,
-    val askForMorningWatch: Boolean
+    val askForMorningWatch: Boolean,
+    val askForTextbooks: Boolean
 ) {
     /** Outputs an array that's easier to include in HTML as json */
     val morningWatchTimesJsonArray get() = morningWatchTimes.joinToString(separator = ", ", prefix = "[", postfix = "]")

@@ -39,7 +39,7 @@ import si.francebevk.db.tables.records.PupilRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Pupil extends TableImpl<PupilRecord> {
 
-    private static final long serialVersionUID = -1703956615;
+    private static final long serialVersionUID = -812850571;
 
     /**
      * The reference instance of <code>public.pupil</code>
@@ -133,6 +133,11 @@ public class Pupil extends TableImpl<PupilRecord> {
      * The column <code>public.pupil.morning_care_arrival</code>. If not null then the pupil will arrive into morning care at this time
      */
     public final TableField<PupilRecord, Short> MORNING_CARE_ARRIVAL = createField("morning_care_arrival", org.jooq.impl.SQLDataType.SMALLINT, this, "If not null then the pupil will arrive into morning care at this time");
+
+    /**
+     * The column <code>public.pupil.order_textbooks</code>. Did the pupil order textbooks from the school's textbook fund?
+     */
+    public final TableField<PupilRecord, Boolean> ORDER_TEXTBOOKS = createField("order_textbooks", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "Did the pupil order textbooks from the school's textbook fund?");
 
     /**
      * Create a <code>public.pupil</code> table reference

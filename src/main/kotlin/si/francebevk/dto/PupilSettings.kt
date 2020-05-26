@@ -27,7 +27,8 @@ class PupilSettings(
     var notifyViaEmail: Boolean,
     var authorizedPersons: List<AuthorizedPerson>?,
     var canLeaveAlone: Boolean,
-    var morningWatchArrival: Short?
+    var morningWatchArrival: Short?,
+    var orderTextbooks: Boolean
 ) {
     @get:JsonIgnore
     val monNice get() = format(monday)

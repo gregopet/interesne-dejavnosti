@@ -69,6 +69,9 @@ object MainPage : Action<Chain> {
     /** Do we need to ask whether this child wants to stay in morning watch */
     fun askForMorningWatch(year: Short) = year <= 3;
 
+    /** Can the students use school textbooks (i.e. they don't get them for free anyway)? */
+    fun askForTextbooks(year: Short) = year >= 4
+
     /** Translates the pupil's class if the proper name can't be used directly */
     fun translatePupilClass(name: String, year: Short) = if (year > 1) name else "prvi razred"
 
@@ -96,7 +99,8 @@ object MainPage : Action<Chain> {
             firstPhaseEndTime = twoPhaseProcess.endTimeString,
             isAdminRequest = isAdminRequest(ctx),
             askForSelfLeave = askForLeaveAlonePermission(klass.year),
-            askForMorningWatch = askForMorningWatch(klass.year)
+            askForMorningWatch = askForMorningWatch(klass.year),
+            askForTextbooks = askForTextbooks(klass.year)
         )
 
         ctx.render(Main.template(viewModel))
@@ -130,7 +134,8 @@ object MainPage : Action<Chain> {
             twoPhaseProcess.end.toEpochMilli(),
             authorizedPersons,
             pupil.canLeaveAlone,
-            pupil.morningCareArrival
+            pupil.morningCareArrival,
+            pupil.orderTextbooks
         )
 
         ctx.renderJson(payload)
@@ -169,9 +174,9 @@ object MainPage : Action<Chain> {
                 ctx.jooq.withTransaction { t ->
                     ActivityDAO.storeSelectedActivityIds(pupilId, payload.selectedActivities, t)
                     if (payload.extendedStay) {
-                        PupilDAO.storeLeaveTimes(payload.monday, payload.tuesday, payload.wednesday, payload.thursday, payload.friday, payload.canLeaveAlone, payload.morningWatchArrival, pupilId, t)
+                        PupilDAO.storeLeaveTimes(payload.monday, payload.tuesday, payload.wednesday, payload.thursday, payload.friday, payload.canLeaveAlone, payload.morningWatchArrival, payload.orderTextbooks, pupilId, t)
                     } else {
-                        PupilDAO.storeNonParticipation(payload.canLeaveAlone, payload.morningWatchArrival, pupilId, t)
+                        PupilDAO.storeNonParticipation(payload.canLeaveAlone, payload.morningWatchArrival, payload.orderTextbooks, pupilId, t)
                     }
 
                     PupilDAO.storeAuthorizedPersons(authorizedPersons, pupilId, t)
