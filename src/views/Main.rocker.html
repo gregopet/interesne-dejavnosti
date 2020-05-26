@@ -1,19 +1,6 @@
 @import java.util.List
-@args(
-    String pupilName,
-    String pupilClass,
-    Boolean pupilHasExtendedStay,
-    String closeDate,
-    String closeHour,
-    List<Integer> morningWatchTimes,
-    Boolean isInFirstPhase,
-    Integer firstPhaseLimit,
-    String firstPhaseEndDate,
-    String firstPhaseEndTime,
-    Boolean isAdminRequest,
-    Boolean askForSelfLeave,
-    Boolean askForMorningWatch
-)
+@import si.francebevk.viewmodel.MainPageForm
+@args(MainPageForm vm)
 <!doctype html>
 
 <html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
@@ -30,7 +17,7 @@
 	</style>
 
     <script type="text/javascript">
-        window.morningWatchTimes = [@for((i, time): morningWatchTimes) {
+        window.morningWatchTimes = [@for((i, time): vm.getMorningWatchTimes()) {
             @time
             @if (!i.last()) { , }
         }];
@@ -41,7 +28,7 @@
 <body>
 <div class="container" id="app">
 
-    @if (isAdminRequest) {
+    @if (vm.isAdminRequest()) {
         <div class="alert alert-danger fixed-top">
             <strong>Administratorski dostop:</strong>
 
@@ -54,10 +41,10 @@
     <h1>Prijava popoldanskih aktivnosti v šolskem letu 2019 / 2020</h1>
 
     <p class="lead">
-        Učenec/učenka: <strong>@pupilName, @pupilClass</strong>
+        Učenec/učenka: <strong>@vm.getPupilName(), @vm.getPupilClass()</strong>
     </p>
 
-    @if (pupilHasExtendedStay) {
+    @if (vm.getPupilHasExtendedStay()) {
     <p class="lead">
         Vnesite podatke o času odhoda iz šole in o interesnih dejavnostih vašega otroka ter izbiro potrdite s pritiskom na zeleni gumb
         na dnu te strani.
@@ -75,7 +62,7 @@
         </div>
     </noscript>
 
-    @if(isInFirstPhase) {
+    @if(vm.isInFirstPhase()) {
     <div class="alert alert-primary" role="alert" id="firstPhaseAlert">
         <h4>Dragi starši!</h4>
         <p>
@@ -83,7 +70,7 @@
         </p>
         <p>
             Da bi čim več otrok imelo možnost izbrati svojo najljubšo dejavnost, lahko krožke brez omejitve števila
-            prijav sicer izbirate poljubno, izmed krožkov z omejenim vpisom pa si lahko vsak otrok izbere največ @firstPhaseLimit!
+            prijav sicer izbirate poljubno, izmed krožkov z omejenim vpisom pa si lahko vsak otrok izbere največ @vm.getFirstPhaseLimit()!
         </p>
         <p>
             Podrobnosti o vašem skupnem številu prijav lahko vidite na desni, podatek o omejitvi vpisa za posamezno dejavnost pa na levi strani območja za izbiro interesne dejavnosti.
@@ -95,18 +82,18 @@
     }
 
     <div class="alert alert-warning" role="alert">
-        Vnešene podatke lahko naknadno še spremenite, prosimo pa vas, da s popravki zaključite do <strong>@closeDate ob @closeHour</strong>!
+        Vnešene podatke lahko naknadno še spremenite, prosimo pa vas, da s popravki zaključite do <strong>@vm.getCloseDate() ob @vm.getCloseHour()</strong>!
         Po tem datumu bodo morebitne spremembe mogoče samo še z izrecnim soglasjem šole!
     </div>
 
 
-    @if(pupilHasExtendedStay) {
+    @if(vm.getPupilHasExtendedStay()) {
         <div class="card" id="extended-stay-card" v-cloak>
             <div class="card-body">
                 <h4 class="card-title">Odhodi iz šole</h4>
                 <LeaveTimes v-model="state" :leave-time-range="leaveTimeRange"></LeaveTimes>
 
-                @if(askForSelfLeave) {
+                @if(vm.getAskForSelfLeave()) {
                     <h5>Dovolite vašemu otroku, da zapusti šolo sam, brez spremstva?</h5>
                     <div class="form-group">
                         <select class="form-control" v-model="state.canLeaveAlone">
@@ -126,7 +113,7 @@
         </div>
     }
 
-    @if(askForMorningWatch) {
+    @if(vm.getAskForMorningWatch()) {
         <div class="card mt-3" id="morning-watch" v-cloak>
             <div class="card-body">
                 <h4 class="card-title">Jutranje varstvo</h4>
@@ -157,14 +144,14 @@
 
     <div class="row mt-4" v-cloak>
         <div class="col-6">
-            @if (isAdminRequest) {
+            @if (vm.isAdminRequest()) {
                 <button class="btn btn-block" @@click.prevent="save()" :disabled="formIsSending" v-bind:class="{ 'btn-warning': adminNotifyViaEmail, 'btn-danger': !adminNotifyViaEmail }">Shrani in {{sendAdminEmailAsText}}</button>
             } else {
                 <button class="btn btn-success btn-block" @@click.prevent="save()" :disabled="formIsSending">Zaključujem in potrjujem izbor {{ numberOfSelectedGroups }} dejavnosti</button>
             }
         </div>
         <div class="col-6">
-            @if (isAdminRequest) {
+            @if (vm.isAdminRequest()) {
                 <a class="btn btn-link btn-block" href="/admin">Nazaj na spisek učencev</a>
             } else {
                 <button class="btn btn-danger btn-block" @@click.prevent="logout()" :disabled="formIsSending">Prekinitev</button>

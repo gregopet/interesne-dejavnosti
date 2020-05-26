@@ -14,6 +14,7 @@ import si.francebevk.db.tables.records.ActivityRecord
 import si.francebevk.db.withTransaction
 import si.francebevk.dto.*
 import si.francebevk.ratpack.*
+import si.francebevk.viewmodel.MainPageForm
 import java.time.Instant;
 
 /**
@@ -82,21 +83,23 @@ object MainPage : Action<Chain> {
         val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
         val deadline = ctx.get(Deadlines::class.java)
         val twoPhaseProcess = ctx.get(TwoPhaseProcess::class.java)
-        ctx.render(Main.template(
-            "${pupil.firstName} ${pupil.lastName}",
-            translatePupilClass(pupil.pupilGroup, klass.year),
-            leaveTimesRelevant(klass.year),
-            deadline.endDateString,
-            deadline.endTimeString,
-            morningWatchTimes,
-            twoPhaseProcess.isInEffect,
-            twoPhaseProcess.limit,
-            twoPhaseProcess.endDateString,
-            twoPhaseProcess.endTimeString,
-            isAdminRequest(ctx),
-            askForLeaveAlonePermission(klass.year),
-            askForMorningWatch(klass.year))
+        val viewModel = MainPageForm(
+            pupilName = "${pupil.firstName} ${pupil.lastName}",
+            pupilClass = translatePupilClass(pupil.pupilGroup, klass.year),
+            pupilHasExtendedStay = leaveTimesRelevant(klass.year),
+            closeDate = deadline.endDateString,
+            closeHour = deadline.endTimeString,
+            morningWatchTimes = morningWatchTimes,
+            isInFirstPhase = twoPhaseProcess.isInEffect,
+            firstPhaseLimit = twoPhaseProcess.limit,
+            firstPhaseEndDate = twoPhaseProcess.endDateString,
+            firstPhaseEndTime = twoPhaseProcess.endTimeString,
+            isAdminRequest = isAdminRequest(ctx),
+            askForSelfLeave = askForLeaveAlonePermission(klass.year),
+            askForMorningWatch = askForMorningWatch(klass.year)
         )
+
+        ctx.render(Main.template(viewModel))
     }
 
     private fun endHtml(ctx: Context) {
