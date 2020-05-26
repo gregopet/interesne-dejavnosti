@@ -30,4 +30,7 @@ class MainPageForm(
     val isAdminRequest: Boolean,
     val askForSelfLeave: Boolean,
     val askForMorningWatch: Boolean
-)
+) {
+    /** Outputs an array that's easier to include in HTML as json */
+    val morningWatchTimesJsonArray get() = morningWatchTimes.joinToString(separator = ", ", prefix = "[", postfix = "]")
+}

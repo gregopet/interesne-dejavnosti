@@ -17,10 +17,7 @@
 	</style>
 
     <script type="text/javascript">
-        window.morningWatchTimes = [@for((i, time): vm.getMorningWatchTimes()) {
-            @time
-            @if (!i.last()) { , }
-        }];
+        window.morningWatchTimes = @vm.getMorningWatchTimesJsonArray();
     </script>
 
 </head>
