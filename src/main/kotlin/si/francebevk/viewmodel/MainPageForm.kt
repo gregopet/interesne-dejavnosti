@@ -8,6 +8,7 @@ package si.francebevk.viewmodel
  * @property closeDate The date (already formatted) when applications close
  * @property closeHour The time (already formatted) when applications close on [closeDate]
  * @property morningWatchTimes The possible times at which parents can drop off their children in the morning
+ * @property leaveTimes The possible times at which pupils can leave school
  * @property isInFirstPhase Are we in the first part of the process where pupils are limited to X ordinary activities?
  * @property firstPhaseLimit X, the number of ordinary activities a pupil may choose during the first phase
  * @property firstPhaseEndDate The date (already formatted) when first phase will end
@@ -24,6 +25,7 @@ class MainPageForm(
     val closeDate: String,
     val closeHour: String,
     val morningWatchTimes: List<Int>,
+    val leaveTimes: List<Int>,
     val isInFirstPhase: Boolean,
     val firstPhaseLimit: Int?,
     val firstPhaseEndDate: String,

@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 2.23.603 on 2020-05-26 23:43:45.
+// Generated using typescript-generator version 2.23.603 on 2020-05-27 22:13:36.
 
 declare namespace Rest {
 
@@ -65,6 +65,25 @@ declare namespace Rest {
         to: number;
         daySlovenian: string;
         daySlovenianShort: string;
+    }
+
+    interface MainPageForm {
+        pupilName: string;
+        pupilClass: string;
+        pupilHasExtendedStay: boolean;
+        closeDate: string;
+        closeHour: string;
+        morningWatchTimes: number[];
+        leaveTimes: number[];
+        firstPhaseLimit: number | null;
+        firstPhaseEndDate: string;
+        firstPhaseEndTime: string;
+        askForSelfLeave: boolean;
+        askForMorningWatch: boolean;
+        askForTextbooks: boolean;
+        inFirstPhase: boolean;
+        adminRequest: boolean;
+        morningWatchTimesJsonArray: string;
     }
 
     type AuthorizedPersonType = "sibling" | "grandparent" | "aunt_uncle" | "other";

@@ -78,6 +78,9 @@ object MainPage : Action<Chain> {
     /** The times kids can be brought in for morning watch */
     val morningWatchTimes = arrayOf("5:00", "6:00", "7:00").map(String::toMinutes)
 
+    /** The times kids can leave school */
+    val leaveTimes = arrayOf("12:55", "13:45", "14:35", "15:30", "16:20", "17:00").map(String::toMinutes)
+
     /** Is this page displayed via admin authentication (i.e. an admin is editing a pupil)? */
     private fun isAdminRequest(ctx: Context) = ctx.request.uri.startsWith(prefix = "/admin/", ignoreCase = true)
 
@@ -93,6 +96,7 @@ object MainPage : Action<Chain> {
             closeDate = deadline.endDateString,
             closeHour = deadline.endTimeString,
             morningWatchTimes = morningWatchTimes,
+            leaveTimes = leaveTimes,
             isInFirstPhase = twoPhaseProcess.isInEffect,
             firstPhaseLimit = twoPhaseProcess.limit,
             firstPhaseEndDate = twoPhaseProcess.endDateString,
@@ -103,7 +107,9 @@ object MainPage : Action<Chain> {
             askForTextbooks = askForTextbooks(klass.year)
         )
 
-        ctx.render(Main.template(viewModel))
+        val viewModelJson = ctx.get(com.fasterxml.jackson.databind.ObjectMapper::class.java).writerWithDefaultPrettyPrinter().writeValueAsString(viewModel);
+
+        ctx.render(Main.template(viewModel, viewModelJson))
     }
 
     private fun endHtml(ctx: Context) {

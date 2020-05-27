@@ -104,7 +104,8 @@ tasks.compileKotlin.dependsOn compileRocker
 generateTypeScript {
     jsonLibrary = 'jackson2'
     classPatterns = [
-        'si.francebevk.dto.**'
+        'si.francebevk.dto.**',
+        'si.francebevk.viewmodel.MainPageForm'
     ]
     outputFile = 'src/webpack/src/serverTypes.d.ts'
     outputKind = 'global'

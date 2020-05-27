@@ -1,6 +1,6 @@
 @import java.util.List
 @import si.francebevk.viewmodel.MainPageForm
-@args(MainPageForm vm)
+@args(MainPageForm vm, String vmJson)
 <!doctype html>
 
 <html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
@@ -8,7 +8,7 @@
     <meta charset="utf-8">
     <title>OŠ Franceta Bevka: prijava popoldanskih dejavnosti</title>
 
-    @generated.PupilScripts.template()
+
 
     <style type="text/css">
 		body { margin-bottom: 1.5em }
@@ -18,193 +18,22 @@
 
     <script type="text/javascript">
         window.morningWatchTimes = @vm.getMorningWatchTimesJsonArray();
+        window.viewModel = @raw(vmJson);
     </script>
+
+    @generated.PupilScripts.template()
 
 </head>
 
 <body>
-<div class="container" id="app">
 
-    @if (vm.isAdminRequest()) {
-        <div class="alert alert-danger fixed-top">
-            <strong>Administratorski dostop:</strong>
-
-            <label class="ml-2" for="send-email">pošlji email staršem?</label>
-            <input type="checkbox" id="send-email" v-model="adminNotifyViaEmail">
-
-        </div>
-    }
-
-    <h1>Prijava popoldanskih aktivnosti v šolskem letu 2019 / 2020</h1>
-
-    <p class="lead">
-        Učenec/učenka: <strong>@vm.getPupilName(), @vm.getPupilClass()</strong>
-    </p>
-
-    @if (vm.getPupilHasExtendedStay()) {
-    <p class="lead">
-        Vnesite podatke o času odhoda iz šole in o interesnih dejavnostih vašega otroka ter izbiro potrdite s pritiskom na zeleni gumb
-        na dnu te strani.
-    </p>
-    } else {
-    <p class="lead">
-        Vnesite podatke o interesnih dejavnostih vašega otroka ter izbiro potrdite s pritiskom na zeleni gumb
-        na dnu te strani.
-    </p>
-    }
-
-    <noscript>
-        <div class="alert alert-danger" role="alert">
-            Pozor: stran ne bo delovala pravilno, dokler v brskalniku ne boste omogočili skriptnega jezika Javascript!
-        </div>
-    </noscript>
-
-    @if(vm.isInFirstPhase()) {
-    <div class="alert alert-primary" role="alert" id="firstPhaseAlert">
-        <h4>Dragi starši!</h4>
-        <p>
-            Število učencev na posameznih krožkih je žal omejeno.
-        </p>
-        <p>
-            Da bi čim več otrok imelo možnost izbrati svojo najljubšo dejavnost, lahko krožke brez omejitve števila
-            prijav sicer izbirate poljubno, izmed krožkov z omejenim vpisom pa si lahko vsak otrok izbere največ @vm.getFirstPhaseLimit()!
-        </p>
-        <p>
-            Podrobnosti o vašem skupnem številu prijav lahko vidite na desni, podatek o omejitvi vpisa za posamezno dejavnost pa na levi strani območja za izbiro interesne dejavnosti.
-        </p>
-        <p>
-            Hvala za razumevanje!
-        </p>
-    </div>
-    }
-
-    <div class="alert alert-warning" role="alert">
-        Vnešene podatke lahko naknadno še spremenite, prosimo pa vas, da s popravki zaključite do <strong>@vm.getCloseDate() ob @vm.getCloseHour()</strong>!
-        Po tem datumu bodo morebitne spremembe mogoče samo še z izrecnim soglasjem šole!
-    </div>
-
-
-    @if(vm.getPupilHasExtendedStay()) {
-        <div class="card" id="extended-stay-card" v-cloak>
-            <div class="card-body">
-                <h4 class="card-title">Odhodi iz šole</h4>
-                <LeaveTimes v-model="state" :leave-time-range="leaveTimeRange"></LeaveTimes>
-
-                @if(vm.getAskForSelfLeave()) {
-                    <h5>Dovolite vašemu otroku, da zapusti šolo sam, brez spremstva?</h5>
-                    <div class="form-group">
-                        <select class="form-control" v-model="state.canLeaveAlone">
-                            <option :value="false">Ne, moj otrok šole ne sme zapustiti brez spremstva</option>
-                            <option :value="true">Da, moj otrok sme šolo zapustiti sam, brez spremstva</option>
-                        </select>
-                    </div>
-                }
-
-                <h5>Želite pooblastiti dodatne osebe, ki smejo pospremiti otroka iz šole?</h5>
-                <div class="form" v-cloak>
-                    <AuthorizedPerson class="form-row mb-2" v-model="person" v-on:remove="removePerson(index)" v-for="(person, index) in state.authorizedPersons" :total-persons="state.authorizedPersons.length"></AuthorizedPerson>
-
-                    <button class="btn btn-link" @@click.prevent="addPerson()">Dodaj osebo</button>
-                </div>
+    <div class="container mb-3" id="component">
+        <noscript>
+            <div class="alert alert-danger" role="alert">
+                Pozor: stran ne bo delovala pravilno, dokler v brskalniku ne boste omogočili skriptnega jezika Javascript!
             </div>
-        </div>
-    }
-
-    @if(vm.getAskForMorningWatch()) {
-        <div class="card mt-3" id="morning-watch" v-cloak>
-            <div class="card-body">
-                <h4 class="card-title">Jutranje varstvo</h4>
-
-                <h5>Potrebujete za vašega otroka jutranje varstvo?</h5>
-                <div class="form-group">
-                    <select class="form-control" v-model="state.morningWatchArrival">
-                        <option :value="null">Ne, moj otrok ne bo v jutranjem varstvu</option>
-                        <option :value="time" v-for="time in morningWatchArrivalTimes">Da, moj otrok bo v jutranje varstvo prišel ob {{ time | minuteTime }}</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    }
-
-    <div class="card mt-3">
-        <div class="card-body">
-            <h4 class="card-title">Interesne dejavnosti</h4>
-            <div class="row">
-                <div class="col-md-7">
-                    <label for="izbirnik-opisov"><small>Poiščite željeno dejavnost v spodnjem seznamu ter jo izberite s pritiskom na modri gumb:</small></label>
-                </div>
-            </div>
-
-            <Activities ref="activitySelector" v-model="state" :leave-time-range="leaveTimeRange"></Activities>
-        </div>
+        </noscript>
     </div>
-
-    @if(vm.getAskForTextbooks()) {
-        <div class="card mt-3">
-            <div class="card-body">
-                <h4 class="card-title">Učbeniški sklad</h4>
-                <h5>Želite naročiti komplet učbenikov iz učbeniškega sklada?</h5>
-
-                    <select class="form-control" v-model="state.orderTextbooks">
-                    <option :value="false">Ne, ne želim naročiti kompleta učbenikov, ki ga je določila šola</option>
-                    <option :value="true">Da, za svojega otroka naročam komplet učbenikov, ki ga je določila šola</option>
-                </select>
-            </div>
-        </div>
-    }
-
-    <div class="row mt-4" v-cloak>
-        <div class="col-6">
-            @if (vm.isAdminRequest()) {
-                <button class="btn btn-block" @@click.prevent="save()" :disabled="formIsSending" v-bind:class="{ 'btn-warning': adminNotifyViaEmail, 'btn-danger': !adminNotifyViaEmail }">Shrani in {{sendAdminEmailAsText}}</button>
-            } else {
-                <button class="btn btn-success btn-block" @@click.prevent="save()" :disabled="formIsSending">Zaključujem in potrjujem izbor {{ numberOfSelectedGroups }} dejavnosti</button>
-            }
-        </div>
-        <div class="col-6">
-            @if (vm.isAdminRequest()) {
-                <a class="btn btn-link btn-block" href="/admin">Nazaj na spisek učencev</a>
-            } else {
-                <button class="btn btn-danger btn-block" @@click.prevent="logout()" :disabled="formIsSending">Prekinitev</button>
-            }
-        </div>
-    </div>
-
-
-    <!-- Modal dialog for timing conflicts + trigger -->
-    <!--div>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#conflictModal" id="conflictModalTrigger">
-            Launch demo modal
-        </button>
-    </div-->
-    <div class="modal" tabindex="-1" role="dialog" id="conflictModal" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document" v-if="conflicts">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Nedoslednost v času odhoda iz šole</h5>
-                </div>
-                <div class="modal-body">
-                    <p>
-                        Aktivnost {{ conflicts.activity.name }} se v {{ conflicts.day | day }} zaključi ob {{ conflicts.timeActivity | minuteTime }},
-                        vi pa ste navedli<!--
-                        --><span v-if="conflicts.timeHome"> čas odhoda domov že ob {{ conflicts.timeHome | minuteTime }}.</span><span v-else>, da vaš otrok ne bo v podaljšanjem bivanju.</span>
-                    </p>
-                    <p>
-                        Prosimo, izberite, kako želite razrešiti to nedoslednost.
-                    </p>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <button type="button" class="btn btn-warning btn-block" @@click.prevent="resolveConflictUpdateLeaveTime(conflicts.day, conflicts.fixedTimeHome)">V {{ conflicts.day | day }} odhod ob {{ conflicts.fixedTimeHome | minuteTime }}</button>
-                        </div>
-                        <div class="col-sm-6">
-                            <button type="button" class="btn btn-danger btn-block" @@click.prevent="resolveConflictRemoveActivity(conflicts.activity)">Odstrani {{ conflicts.activity.name }}</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 </body>
 </html>
