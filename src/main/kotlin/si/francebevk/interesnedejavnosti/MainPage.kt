@@ -76,10 +76,10 @@ object MainPage : Action<Chain> {
     fun translatePupilClass(name: String, year: Short) = if (year > 1) name else "prvi razred"
 
     /** The times kids can be brought in for morning watch */
-    val morningWatchTimes = arrayOf("5:00", "6:00", "7:00").map(String::toMinutes)
+    val morningWatchTimes = arrayOf("6:15", "6:30", "6:45", "7:00", "7:15", "7:45", "8:00").map(String::toMinutes)
 
     /** The times kids can leave school */
-    val leaveTimes = arrayOf("12:55", "13:45", "14:35", "15:30", "16:20", "17:00").map(String::toMinutes)
+    val leaveTimes = arrayOf("12:50", "13:40", "14:30", "15:30", "16:15", "17:00").map(String::toMinutes)
 
     /** Is this page displayed via admin authentication (i.e. an admin is editing a pupil)? */
     private fun isAdminRequest(ctx: Context) = ctx.request.uri.startsWith(prefix = "/admin/", ignoreCase = true)
