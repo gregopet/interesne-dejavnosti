@@ -64,7 +64,22 @@ import { DayOfWeek, UIActivity } from '../app';
         </div>
 
         <div v-if="state">
-            <div class="card" id="extended-stay-card" v-if="vm.pupilHasExtendedStay">
+
+            <div class="card mt-3" id="morning-watch" v-cloak v-if="state && vm.askForMorningWatch">
+                <div class="card-body">
+                    <h4 class="card-title">Jutranje varstvo</h4>
+
+                    <h5>Potrebujete za vašega otroka jutranje varstvo?</h5>
+                    <div class="form-group">
+                        <select class="form-control" v-model="state.morningWatchArrival">
+                            <option :value="null">Ne, moj otrok ne bo v jutranjem varstvu</option>
+                            <option :value="time" v-for="time in vm.morningWatchTimes">Da, moj otrok bo v jutranje varstvo prišel ob {{ time | minuteTime }}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3" id="extended-stay-card" v-if="vm.pupilHasExtendedStay">
                 <div class="card-body">
                     <h4 class="card-title">Odhodi iz šole</h4>
                     <LeaveTimes v-model="state" :leave-time-range="vm.leaveTimes"></LeaveTimes>
@@ -83,21 +98,7 @@ import { DayOfWeek, UIActivity } from '../app';
                     <div class="form" v-cloak>
                         <AuthorizedPerson class="form-row mb-2" v-model="person" v-on:remove="removePerson(index)" v-for="(person, index) in state.authorizedPersons" :total-persons="state.authorizedPersons.length"></AuthorizedPerson>
 
-                        <button class="btn btn-link" @@click.prevent="addPerson()">Dodaj osebo</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mt-3" id="morning-watch" v-cloak v-if="state && vm.askForMorningWatch">
-                <div class="card-body">
-                    <h4 class="card-title">Jutranje varstvo</h4>
-
-                    <h5>Potrebujete za vašega otroka jutranje varstvo?</h5>
-                    <div class="form-group">
-                        <select class="form-control" v-model="state.morningWatchArrival">
-                            <option :value="null">Ne, moj otrok ne bo v jutranjem varstvu</option>
-                            <option :value="time" v-for="time in vm.morningWatchTimes">Da, moj otrok bo v jutranje varstvo prišel ob {{ time | minuteTime }}</option>
-                        </select>
+                        <button class="btn btn-link" @click.prevent="addPerson()">Dodaj osebo</button>
                     </div>
                 </div>
             </div>
@@ -132,12 +133,12 @@ import { DayOfWeek, UIActivity } from '../app';
 
             <div class="row mt-4" v-cloak>
                 <div class="col-6">
-                    <button v-if="vm.adminRequest" class="btn btn-block" @@click.prevent="save()" :disabled="formIsSending" v-bind:class="{ 'btn-warning': adminNotifyViaEmail, 'btn-danger': !adminNotifyViaEmail }">Shrani in {{sendAdminEmailAsText}}</button>
-                    <button v-else class="btn btn-success btn-block" @@click.prevent="save()" :disabled="formIsSending">Zaključujem in potrjujem izbor {{ numberOfSelectedGroups }} dejavnosti</button>
+                    <button v-if="vm.adminRequest" class="btn btn-block" @click.prevent="save()" :disabled="formIsSending" v-bind:class="{ 'btn-warning': adminNotifyViaEmail, 'btn-danger': !adminNotifyViaEmail }">Shrani in {{sendAdminEmailAsText}}</button>
+                    <button v-else class="btn btn-success btn-block" @click.prevent="save()" :disabled="formIsSending">Zaključujem in potrjujem izbor {{ numberOfSelectedGroups }} dejavnosti</button>
                 </div>
                 <div class="col-6">
                     <a v-if="vm.adminRequest" class="btn btn-link btn-block" href="/admin">Nazaj na spisek učencev</a>
-                    <button v-else class="btn btn-danger btn-block" @@click.prevent="logout()" :disabled="formIsSending">Prekinitev</button>
+                    <button v-else class="btn btn-danger btn-block" @click.prevent="logout()" :disabled="formIsSending">Prekinitev</button>
                 </div>
             </div>
 
