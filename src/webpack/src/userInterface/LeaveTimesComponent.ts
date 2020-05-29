@@ -1,8 +1,65 @@
 import Vue from 'vue';
 import Component from 'vue-class-component'
-import { Prop } from 'vue-property-decorator';
+import { Prop, Watch } from 'vue-property-decorator';
+import { formatMinutes } from '../time';
 
 @Component({
+    filters: { formatMinutes },
+    template: `
+    <div>
+        <div class="form-group row">
+            <label :for="formControlId" class="col-sm-2 col-form-label col-form-label-sm">{{ day }}</label>
+            <div class="col-sm-10">
+                <select class="form-control form-control-sm" :id="formControlId" v-model="value.leaveTime">
+                    <option v-bind:value="null">Po pouku</option>
+                    <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
+                </select>
+                
+                <div v-if="canHaveSnack">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" :id="formSnackControlId" v-model="value.afternoonSnack">
+                        <label class="form-check-label" :for="formSnackControlId">Popoldanska malica</label>
+                    </div>
+                </div>
+                <span class="text-secondary font-italic" v-else>Popoldanska malica je mogoča le, če učenec/učenka odide po {{ snackTime | formatMinutes }}</span>
+            </div>
+        </div>
+    </div>
+    `
+})
+class LeaveDayComponent extends Vue {
+    @Prop({ required: true })
+    day: String;
+
+    get leaveTimeRange(): number[] {
+        return (this.$parent as LeaveTimes).leaveTimeRange as number[];
+    }
+
+    get snackTime(): number {
+        return (this.$parent as LeaveTimes).snackTime;
+    }
+
+    /** Does the pupil leave late enough so they can have the afternoon snack? */
+    get canHaveSnack(): boolean {
+        return this.value.leaveTime != null && this.value.leaveTime > this.snackTime;
+    }
+
+    @Prop({ required: true })
+    value: Rest.PupilDaySettings;
+
+    get formControlId(): string {
+        return `${this.day}_leave_time`;
+    }
+
+    get formSnackControlId(): string {
+        return `${this.day}_snack`;
+    }
+}  
+
+@Component({
+    components: {
+        LeaveDayComponent
+    },
     template: `
     <div>
         <div class="form-group">
@@ -19,51 +76,11 @@ import { Prop } from 'vue-property-decorator';
         </p>
 
         <form class="leave-form" v-if="value.extendedStay" v-cloak>
-            <div class="form-group row">
-                <label for="pon" class="col-sm-2 col-form-label col-form-label-sm">Ponedeljek</label>
-                <div class="col-sm-10">
-                    <select class="form-control form-control-sm" id="pon" v-model="value.monday">
-                        <option v-bind:value="null">Po pouku</option>
-                        <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="tor" class="col-sm-2 col-form-label col-form-label-sm">Torek</label>
-                <div class="col-sm-10">
-                    <select class="form-control form-control-sm" id="tor" v-model="value.tuesday">
-                        <option v-bind:value="null">Po pouku</option>
-                        <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="sre" class="col-sm-2 col-form-label col-form-label-sm">Sreda</label>
-                <div class="col-sm-10">
-                    <select class="form-control form-control-sm" id="sre" v-model="value.wednesday">
-                        <option v-bind:value="null">Po pouku</option>
-                        <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="cet" class="col-sm-2 col-form-label col-form-label-sm">Četrtek</label>
-                <div class="col-sm-10">
-                    <select class="form-control form-control-sm" id="cet" v-model="value.thursday">
-                        <option v-bind:value="null">Po pouku</option>
-                        <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="pet" class="col-sm-2 col-form-label col-form-label-sm">Petek</label>
-                <div class="col-sm-10">
-                    <select class="form-control form-control-sm" id="pet" v-model="value.friday">
-                        <option v-bind:value="null">Po pouku</option>
-                        <option v-bind:value="time" v-for="time in leaveTimeRange">{{ time | minuteTime }}</option>
-                    </select>
-                </div>
-            </div>
+            <LeaveDayComponent day="Ponedeljek" v-model="value.monday"></LeaveDayComponent>
+            <LeaveDayComponent day="Torek" v-model="value.tuesday"></LeaveDayComponent>
+            <LeaveDayComponent day="Sreda" v-model="value.wednesday"></LeaveDayComponent>
+            <LeaveDayComponent day="Četrtek" v-model="value.thursday"></LeaveDayComponent>
+            <LeaveDayComponent day="Petek" v-model="value.friday"></LeaveDayComponent>
         </form>
     </div>
     `
@@ -77,4 +94,8 @@ export default class LeaveTimes extends Vue {
     /** Minutes of day when students can leave */
     @Prop()
     leaveTimeRange: number[];
+    
+    /** Time of the afternoon snack - pupils can only have it if they leave later */
+    @Prop({ required: true })
+    snackTime: number;
 }

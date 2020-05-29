@@ -17,6 +17,7 @@ package si.francebevk.viewmodel
  * @property askForMorningWatch Should we ask if this pupil needs morning care or are they already too old?
  * @property askForSelfLeave Should we ask if this pupil is allowed to leave the school on their own?
  * @property askForTextbooks Should we ask if this pupil wants to order school textbooks?
+ * @property afternoonSnackTime Time of the afternoon snack - pupils can only have it if they leave later
  */
 class MainPageForm(
     val pupilName: String,
@@ -33,7 +34,8 @@ class MainPageForm(
     val isAdminRequest: Boolean,
     val askForSelfLeave: Boolean,
     val askForMorningWatch: Boolean,
-    val askForTextbooks: Boolean
+    val askForTextbooks: Boolean,
+    val afternoonSnackTime: Short
 ) {
     /** Outputs an array that's easier to include in HTML as json */
     val morningWatchTimesJsonArray get() = morningWatchTimes.joinToString(separator = ", ", prefix = "[", postfix = "]")

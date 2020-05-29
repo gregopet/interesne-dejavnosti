@@ -5,6 +5,7 @@ import Activities from './ActivitiesComponent';
 import AuthorizedPerson from './AuthorizedPersonComponent';
 import LeaveTimes from './LeaveTimesComponent';
 import ActivityConflict from './ActivityConflictComponent';
+import SchoolMeals from './SchoolMealsComponent';
 import { DayOfWeek, UIActivity } from '../app';
 
 @Component({
@@ -12,7 +13,8 @@ import { DayOfWeek, UIActivity } from '../app';
         Activities,
         AuthorizedPerson,
         LeaveTimes,
-        ActivityConflict
+        ActivityConflict,
+        SchoolMeals
     },
 
     template: `
@@ -79,10 +81,12 @@ import { DayOfWeek, UIActivity } from '../app';
                 </div>
             </div>
 
+            <SchoolMeals :vm="vm" v-model="state"></SchoolMeals>
+
             <div class="card mt-3" id="extended-stay-card" v-if="vm.pupilHasExtendedStay">
                 <div class="card-body">
                     <h4 class="card-title">Odhodi iz šole</h4>
-                    <LeaveTimes v-model="state" :leave-time-range="vm.leaveTimes"></LeaveTimes>
+                    <LeaveTimes v-model="state" :leave-time-range="vm.leaveTimes" :snack-time="vm.afternoonSnackTime"></LeaveTimes>
 
                     <div v-if="vm.askForSelfLeave">
                         <h5>Dovolite vašemu otroku, da zapusti šolo sam, brez spremstva?</h5>

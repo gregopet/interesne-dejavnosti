@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 2.23.603 on 2020-05-27 22:13:36.
+// Generated using typescript-generator version 2.23.603 on 2020-05-28 14:17:55.
 
 declare namespace Rest {
 
@@ -28,14 +28,21 @@ declare namespace Rest {
         type: AuthorizedPersonType | null;
     }
 
+    interface PupilDaySettings {
+        leaveTime: number | null;
+        morningSnack: boolean;
+        lunch: boolean;
+        afternoonSnack: boolean;
+    }
+
     interface PupilSettings {
         extendedStay: boolean;
         selectedActivities: number[];
-        monday: number | null;
-        tuesday: number | null;
-        wednesday: number | null;
-        thursday: number | null;
-        friday: number | null;
+        monday: PupilDaySettings;
+        tuesday: PupilDaySettings;
+        wednesday: PupilDaySettings;
+        thursday: PupilDaySettings;
+        friday: PupilDaySettings;
         notifyViaEmail: boolean;
         authorizedPersons: AuthorizedPerson[] | null;
         canLeaveAlone: boolean;
@@ -46,11 +53,11 @@ declare namespace Rest {
     interface PupilState {
         activities: Activity[];
         extendedStay: boolean;
-        monday: number | null;
-        tuesday: number | null;
-        wednesday: number | null;
-        thursday: number | null;
-        friday: number | null;
+        monday: PupilDaySettings;
+        tuesday: PupilDaySettings;
+        wednesday: PupilDaySettings;
+        thursday: PupilDaySettings;
+        friday: PupilDaySettings;
         twoPhaseLimit: number;
         twoPhaseEndMs: number;
         authorizedPersons: AuthorizedPerson[] | null;
@@ -81,9 +88,10 @@ declare namespace Rest {
         askForSelfLeave: boolean;
         askForMorningWatch: boolean;
         askForTextbooks: boolean;
-        inFirstPhase: boolean;
+        afternoonSnackTime: number;
         adminRequest: boolean;
         morningWatchTimesJsonArray: string;
+        inFirstPhase: boolean;
     }
 
     type AuthorizedPersonType = "sibling" | "grandparent" | "aunt_uncle" | "other";

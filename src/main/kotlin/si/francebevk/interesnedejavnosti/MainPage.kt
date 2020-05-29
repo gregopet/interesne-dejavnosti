@@ -81,6 +81,9 @@ object MainPage : Action<Chain> {
     /** The times kids can leave school */
     val leaveTimes = arrayOf("12:50", "13:40", "14:30", "15:30", "16:15", "17:00").map(String::toMinutes)
 
+    /** Time of the afternoon snack - pupils can only have it if they leave later */
+    val afternoonSnackTime = "15:20".toMinutes.toShort()
+
     /** Is this page displayed via admin authentication (i.e. an admin is editing a pupil)? */
     private fun isAdminRequest(ctx: Context) = ctx.request.uri.startsWith(prefix = "/admin/", ignoreCase = true)
 
@@ -104,7 +107,8 @@ object MainPage : Action<Chain> {
             isAdminRequest = isAdminRequest(ctx),
             askForSelfLeave = askForLeaveAlonePermission(klass.year),
             askForMorningWatch = askForMorningWatch(klass.year),
-            askForTextbooks = askForTextbooks(klass.year)
+            askForTextbooks = askForTextbooks(klass.year),
+            afternoonSnackTime = afternoonSnackTime
         )
 
         val viewModelJson = ctx.get(com.fasterxml.jackson.databind.ObjectMapper::class.java).writerWithDefaultPrettyPrinter().writeValueAsString(viewModel);
@@ -131,11 +135,11 @@ object MainPage : Action<Chain> {
         val payload = PupilState(
             activitiesPayload,
             pupil.extendedStay,
-            pupil.leaveMon,
-            pupil.leaveTue,
-            pupil.leaveWed,
-            pupil.leaveThu,
-            pupil.leaveFri,
+            PupilDaySettings(leaveTime = pupil.leaveMon),
+            PupilDaySettings(leaveTime = pupil.leaveTue),
+            PupilDaySettings(leaveTime = pupil.leaveWed),
+            PupilDaySettings(leaveTime = pupil.leaveThu),
+            PupilDaySettings(leaveTime = pupil.leaveFri),
             twoPhaseProcess.limit,
             twoPhaseProcess.end.toEpochMilli(),
             authorizedPersons,
@@ -180,7 +184,7 @@ object MainPage : Action<Chain> {
                 ctx.jooq.withTransaction { t ->
                     ActivityDAO.storeSelectedActivityIds(pupilId, payload.selectedActivities, t)
                     if (payload.extendedStay) {
-                        PupilDAO.storeLeaveTimes(payload.monday, payload.tuesday, payload.wednesday, payload.thursday, payload.friday, payload.canLeaveAlone, payload.morningWatchArrival, payload.orderTextbooks, pupilId, t)
+                        PupilDAO.storeLeaveTimes(payload.monday.leaveTime, payload.tuesday.leaveTime, payload.wednesday.leaveTime, payload.thursday.leaveTime, payload.friday.leaveTime, payload.canLeaveAlone, payload.morningWatchArrival, payload.orderTextbooks, pupilId, t)
                     } else {
                         PupilDAO.storeNonParticipation(payload.canLeaveAlone, payload.morningWatchArrival, payload.orderTextbooks, pupilId, t)
                     }

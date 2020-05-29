@@ -98,7 +98,7 @@ export default class ActivityConflictComponent extends Vue {
             if (activity.chosen && activity.times) {
                 for (var s = 0; s < activity.times.length; s++) {
                     var slot = activity.times[s];
-                    var leaveTime = state.extendedStay ? state[slot.day as DayOfWeek] : null;
+                    var leaveTime = state.extendedStay ? state[slot.day as DayOfWeek].leaveTime : null;
 
                     // Tolerate activity ending 5 minutes later than the leave time (it happens!)
                     if (leaveTime == null || leaveTime < slot.to - 5) {
@@ -127,7 +127,7 @@ export default class ActivityConflictComponent extends Vue {
     resolveConflictUpdateLeaveTime(day: DayOfWeek, leaveTime: number) {
         const state = this.mainPage.state!!;
         const vm = this.mainPage.vm;
-        state!![day] = leaveTime
+        state!![day].leaveTime = leaveTime
 
         // Pupil must have extended stay selected, otherwise leave time is pointless
         if (vm.pupilHasExtendedStay) {
