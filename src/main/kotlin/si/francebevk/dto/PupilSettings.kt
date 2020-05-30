@@ -40,6 +40,13 @@ class PupilSettings(
     @get:JsonIgnore
     val friNice get() = format(friday.leaveTime)
 
+    fun disableAfternoonSnacks() {
+        monday.afternoonSnack = false
+        tuesday.afternoonSnack = false
+        wednesday.afternoonSnack = false
+        thursday.afternoonSnack = false
+        friday.afternoonSnack = false
+    }
 
     private fun format(time: Short?): String =
         if (time == null) "odide takoj po pouku"

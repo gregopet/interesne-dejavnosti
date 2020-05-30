@@ -135,11 +135,11 @@ object MainPage : Action<Chain> {
         val payload = PupilState(
             activitiesPayload,
             pupil.extendedStay,
-            PupilDaySettings(leaveTime = pupil.leaveMon),
-            PupilDaySettings(leaveTime = pupil.leaveTue),
-            PupilDaySettings(leaveTime = pupil.leaveWed),
-            PupilDaySettings(leaveTime = pupil.leaveThu),
-            PupilDaySettings(leaveTime = pupil.leaveFri),
+            PupilDaySettings(leaveTime = pupil.leaveMon, morningSnack = pupil.morningSnackMon, lunch = pupil.lunchMon, afternoonSnack = pupil.afternoonSnackMon),
+            PupilDaySettings(leaveTime = pupil.leaveTue, morningSnack = pupil.morningSnackTue, lunch = pupil.lunchTue, afternoonSnack = pupil.afternoonSnackTue),
+            PupilDaySettings(leaveTime = pupil.leaveWed, morningSnack = pupil.morningSnackWed, lunch = pupil.lunchWed, afternoonSnack = pupil.afternoonSnackWed),
+            PupilDaySettings(leaveTime = pupil.leaveThu, morningSnack = pupil.morningSnackThu, lunch = pupil.lunchThu, afternoonSnack = pupil.afternoonSnackThu),
+            PupilDaySettings(leaveTime = pupil.leaveFri, morningSnack = pupil.morningSnackFri, lunch = pupil.lunchFri, afternoonSnack = pupil.afternoonSnackFri),
             twoPhaseProcess.limit,
             twoPhaseProcess.end.toEpochMilli(),
             authorizedPersons,
@@ -168,6 +168,11 @@ object MainPage : Action<Chain> {
             }
         }
 
+        // avoid all sorts of checks and workarounds on the frontend for this
+        if (!leaveTimesRelevant(klass.year) || !payload.extendedStay) {
+            payload.disableAfternoonSnacks()
+        }
+
         if (isAdminRequest(ctx)) {
             LOG.info("Administrator storing activities for pupil ${pupil.id}")
         } else {
@@ -184,9 +189,9 @@ object MainPage : Action<Chain> {
                 ctx.jooq.withTransaction { t ->
                     ActivityDAO.storeSelectedActivityIds(pupilId, payload.selectedActivities, t)
                     if (payload.extendedStay) {
-                        PupilDAO.storeLeaveTimes(payload.monday.leaveTime, payload.tuesday.leaveTime, payload.wednesday.leaveTime, payload.thursday.leaveTime, payload.friday.leaveTime, payload.canLeaveAlone, payload.morningWatchArrival, payload.orderTextbooks, pupilId, t)
+                        PupilDAO.storeLeaveTimes(payload, pupilId, t)
                     } else {
-                        PupilDAO.storeNonParticipation(payload.canLeaveAlone, payload.morningWatchArrival, payload.orderTextbooks, pupilId, t)
+                        PupilDAO.storeNonParticipation(payload, pupilId, t)
                     }
 
                     PupilDAO.storeAuthorizedPersons(authorizedPersons, pupilId, t)

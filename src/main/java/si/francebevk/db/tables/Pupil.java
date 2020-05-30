@@ -39,7 +39,7 @@ import si.francebevk.db.tables.records.PupilRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Pupil extends TableImpl<PupilRecord> {
 
-    private static final long serialVersionUID = -812850571;
+    private static final long serialVersionUID = 1938022594;
 
     /**
      * The reference instance of <code>public.pupil</code>
@@ -138,6 +138,81 @@ public class Pupil extends TableImpl<PupilRecord> {
      * The column <code>public.pupil.order_textbooks</code>. Did the pupil order textbooks from the school's textbook fund?
      */
     public final TableField<PupilRecord, Boolean> ORDER_TEXTBOOKS = createField("order_textbooks", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "Did the pupil order textbooks from the school's textbook fund?");
+
+    /**
+     * The column <code>public.pupil.morning_snack_mon</code>.
+     */
+    public final TableField<PupilRecord, Boolean> MORNING_SNACK_MON = createField("morning_snack_mon", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.pupil.morning_snack_tue</code>.
+     */
+    public final TableField<PupilRecord, Boolean> MORNING_SNACK_TUE = createField("morning_snack_tue", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.pupil.morning_snack_wed</code>.
+     */
+    public final TableField<PupilRecord, Boolean> MORNING_SNACK_WED = createField("morning_snack_wed", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.pupil.morning_snack_thu</code>.
+     */
+    public final TableField<PupilRecord, Boolean> MORNING_SNACK_THU = createField("morning_snack_thu", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.pupil.morning_snack_fri</code>.
+     */
+    public final TableField<PupilRecord, Boolean> MORNING_SNACK_FRI = createField("morning_snack_fri", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.pupil.afternoon_snack_mon</code>.
+     */
+    public final TableField<PupilRecord, Boolean> AFTERNOON_SNACK_MON = createField("afternoon_snack_mon", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.pupil.afternoon_snack_tue</code>.
+     */
+    public final TableField<PupilRecord, Boolean> AFTERNOON_SNACK_TUE = createField("afternoon_snack_tue", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.pupil.afternoon_snack_wed</code>.
+     */
+    public final TableField<PupilRecord, Boolean> AFTERNOON_SNACK_WED = createField("afternoon_snack_wed", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.pupil.afternoon_snack_thu</code>.
+     */
+    public final TableField<PupilRecord, Boolean> AFTERNOON_SNACK_THU = createField("afternoon_snack_thu", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.pupil.afternoon_snack_fri</code>.
+     */
+    public final TableField<PupilRecord, Boolean> AFTERNOON_SNACK_FRI = createField("afternoon_snack_fri", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.pupil.lunch_mon</code>.
+     */
+    public final TableField<PupilRecord, Boolean> LUNCH_MON = createField("lunch_mon", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.pupil.lunch_tue</code>.
+     */
+    public final TableField<PupilRecord, Boolean> LUNCH_TUE = createField("lunch_tue", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.pupil.lunch_wed</code>.
+     */
+    public final TableField<PupilRecord, Boolean> LUNCH_WED = createField("lunch_wed", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.pupil.lunch_thu</code>.
+     */
+    public final TableField<PupilRecord, Boolean> LUNCH_THU = createField("lunch_thu", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.pupil.lunch_fri</code>.
+     */
+    public final TableField<PupilRecord, Boolean> LUNCH_FRI = createField("lunch_fri", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>public.pupil</code> table reference

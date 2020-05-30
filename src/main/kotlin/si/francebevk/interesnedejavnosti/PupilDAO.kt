@@ -8,6 +8,7 @@ import si.francebevk.db.tables.AuthorizedCompanion
 import si.francebevk.db.tables.records.AuthorizedCompanionRecord
 import si.francebevk.db.tables.records.PupilRecord
 import si.francebevk.dto.AuthorizedPerson
+import si.francebevk.dto.PupilSettings
 import java.time.OffsetDateTime
 
 object PupilDAO {
@@ -31,18 +32,33 @@ object PupilDAO {
     /**
      * Indicates that the pupil will be involved in after school stay, at specified times.
      */
-    fun storeLeaveTimes(mon: Short?, tue: Short?, wed: Short?, thu: Short?, fri: Short?, canLeaveAlone: Boolean, morningWatchArrival: Short?, orderTextbooks: Boolean, pupilId: Long, jooq: DSLContext) = with(PUPIL) {
+    fun storeLeaveTimes(settings: PupilSettings, pupilId: Long, jooq: DSLContext) = with(PUPIL) {
         jooq
         .update(PUPIL)
-        .set(LEAVE_MON, mon)
-        .set(LEAVE_TUE, tue)
-        .set(LEAVE_WED, wed)
-        .set(LEAVE_THU, thu)
-        .set(LEAVE_FRI, fri)
+        .set(LEAVE_MON, settings.monday.leaveTime)
+        .set(LEAVE_TUE, settings.tuesday.leaveTime)
+        .set(LEAVE_WED, settings.wednesday.leaveTime)
+        .set(LEAVE_THU, settings.thursday.leaveTime)
+        .set(LEAVE_FRI, settings.friday.leaveTime)
+        .set(MORNING_SNACK_MON, settings.monday.morningSnack)
+        .set(MORNING_SNACK_TUE, settings.tuesday.morningSnack)
+        .set(MORNING_SNACK_WED, settings.wednesday.morningSnack)
+        .set(MORNING_SNACK_THU, settings.thursday.morningSnack)
+        .set(MORNING_SNACK_FRI, settings.friday.morningSnack)
+        .set(LUNCH_MON, settings.monday.lunch)
+        .set(LUNCH_TUE, settings.tuesday.lunch)
+        .set(LUNCH_WED, settings.wednesday.lunch)
+        .set(LUNCH_THU, settings.thursday.lunch)
+        .set(LUNCH_FRI, settings.friday.lunch)
+        .set(AFTERNOON_SNACK_MON, settings.monday.afternoonSnack)
+        .set(AFTERNOON_SNACK_TUE, settings.tuesday.afternoonSnack)
+        .set(AFTERNOON_SNACK_WED, settings.wednesday.afternoonSnack)
+        .set(AFTERNOON_SNACK_THU, settings.thursday.afternoonSnack)
+        .set(AFTERNOON_SNACK_FRI, settings.friday.afternoonSnack)
         .set(EXTENDED_STAY, true)
-        .set(CAN_LEAVE_ALONE, canLeaveAlone)
-        .set(MORNING_CARE_ARRIVAL, morningWatchArrival)
-        .set(ORDER_TEXTBOOKS, orderTextbooks)
+        .set(CAN_LEAVE_ALONE, settings.canLeaveAlone)
+        .set(MORNING_CARE_ARRIVAL, settings.morningWatchArrival)
+        .set(ORDER_TEXTBOOKS, settings.orderTextbooks)
         .where(ID.eq(pupilId))
         .execute()
     }
@@ -50,7 +66,7 @@ object PupilDAO {
     /**
      * Indicates that the pupil will not be involved in after school stay.
      */
-    fun storeNonParticipation(canLeaveAlone: Boolean, morningWatchArrival: Short?, orderTextbooks: Boolean, pupilId: Long, jooq: DSLContext) = with(PUPIL) {
+    fun storeNonParticipation(settings: PupilSettings, pupilId: Long, jooq: DSLContext) = with(PUPIL) {
         jooq
         .update(PUPIL)
         .set(LEAVE_MON, null as Short?)
@@ -58,10 +74,25 @@ object PupilDAO {
         .set(LEAVE_WED, null as Short?)
         .set(LEAVE_THU, null as Short?)
         .set(LEAVE_FRI, null as Short?)
+        .set(MORNING_SNACK_MON, settings.monday.morningSnack)
+        .set(MORNING_SNACK_TUE, settings.tuesday.morningSnack)
+        .set(MORNING_SNACK_WED, settings.wednesday.morningSnack)
+        .set(MORNING_SNACK_THU, settings.thursday.morningSnack)
+        .set(MORNING_SNACK_FRI, settings.friday.morningSnack)
+        .set(LUNCH_MON, settings.monday.lunch)
+        .set(LUNCH_TUE, settings.tuesday.lunch)
+        .set(LUNCH_WED, settings.wednesday.lunch)
+        .set(LUNCH_THU, settings.thursday.lunch)
+        .set(LUNCH_FRI, settings.friday.lunch)
+        .set(AFTERNOON_SNACK_MON, false)
+        .set(AFTERNOON_SNACK_TUE, false)
+        .set(AFTERNOON_SNACK_WED, false)
+        .set(AFTERNOON_SNACK_THU, false)
+        .set(AFTERNOON_SNACK_FRI, false)
         .set(EXTENDED_STAY, false)
-        .set(CAN_LEAVE_ALONE, canLeaveAlone)
-        .set(MORNING_CARE_ARRIVAL, morningWatchArrival)
-        .set(ORDER_TEXTBOOKS, orderTextbooks)
+        .set(CAN_LEAVE_ALONE, settings.canLeaveAlone)
+        .set(MORNING_CARE_ARRIVAL, settings.morningWatchArrival)
+        .set(ORDER_TEXTBOOKS, settings.orderTextbooks)
         .where(ID.eq(pupilId))
         .execute()
     }

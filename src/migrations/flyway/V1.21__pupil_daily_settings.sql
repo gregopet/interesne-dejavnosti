@@ -1,0 +1,15 @@
+ALTER TABLE pupil ADD morning_snack_mon BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE pupil ADD morning_snack_tue BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE pupil ADD morning_snack_wed BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE pupil ADD morning_snack_thu BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE pupil ADD morning_snack_fri BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE pupil ADD afternoon_snack_mon BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE pupil ADD afternoon_snack_tue BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE pupil ADD afternoon_snack_wed BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE pupil ADD afternoon_snack_thu BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE pupil ADD afternoon_snack_fri BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE pupil ADD lunch_mon BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE pupil ADD lunch_tue BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE pupil ADD lunch_wed BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE pupil ADD lunch_thu BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE pupil ADD lunch_fri BOOLEAN NOT NULL DEFAULT false;
