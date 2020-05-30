@@ -81,8 +81,8 @@ interface UIActivity extends Rest.Activity {
             <div v-else>
                 <p v-if="!areActivitiesLimited">Izbrali ste naslednje dejavnosti:</p>
                 <div v-else>
-                    <p v-if="selectedGroupsWithLimit == 0">Trenutno izbrane aktivnosti:</p>
-                    <p v-else>Izbrali ste si {{ selectedGroupsWithLimit }} od @firstPhaseLimit dejavnosti z omejitvijo vpisa:</p>
+                    <p v-if="selectedActivitiesWithAttendanceLimit == 0">Trenutno izbrane aktivnosti:</p>
+                    <p v-else>Izbrali ste si {{ selectedActivitiesWithAttendanceLimit }} od {{ maxActivitiesWithAttendanceLimit }} dejavnosti z omejitvijo vpisa:</p>
                 </div>
                 <ul class="list-unstyled" v-for="act in pupilGroups">
                     <li>
@@ -179,6 +179,12 @@ export default class ActivitiesComponent extends Vue {
     /** Returns the number of limited attendance activities the pupil has chosen */
     get selectedActivitiesWithAttendanceLimit(): number {
         return this.pupilGroups.filter(this.isGroupMembershipLimited).length
+    }
+
+    /** Returns the max number of restricted activities (or null if there is no limit) */
+    get maxActivitiesWithAttendanceLimit(): number | null {
+        if (!this.areActivitiesLimited) return null;
+        else return this.value.twoPhaseLimit;
     }
 
     /** Returns the name of any selected activity that may share times with this one */
