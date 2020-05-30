@@ -82,6 +82,12 @@ class LeaveDayComponent extends Vue {
             <LeaveDayComponent day="Četrtek" v-model="value.thursday"></LeaveDayComponent>
             <LeaveDayComponent day="Petek" v-model="value.friday"></LeaveDayComponent>
         </form>
+
+        <p>Če se med letom kdaj zgodi, da mora otrok iz šole oditi ob drugačnem času,
+            morate za tisti dan izpolniti obrazec <a href="http://francebevk.splet.arnes.si/files/2018/09/Obvestilo_za_učitelja_OPB.pdf">
+            Obvestilo za učitelja podaljšanega bivanja</a> (povezavo
+            lahko najdete tudi na spletni strani šole).
+        </p>
     </div>
     `
 })
