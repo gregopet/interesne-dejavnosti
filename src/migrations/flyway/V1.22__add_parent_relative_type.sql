@@ -1,0 +1,1 @@
+ALTER TYPE authorized_person_type ADD VALUE 'parent';

@@ -32,7 +32,9 @@ public enum AuthorizedPersonType implements EnumType {
 
     aunt_uncle("aunt_uncle"),
 
-    other("other");
+    other("other"),
+
+    parent("parent");
 
     private final String literal;
 

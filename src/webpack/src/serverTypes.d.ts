@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 2.23.603 on 2020-05-28 14:17:55.
+// Generated using typescript-generator version 2.23.603 on 2020-05-30 07:17:37.
 
 declare namespace Rest {
 
@@ -70,8 +70,8 @@ declare namespace Rest {
         day: string;
         from: number;
         to: number;
-        daySlovenian: string;
         daySlovenianShort: string;
+        daySlovenian: string;
     }
 
     interface MainPageForm {
@@ -89,11 +89,11 @@ declare namespace Rest {
         askForMorningWatch: boolean;
         askForTextbooks: boolean;
         afternoonSnackTime: number;
+        inFirstPhase: boolean;
         adminRequest: boolean;
         morningWatchTimesJsonArray: string;
-        inFirstPhase: boolean;
     }
 
-    type AuthorizedPersonType = "sibling" | "grandparent" | "aunt_uncle" | "other";
+    type AuthorizedPersonType = "sibling" | "grandparent" | "aunt_uncle" | "other" | "parent";
 
 }

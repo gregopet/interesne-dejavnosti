@@ -18,7 +18,7 @@ import { Prop } from 'vue-property-decorator';
         </div>
         <div class="col-sm-auto">
             <select class="form-control" v-model="value.type">
-                <option :value="null" disabled>Sorodstveno razmerje</option>
+                <option value="parent">Oče / mati</option>
                 <option value="sibling">Sestra / brat</option>
                 <option value="grandparent">Babica / dedek</option>
                 <option value="aunt_uncle">Teta / stric</option>
@@ -43,7 +43,7 @@ export default class AuthorizedPersonComponent extends Vue {
 
     /** Can we remove this person? */
     get canRemovePerson(): boolean {
-        return !!this.value.name || !!this.value.type || this.totalPersons > 1;
+        return !!this.value.name || this.totalPersons > 1;
     }
 
     remove() {

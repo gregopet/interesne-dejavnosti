@@ -185,7 +185,7 @@ export default class MainPageComponent extends Vue {
     }
 
     addPerson() {
-        this.state!!.authorizedPersons!!.push({ name: null, type: null });
+        this.state!!.authorizedPersons!!.push({ name: null, type: "parent" });
     }
 
     removePerson(idx: number) {
@@ -195,7 +195,7 @@ export default class MainPageComponent extends Vue {
 
     ensureAtLeastOneAuthorizedPerson() {
         if (!this.state!!.authorizedPersons || this.state!!.authorizedPersons.length == 0) {
-            this.state!!.authorizedPersons = [{ name: null, type: null }]; 
+            this.state!!.authorizedPersons = [{ name: null, type: "parent" }]; 
         }
     }
 
