@@ -18,7 +18,7 @@ import { DayOfWeek, UIActivity } from '../app';
     },
 
     template: `
-    <div class='container'>
+    <div class='container mb-3'>
         <ActivityConflict ref="conflictComponent" :activities-component="$refs.activitySelector"></ActivityConflict>
 
         <div class="alert alert-danger fixed-top" v-if="vm.adminRequest">
@@ -28,7 +28,8 @@ import { DayOfWeek, UIActivity } from '../app';
             <input type="checkbox" id="send-email" v-model="adminNotifyViaEmail">
         </div>
 
-        <h1>Prijava popoldanskih aktivnosti v šolskem letu 2020 / 2021</h1>
+        <h1 v-if="vm.askForTextbooks">Prijava na razširjen program, prehrano in naročilo za učbeniški sklad za šolsko leto 2020/2021</h1>
+        <h1 v-else>Prijava na razširjen program in prehrano za šolsko leto 2020/2021</h1>
 
         <p class="lead">
             Učenec/učenka: <strong> {{ vm.pupilName }}, {{ vm.pupilClass }}</strong>
@@ -71,13 +72,25 @@ import { DayOfWeek, UIActivity } from '../app';
                 <div class="card-body">
                     <h4 class="card-title">Jutranje varstvo</h4>
 
-                    <h5>Potrebujete za vašega otroka jutranje varstvo?</h5>
+                    <h5>Označite uro prihoda svojega otroka v jutranje varstvo</h5>
                     <div class="form-group">
                         <select class="form-control" v-model="state.morningWatchArrival">
                             <option :value="null">Ne, moj otrok ne bo v jutranjem varstvu</option>
                             <option :value="time" v-for="time in vm.morningWatchTimes">Da, moj otrok bo v jutranje varstvo prišel ob {{ time | minuteTime }}</option>
                         </select>
                     </div>
+                </div>
+            </div>
+
+            <div class="card mt-3" v-if="vm.askForTextbooks">
+                <div class="card-body">
+                    <h4 class="card-title">Učbeniški sklad</h4>
+                    <h5>Želite naročiti komplet učbenikov iz učbeniškega sklada?</h5>
+
+                        <select class="form-control" v-model="state.orderTextbooks">
+                        <option :value="false">Ne, ne želim naročiti kompleta učbenikov, ki ga je določila šola</option>
+                        <option :value="true">Da, za svojega otroka naročam komplet učbenikov, ki ga je določila šola</option>
+                    </select>
                 </div>
             </div>
 
@@ -98,7 +111,8 @@ import { DayOfWeek, UIActivity } from '../app';
                         </div>
                     </div>
 
-                    <h5>Želite pooblastiti dodatne osebe, ki smejo pospremiti otroka iz šole?</h5>
+                    <h5>Katere osebe smejo prevzeti otroka ob koncu pouka?</h5>
+                    <p>Prosimo, navedite vse osebe, ki bi lahko tekom šolskega leta prevzela otroka!</p>
                     <div class="form" v-cloak>
                         <AuthorizedPerson class="form-row mb-2" v-model="person" v-on:remove="removePerson(index)" v-for="(person, index) in state.authorizedPersons" :total-persons="state.authorizedPersons.length"></AuthorizedPerson>
 
@@ -121,18 +135,6 @@ import { DayOfWeek, UIActivity } from '../app';
                 </div>
             </div>
 
-
-            <div class="card mt-3" v-if="vm.askForTextbooks">
-                <div class="card-body">
-                    <h4 class="card-title">Učbeniški sklad</h4>
-                    <h5>Želite naročiti komplet učbenikov iz učbeniškega sklada?</h5>
-
-                        <select class="form-control" v-model="state.orderTextbooks">
-                        <option :value="false">Ne, ne želim naročiti kompleta učbenikov, ki ga je določila šola</option>
-                        <option :value="true">Da, za svojega otroka naročam komplet učbenikov, ki ga je določila šola</option>
-                    </select>
-                </div>
-            </div>
 
 
             <div class="row mt-4" v-cloak>
