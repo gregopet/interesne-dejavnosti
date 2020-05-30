@@ -168,8 +168,7 @@ export default class ActivitiesComponent extends Vue {
     /** Did the pupil already select the maximum limited-attendance activities they are allowed to? */
     get atMaximumActivities(): boolean {
         if (!this.areActivitiesLimited) return false;
-
-        return this.selectedActivitiesWithAttendanceLimit <= this.value.twoPhaseLimit;
+        return this.selectedActivitiesWithAttendanceLimit >= this.value.twoPhaseLimit;
     }
 
     /** Return whether we impose a limit on the pupil's groups with limited membership */
