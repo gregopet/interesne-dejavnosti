@@ -47,7 +47,8 @@ fun shortActivityName(rec: ActivityRecord) =
 fun longActivityPeriods(rec: ActivityRecord) =
     "${rec.slots.map { "${it.day.fullSlo} ${it.startMinutes.minuteTimeFormat}" }.joinToString()}"
 
-val AuthorizedCompanionRecord.sloType get() = when(this.type) {
+val AuthorizedCompanionRecord.sloType get() = this.type.sloDescription
+val AuthorizedPersonType.sloDescription get() = when(this) {
     AuthorizedPersonType.parent -> "oče/mati"
     AuthorizedPersonType.aunt_uncle -> "teta/stric"
     AuthorizedPersonType.grandparent -> "babica/dedek"

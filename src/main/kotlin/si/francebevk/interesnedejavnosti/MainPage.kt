@@ -11,6 +11,8 @@ import ratpack.handling.Context
 import ratpack.pac4j.RatpackPac4j
 import si.francebevk.db.enums.ActivityLogType
 import si.francebevk.db.tables.records.ActivityRecord
+import si.francebevk.db.tables.records.PupilGroupRecord
+import si.francebevk.db.tables.records.PupilRecord
 import si.francebevk.db.withTransaction
 import si.francebevk.dto.*
 import si.francebevk.ratpack.*
@@ -90,6 +92,13 @@ object MainPage : Action<Chain> {
     private fun html(ctx: Context) = ctx.async {
         val pupil = await { PupilDAO.getPupilById(ctx.user.id.toLong(), ctx.jooq) }!!
         val klass = await { ClassDAO.getClassByName(ctx.pupilClass, ctx.jooq) }
+        val viewModel = getPupilPossibilities(pupil, klass, ctx)
+        val viewModelJson = ctx.get(com.fasterxml.jackson.databind.ObjectMapper::class.java).writerWithDefaultPrettyPrinter().writeValueAsString(viewModel);
+
+        ctx.render(Main.template(viewModel, viewModelJson))
+    }
+
+    private fun getPupilPossibilities(pupil: PupilRecord, klass: PupilGroupRecord, ctx: Context): MainPageForm {
         val deadline = ctx.get(Deadlines::class.java)
         val twoPhaseProcess = ctx.get(TwoPhaseProcess::class.java)
         val viewModel = MainPageForm(
@@ -110,10 +119,7 @@ object MainPage : Action<Chain> {
             askForTextbooks = askForTextbooks(klass.year),
             afternoonSnackTime = afternoonSnackTime
         )
-
-        val viewModelJson = ctx.get(com.fasterxml.jackson.databind.ObjectMapper::class.java).writerWithDefaultPrettyPrinter().writeValueAsString(viewModel);
-
-        ctx.render(Main.template(viewModel, viewModelJson))
+        return viewModel
     }
 
     private fun endHtml(ctx: Context) {
@@ -212,13 +218,10 @@ object MainPage : Action<Chain> {
                         pupil.emails,
                         pupilId,
                         ctx.jooq,
-                        ctx.pupilName,
-                        translatePupilClass(ctx.pupilClass, klass.year),
+                        getPupilPossibilities(pupil, klass, ctx),
                         payload,
                         pupilActivities,
-                        leaveTimesRelevant(klass.year),
-                        ctx.get(EmailConfig::class.java),
-                        authorizedPersons
+                        ctx.get(EmailConfig::class.java)
                     )
                 }
             } else {

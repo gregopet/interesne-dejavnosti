@@ -233,7 +233,7 @@ export default class MainPageComponent extends Vue {
             thursday: state.thursday,
             friday: state.friday,
             notifyViaEmail: this.adminNotifyViaEmail,
-            authorizedPersons: state.authorizedPersons,
+            authorizedPersons: state.authorizedPersons?.filter((person) => !!person.name) || [],
             canLeaveAlone: state.canLeaveAlone,
             morningWatchArrival: state.morningWatchArrival,
             orderTextbooks: !!state.orderTextbooks

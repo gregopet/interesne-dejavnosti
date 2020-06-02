@@ -11,6 +11,7 @@ import si.francebevk.db.Tables.ERROR_LOG
 import si.francebevk.dto.Activity
 import si.francebevk.dto.AuthorizedPerson
 import si.francebevk.dto.PupilSettings
+import si.francebevk.viewmodel.MainPageForm
 import javax.mail.internet.InternetAddress
 
 object EmailDispatch {
@@ -122,20 +123,20 @@ object EmailDispatch {
     /**
      * Sends the confirmation mail once people have finished editing the page.
      */
-    fun sendConfirmationMail(to: Array<String>, pupilId: Long, jooq: DSLContext, pupilName: String, pupilClass: String, leaveTimes: PupilSettings, activities: List<Activity>, leaveTimesRelevant: Boolean, config: EmailConfig, authorizedPersons: List<AuthorizedPerson>) {
+    fun sendConfirmationMail(to: Array<String>, pupilId: Long, jooq: DSLContext, vm: MainPageForm, payload: PupilSettings, activities: List<Activity>, config: EmailConfig) {
         if (!skipEmails && to.isNotEmpty()) {
             try {
                 LOG.info("Sending confirmation email to ${to.joinToString()}")
                 val message = config.startNewMessage()
-                message.subject = if (leaveTimesRelevant) {
-                    "Uspešna prijava v podaljšano bivanje in na interesne dejavnosti za učenca/učenko $pupilName"
+                message.subject = if (vm.pupilHasExtendedStay) {
+                    "Uspešna prijava v podaljšano bivanje in na interesne dejavnosti za učenca/učenko ${vm.pupilName}"
                 } else {
-                    "Uspešna prijava na interesne dejavnosti za učenca/učenko $pupilName"
+                    "Uspešna prijava na interesne dejavnosti za učenca/učenko ${vm.pupilName}"
                 }
                 message.addTo(*to)
                 message.setFrom(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)
                 message.setCc(listOf(InternetAddress(SCHOOL_REPLY_ADDRESS, SCHOOL_REPLY_NAME)))
-                val plain = ConfirmationMailPlain.template(pupilName, pupilClass, leaveTimes, leaveTimesRelevant, activities, authorizedPersons).render().toString()
+                val plain = composeEmail(vm, payload, activities)
                 message.setTextMsg(plain)
                 rateLimit.acquire()
                 message.send()

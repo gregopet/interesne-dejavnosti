@@ -40,6 +40,9 @@ class PupilSettings(
     @get:JsonIgnore
     val friNice get() = format(friday.leaveTime)
 
+    @get:JsonIgnore
+    val morningWatchArrivalNice: String? get() = if (morningWatchArrival == null) null else format(morningWatchArrival)
+
     fun disableAfternoonSnacks() {
         monday.afternoonSnack = false
         tuesday.afternoonSnack = false

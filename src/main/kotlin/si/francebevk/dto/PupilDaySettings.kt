@@ -12,4 +12,19 @@ class PupilDaySettings(
     var morningSnack: Boolean = false,
     var lunch: Boolean = false,
     var afternoonSnack: Boolean = false
-)
+) {
+
+    /** Creates a descriptor of snacks, separated with commas, or "no meals" if none was selected */
+    fun prettyPrintSnacks(): String {
+        val meals = mutableListOf<String>()
+        if (morningSnack) meals.add("dopoldanska malica")
+        if (lunch) meals.add("kosilo")
+        if (afternoonSnack) meals.add("popoldanska malica")
+
+        return if (meals.isEmpty()) {
+            "brez obroka"
+        } else {
+            meals.joinToString(", ")
+        }
+    }
+}
