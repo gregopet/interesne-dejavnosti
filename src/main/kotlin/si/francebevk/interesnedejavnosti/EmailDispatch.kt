@@ -53,7 +53,7 @@ object EmailDispatch {
                     message.attach(EmailAttachment().apply {
                         disposition = EmailAttachment.ATTACHMENT
                         description = "Katalog interesnih dejavnosti"
-                        name = "Katalog-interesnih-dejavnosti_2019-2020.pdf"
+                        name = "Katalog-interesnih-dejavnosti_2020-2021.pdf"
                         path = fileConfig.cataloguePath
                     })
                 }
