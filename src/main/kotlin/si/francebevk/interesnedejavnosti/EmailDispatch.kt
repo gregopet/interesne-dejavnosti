@@ -57,6 +57,14 @@ object EmailDispatch {
                         path = fileConfig.cataloguePath
                     })
                 }
+                if (fileConfig.rapCataloguePath.isNotBlank()) {
+                    message.attach(EmailAttachment().apply {
+                        disposition = EmailAttachment.ATTACHMENT
+                        description = "Katalog RaP dejavnosti"
+                        name = "Katalog-dejavnosti-RaP_2020-2021.pdf"
+                        path = fileConfig.rapCataloguePath
+                    })
+                }
                 rateLimit.acquire()
                 message.send()
                 PupilDAO.updateEmailSent(pupilId, jooq)

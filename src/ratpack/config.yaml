@@ -15,6 +15,7 @@ smtp:
 
 files:
     cataloguePath: /home/file.pdf
+    rapCataloguePath: /home/file1.pdf
 
 deadlines:
     timezone: Europe/Ljubljana
