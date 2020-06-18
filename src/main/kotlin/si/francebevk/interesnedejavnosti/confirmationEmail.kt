@@ -97,7 +97,7 @@ private fun leaveTimes(vm: MainPageForm, submition: PupilSettings): String {
 }
 
 private fun personsToAccompanyPupil(vm: MainPageForm, submition: PupilSettings): String {
-    val selfLeaveBlock = if (!vm.askForMorningWatch || !submition.canLeaveAlone) {
+    val selfLeaveBlock = if (!vm.askForSelfLeave || !submition.canLeaveAlone) {
         "Vaš otrok šole ne sme zapustiti brez spremstva"
     } else {
         "Vaš otrok sme šolo ob času odhoda zapustiti tudi brez spremstva."
