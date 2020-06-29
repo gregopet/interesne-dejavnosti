@@ -1,0 +1,5 @@
+/* Commas between meals */
+.morning-snack:not(:last-child):after,
+.lunch:not(:last-child):after {
+	content: ', '
+}

@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './pupilList.css'
 import Vue from 'vue';
 import { formatMinutes, formatDay, timeSlotGroupsOverlap, timeSlotsOverlap } from './time';
 import * as _ from 'lodash';

@@ -83,11 +83,32 @@
                             </a>
                         </td>
                         @if(pupil.getPupil().getExtendedStay()) {
-                            <td>@if(pupil.getPupil().getLeaveMon() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveMon()) } else { Po pouku }</td>
-                            <td>@if(pupil.getPupil().getLeaveTue() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveTue()) } else { Po pouku }</td>
-                            <td>@if(pupil.getPupil().getLeaveWed() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveWed()) } else { Po pouku }</td>
-                            <td>@if(pupil.getPupil().getLeaveThu() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveThu()) } else { Po pouku }</td>
-                            <td>@if(pupil.getPupil().getLeaveFri() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveFri()) } else { Po pouku }</td>
+                            <td>
+                                @if(pupil.getPupil().getLeaveMon() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveMon()) } else { Po pouku } <br>
+                                @if(pupil.getPupil().getMorningSnackMon()) { <span class="morning-snack">Malica</span> }
+                                @if(pupil.getPupil().getLunchMon()) { <span class="lunch">Kosilo</span>}
+                                @if(pupil.getPupil().getAfternoonSnackMon()) { <span class="afternoon-snack">Pop. malica</span>}
+                            </td>
+                            <td>@if(pupil.getPupil().getLeaveTue() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveTue()) } else { Po pouku } <br>
+                                @if(pupil.getPupil().getMorningSnackTue()) { <span class="morning-snack">Malica</span> }
+                                @if(pupil.getPupil().getLunchTue()) { <span class="lunch">Kosilo</span>}
+                                @if(pupil.getPupil().getAfternoonSnackTue()) { <span class="afternoon-snack">Pop. malica</span>}
+                            </td>
+                            <td>@if(pupil.getPupil().getLeaveWed() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveWed()) } else { Po pouku } <br>
+                                @if(pupil.getPupil().getMorningSnackWed()) { <span class="morning-snack">Malica</span> }
+                                @if(pupil.getPupil().getLunchWed()) { <span class="lunch">Kosilo</span>}
+                                @if(pupil.getPupil().getAfternoonSnackWed()) { <span class="afternoon-snack">Pop. malica</span>}
+                            </td>
+                            <td>@if(pupil.getPupil().getLeaveThu() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveThu()) } else { Po pouku } <br>
+                                @if(pupil.getPupil().getMorningSnackThu()) { <span class="morning-snack">Malica</span> }
+                                @if(pupil.getPupil().getLunchThu()) { <span class="lunch">Kosilo</span>}
+                                @if(pupil.getPupil().getAfternoonSnackThu()) { <span class="afternoon-snack">Pop. malica</span>}
+                            </td>
+                            <td>@if(pupil.getPupil().getLeaveFri() != null) { @getMinuteTimeFormat(pupil.getPupil().getLeaveFri()) } else { Po pouku } <br>
+                                @if(pupil.getPupil().getMorningSnackFri()) { <span class="morning-snack">Malica</span> }
+                                @if(pupil.getPupil().getLunchFri()) { <span class="lunch">Kosilo</span>}
+                                @if(pupil.getPupil().getAfternoonSnackFri()) { <span class="afternoon-snack">Pop. malica</span>}
+                            </td>
                         } else {
                             <td colspan="5" class="text-center"><i>Ni v podaljšanem bivanju</i></td>
                         }
